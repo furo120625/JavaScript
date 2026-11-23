@@ -1,9 +1,10 @@
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="theme-color" content="#ffffff">
+    <meta name="description" content="A personal collection of JavaScript lessons and notes.">
     <title>JavaScript Learning Hub</title>
     <link rel="stylesheet" href="css/style.css">
     <script src="js/app.js" defer></script>
@@ -11,33 +12,76 @@
 <body>
 
     <header class="topbar">
-        <div class="logo">JS Learning Hub</div>
+        <a class="logo" href="index.html" aria-label="JavaScript Learning Hub home">
+            <span class="logo-mark" aria-hidden="true">JS</span>
+            <span>JavaScript Hub</span>
+        </a>
 
-        <div class="search">
-            <input type="search" id="search-input" placeholder="Search lessons...">
-        </div>
+        <form class="search" role="search" autocomplete="off" onsubmit="return false">
+            <label class="visually-hidden" for="search-input">Search lessons</label>
+            <svg class="search-icon" viewBox="0 0 24 24" aria-hidden="true">
+                <circle cx="11" cy="11" r="7"></circle>
+                <path d="m16 16 4 4"></path>
+            </svg>
+            <input
+                type="search"
+                id="search-input"
+                placeholder="Search lessons..."
+                autocomplete="off"
+                spellcheck="false"
+            >
+            <kbd class="search-shortcut" aria-hidden="true">/</kbd>
+        </form>
 
-        <div class="account">
-            <img src="assets/avatar.png" alt="Account">
+        <div class="account" aria-label="Personal learning space">
+            <span class="account-avatar" aria-hidden="true">P</span>
         </div>
     </header>
 
     <aside class="sidebar">
-        <nav>
-            <a href="index.html">Home</a>
-            <a href="#lessons">All lessons</a>
+        <nav aria-label="Main navigation">
+            <a class="nav-link is-active" href="index.html" aria-current="page">
+                <span class="nav-indicator" aria-hidden="true"></span>
+                Home
+            </a>
+            <a class="nav-link" href="#lessons">
+                <span class="nav-indicator" aria-hidden="true"></span>
+                All lessons
+            </a>
         </nav>
+        <p class="sidebar-caption">PERSONAL LIBRARY</p>
     </aside>
 
     <main class="main-content">
-        <section class="recently-accessed">
-            <h2>Recently accessed</h2>
-            <div id="recent-list"></div>
+        <section class="welcome" aria-labelledby="page-title">
+            <p class="eyebrow">YOUR KNOWLEDGE SPACE</p>
+            <h1 id="page-title">JavaScript Learning Hub</h1>
+            <p class="welcome-description">A place to collect, revisit, and build your JavaScript knowledge.</p>
         </section>
 
-        <section class="lessons" id="lessons">
-            <h2>All lessons</h2>
-            <div id="lesson-list"></div>
+        <section class="recently-accessed" aria-labelledby="recent-heading">
+            <div class="section-heading">
+                <div>
+                    <p class="eyebrow">PICK UP WHERE YOU LEFT OFF</p>
+                    <h2 id="recent-heading">Recently accessed</h2>
+                </div>
+            </div>
+            <div id="recent-list" class="recent-list">
+                <p class="loading-message">Loading recent lessons...</p>
+            </div>
+        </section>
+
+        <section class="lessons" id="lessons" aria-labelledby="lessons-heading">
+            <div class="section-heading">
+                <div>
+                    <p class="eyebrow">EXPLORE YOUR LIBRARY</p>
+                    <h2 id="lessons-heading">All lessons</h2>
+                </div>
+                <span id="lesson-count" class="lesson-count" aria-live="polite"></span>
+            </div>
+            <div id="lesson-list" class="lesson-list" aria-live="polite">
+                <p class="loading-message">Loading lessons...</p>
+            </div>
         </section>
     </main>
 
