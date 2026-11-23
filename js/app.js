@@ -58,7 +58,7 @@ function saveRecentLesson(lesson) {
     }
 }
 
-function createLessonLink(lesson, isRecent = false) {
+function createLessonLink(lesson) {
     const link = document.createElement("a");
     const icon = document.createElement("span");
     const title = document.createElement("span");
@@ -132,7 +132,7 @@ function renderRecentLessons() {
         const lesson = lessonByPath.get(recentLesson.path);
 
         if (lesson) {
-            fragment.appendChild(createLessonLink(lesson, true));
+            fragment.appendChild(createLessonLink(lesson));
         }
     });
 
