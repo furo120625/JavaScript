@@ -75,9 +75,7 @@ function createLessonLink(lesson, isRecent = false) {
 
     link.append(icon, title);
 
-    if (isRecent) {
-        link.addEventListener("click", () => saveRecentLesson(lesson));
-    }
+    link.addEventListener("click", () => saveRecentLesson(lesson));
 
     return link;
 }
