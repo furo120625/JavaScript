@@ -1,0 +1,600 @@
+<!DOCTYPE html>
+<html lang="vi" style="font-family: Arial, Helvetica, sans-serif;">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>JS Objects - Ví dụ tương tác</title>
+<style>
+    .out {
+    white-space: pre-line;
+}
+</style>
+<script>
+const byId = id => document.getElementById(id);
+</script>
+</head>
+
+<body>
+<h1> JavaScript Objects </h1>
+
+<p> Hàm trợ giúp dùng chung. Dữ liệu của từng ví dụ nằm trong hàm hoặc object riêng để các ví dụ không giẫm lên nhau: </p>
+<pre data-src="helper"></pre>
+
+<hr>
+<h2 id="sec1"> 1. Object Definitions (Intro) </h2>
+    <div class="kn"><ol>
+        <li><b>Định nghĩa:</b> Object là tập hợp các cặp <code>key: value</code> (thuộc tính) mô tả một "thực thể" như người, xe, đơn hàng. Array, function, date... cũng là object.</li>
+        <li><b>Khi nào dùng:</b> gom dữ liệu liên quan của một thực thể; truyền nhiều tham số cho gọn; lưu cấu hình; nhận dữ liệu JSON từ API.</li>
+        <li><b>Khi nào KHÔNG dùng:</b> danh sách giá trị cùng loại, có thứ tự thì dùng array. Cần key bất kỳ, thêm / xóa liên tục, đếm số phần tử thì dùng <code>Map</code>. Chỉ một giá trị đơn thì dùng biến.</li>
+        <li><b>Tránh xung đột khi web lớn:</b> object được gán theo <u>tham chiếu</u>: <code>b = a</code> không sao chép, sửa <code>b</code> là sửa <code>a</code>. Gom dữ liệu chung vào một object có tên riêng (namespace) thay vì nhiều biến toàn cục rời rạc.</li>
+    </ol></div>
+
+    <h3> - Ví dụ 1.1: Tạo object bằng object literal từ dữ liệu nhập </h3>
+    <pre data-src="s1"></pre>
+    <div class="vd">
+        Tên: <input id="i1a" value="An"> Tuổi: <input id="i1b" type="number" value="20"> Thành phố: <input id="i1c" value="Hà Nội">
+        <button id="b1">Tạo object</button>
+        <p id="o1" class="out"></p>
+    </div>
+    <script id="s1">
+byId("b1").onclick = function () {
+    const nguoi = {
+        ten: byId("i1a").value,
+        tuoi: Number(byId("i1b").value),
+        thanhPho: byId("i1c").value
+    };
+    byId("o1").textContent = JSON.stringify(nguoi, null, 2);
+};
+    </script>
+
+    <h3> - Ví dụ 1.2: <code>b = a</code> không phải là sao chép </h3>
+    <pre data-src="s2"></pre>
+    <div class="vd">
+        Đổi tên thành: <input id="i2" value="Bình">
+        <button id="b2">Chạy</button>
+        <p id="o2" class="out"></p>
+    </div>
+    <script id="s2">
+byId("b2").onclick = function () {
+    const a = { ten: "An" };
+    const b = a;              // KHÔNG sao chép: b và a cùng trỏ tới 1 object
+    const c = { ...a };       // sao chép thật
+    b.ten = byId("i2").value;
+    byId("o2").textContent =
+        "a.ten = " + a.ten + "  (bị đổi theo b!)\nc.ten = " + c.ten + "  (bản sao, không đổi)\n" +
+        "a === b → " + (a === b) + "\na === c → " + (a === c);
+};
+    </script>
+
+<hr>
+<h2 id="sec2"> 2. Object Properties </h2>
+    <div class="kn"><ol>
+        <li><b>Định nghĩa:</b> thuộc tính là cặp key-value của object. Truy cập bằng <code>obj.key</code> hoặc <code>obj["key"]</code>; thêm, sửa, xóa (<code>delete</code>), kiểm tra bằng <code>in</code> / <code>Object.hasOwn</code>.</li>
+        <li><b>Khi nào dùng:</b> dấu chấm khi biết sẵn tên; ngoặc vuông khi tên nằm trong biến hoặc có khoảng trắng; <code>?.</code> khi thuộc tính có thể không tồn tại.</li>
+        <li><b>Khi nào KHÔNG dùng:</b> đừng đọc thuộc tính lồng sâu mà không kiểm tra (<code>Cannot read properties of undefined</code>); đừng <code>delete</code> phần tử của array.</li>
+        <li><b>Tránh xung đột khi web lớn:</b> gõ sai tên thuộc tính không báo lỗi mà ra <code>undefined</code>, nên thống nhất quy ước tên key (camelCase). Thuộc tính có thể bị file khác thêm ngầm, hãy kiểm tra bằng <code>Object.hasOwn</code>.</li>
+    </ol></div>
+
+    <h3> - Ví dụ 2.1: Truy cập bằng tên động và <code>?.</code> </h3>
+    <pre data-src="s3"></pre>
+    <div class="vd">
+        Tên thuộc tính: <input id="i3" class="wide" value="email cá nhân">
+        <button id="b3">Đọc</button>
+        <p id="o3" class="out"></p>
+    </div>
+    <script id="s3">
+byId("b3").onclick = function () {
+    const nguoi = { ten: "An", tuoi: 20, "email cá nhân": "an@mail.com" };
+    const key = byId("i3").value;
+    byId("o3").textContent =
+        'nguoi["' + key + '"] = ' + nguoi[key] + "\n" +
+        "nguoi.diaChi?.thanhPho = " + nguoi.diaChi?.thanhPho + "  (không lỗi nhờ ?.)";
+};
+    </script>
+
+    <h3> - Ví dụ 2.2: Thêm / sửa / xóa thuộc tính trên cùng một object </h3>
+    <pre data-src="s4"></pre>
+    <div class="vd">
+        Key: <input id="i4a" value="email"> Giá trị: <input id="i4b" class="wide" value="an@mail.com">
+        <button id="b4a">Gán (thêm / sửa)</button>
+        <button id="b4b">Xóa key</button>
+        <p id="o4" class="out"></p>
+    </div>
+    <script id="s4">
+const hoSo = { ten: "An", tuoi: 20 };
+
+function hienHoSo(ghiChu) {
+    byId("o4").textContent = JSON.stringify(hoSo) + (ghiChu ? "\n" + ghiChu : "");
+}
+byId("b4a").onclick = function () {
+    const key = byId("i4a").value.trim();
+    if (key) hoSo[key] = byId("i4b").value;          // key mới → thêm, key cũ → sửa
+    hienHoSo();
+};
+byId("b4b").onclick = function () {
+    const key = byId("i4a").value.trim();
+    delete hoSo[key];
+    hienHoSo('Sau khi xóa, ("' + key + '" in hoSo) → ' + (key in hoSo));
+};
+hienHoSo();
+    </script>
+
+<hr>
+<h2 id="sec3"> 3. Object Methods </h2>
+    <div class="kn"><ol>
+        <li><b>Định nghĩa:</b> method là thuộc tính có giá trị là một function, gọi bằng <code>obj.method()</code>. Bên trong, <code>this</code> trỏ về chính object đó.</li>
+        <li><b>Khi nào dùng:</b> hành vi gắn liền với dữ liệu của object: tính tổng, thêm vào giỏ, ghép họ tên, in thông tin.</li>
+        <li><b>Khi nào KHÔNG dùng:</b> không viết method bằng arrow function (mất <code>this</code>); thiếu <code>()</code> thì nhận về cả function chứ không phải kết quả; logic không cần dữ liệu của object thì viết hàm riêng.</li>
+        <li><b>Tránh xung đột khi web lớn:</b> đặt tên method rõ nghĩa, tránh trùng với method có sẵn (<code>toString</code>, <code>valueOf</code>). Method không nên sửa biến toàn cục. Tạo hàng nghìn object mà mỗi cái chứa bản method riêng thì tốn bộ nhớ, hãy đặt method vào prototype / class.</li>
+    </ol></div>
+
+    <h3> - Ví dụ 3.1: Giỏ hàng là một object có method </h3>
+    <pre data-src="s5"></pre>
+    <div class="vd">
+        Sản phẩm: <input id="i5a" value="Cà phê"> Giá: <input id="i5b" type="number" value="30000" style="width:90px">
+        <button id="b5">Thêm vào giỏ</button>
+        <p id="o5" class="out"></p>
+    </div>
+    <script id="s5">
+const gioHang = {
+    sanPham: [],
+    them(ten, gia) { this.sanPham.push({ ten, gia }); },
+    tong() { return this.sanPham.reduce((t, sp) => t + sp.gia, 0); },
+    inRa() {
+        return this.sanPham.map(sp => sp.ten + ": " + sp.gia.toLocaleString("vi-VN")).join("\n") +
+            "\nTổng: " + this.tong().toLocaleString("vi-VN") + " đ";
+    }
+};
+byId("b5").onclick = function () {
+    gioHang.them(byId("i5a").value, Number(byId("i5b").value));
+    byId("o5").textContent = gioHang.inRa();
+};
+    </script>
+
+<hr>
+<h2 id="sec4"> 4. Object this </h2>
+    <div class="kn"><ol>
+        <li><b>Định nghĩa:</b> <code>this</code> là "chủ nhân" của lời gọi hàm. Trong method, nó là object đứng trước dấu chấm. Hàm thường gọi một mình thì là <code>window</code> (hoặc <code>undefined</code> ở strict mode). Arrow function dùng <code>this</code> của nơi nó được viết.</li>
+        <li><b>Khi nào dùng:</b> trong method và constructor để truy cập dữ liệu của chính object; dùng <code>call / apply / bind</code> khi cần chỉ định <code>this</code>.</li>
+        <li><b>Khi nào KHÔNG dùng:</b> không dùng arrow function làm method; không truyền method làm callback mà không <code>bind</code>; hàm tiện ích độc lập không cần <code>this</code>.</li>
+        <li><b>Tránh xung đột khi web lớn:</b> <code>this</code> phụ thuộc <u>cách gọi</u>, không phụ thuộc nơi viết. Tách method ra (<code>const f = obj.method</code>) là mất <code>this</code>. Dùng <code>"use strict"</code> để <code>this</code> không âm thầm trỏ vào <code>window</code>.</li>
+    </ol></div>
+
+    <h3> - Ví dụ 4.1: Tách method ra khỏi object thì mất <code>this</code> </h3>
+    <pre data-src="s6"></pre>
+    <div class="vd">
+        <button id="b6">Chạy</button>
+        <p id="o6" class="out"></p>
+    </div>
+    <script id="s6">
+byId("b6").onclick = function () {
+    const nguoi = { ten: "An", chao() { return "Tôi là " + this.ten; } };
+    const chaoRieng = nguoi.chao;                 // tách method ra
+    const chaoBind = nguoi.chao.bind(nguoi);      // buộc this lại
+    byId("o6").textContent =
+        "nguoi.chao() → " + nguoi.chao() + "\n" +
+        "chaoRieng() → " + chaoRieng() + "  (mất this)\n" +
+        "chaoBind() → " + chaoBind();
+};
+    </script>
+
+    <h3> - Ví dụ 4.2: <code>this</code> trong event handler: function thường và arrow </h3>
+    <pre data-src="s7"></pre>
+    <div class="vd">
+        <button id="b7a">function thường</button>
+        <button id="b7b">arrow function</button>
+        <p id="o7" class="out"></p>
+    </div>
+    <script id="s7">
+byId("b7a").onclick = function () {
+    byId("o7").textContent = "this = phần tử <" + this.tagName + "> có id = " + this.id;
+};
+byId("b7b").onclick = () => {
+    byId("o7").textContent = "this === window → " + (this === window);
+};
+    </script>
+
+<hr>
+<h2 id="sec5"> 5. Object Display </h2>
+    <div class="kn"><ol>
+        <li><b>Định nghĩa:</b> hiển thị object ra màn hình. In thẳng ra sẽ là <code>[object Object]</code>, nên phải chuyển thành chuỗi bằng <code>JSON.stringify</code>, <code>Object.values / entries</code>, vòng lặp hoặc <code>console.table</code>.</li>
+        <li><b>Khi nào dùng:</b> <code>JSON.stringify</code> để xem / lưu / gửi dữ liệu; <code>console.table</code> khi debug; template string khi hiển thị cho người dùng.</li>
+        <li><b>Khi nào KHÔNG dùng:</b> không nối object vào chuỗi trực tiếp. <code>JSON.stringify</code> bỏ qua function, <code>undefined</code>, <code>Symbol</code> và báo lỗi với vòng tham chiếu. Không nhét dữ liệu người dùng vào <code>innerHTML</code> (XSS), hãy dùng <code>textContent</code>.</li>
+        <li><b>Tránh xung đột khi web lớn:</b> gom cách hiển thị vào một hàm dùng chung (<code>hienThi(obj)</code>) thay vì mỗi nơi tự nối chuỗi một kiểu. Khi lưu / gửi dữ liệu, nhớ kiểm tra thứ gì bị mất sau <code>stringify</code>.</li>
+    </ol></div>
+
+    <h3> - Ví dụ 5.1: Các cách hiển thị một object </h3>
+    <pre data-src="s8"></pre>
+    <div class="vd">
+        <button id="b8">Hiển thị</button>
+        <p id="o8" class="out"></p>
+    </div>
+    <script id="s8">
+byId("b8").onclick = function () {
+    const sach = { ten: "JS cơ bản", gia: 99000 };
+    byId("o8").textContent =
+        "Nối trực tiếp → " + sach + "\n\n" +
+        "JSON.stringify → " + JSON.stringify(sach) + "\n\n" +
+        "Object.values → " + Object.values(sach).join(" | ") + "\n\n" +
+        "Object.entries → " + Object.entries(sach).map(([k, v]) => k + "=" + v).join(", ");
+};
+    </script>
+
+    <h3> - Ví dụ 5.2: <code>JSON.stringify</code> làm mất gì? </h3>
+    <pre data-src="s9"></pre>
+    <div class="vd">
+        <button id="b9">Thử</button>
+        <p id="o9" class="out"></p>
+    </div>
+    <script id="s9">
+byId("b9").onclick = function () {
+    const mau = { ten: "An", chao() {}, tuoiThat: undefined, ngay: new Date(0), id: Symbol("x") };
+    let kq = "JSON.stringify → " + JSON.stringify(mau) +
+             "\n(function, undefined, Symbol bị bỏ; Date thành chuỗi)\n\n";
+    const a = { ten: "A" };
+    a.tuLap = a;                                   // vòng tham chiếu
+    try { JSON.stringify(a); }
+    catch (loi) { kq += "Vòng tham chiếu → notOk " + loi.name + ": " + loi.message.split("\n")[0]; }
+    byId("o9").textContent = kq;
+};
+    </script>
+
+<hr>
+<h2 id="sec6"> 6. Object Constructors </h2>
+    <div class="kn"><ol>
+        <li><b>Định nghĩa:</b> constructor function (hoặc <code>class</code>) là "khuôn" để tạo nhiều object cùng cấu trúc bằng <code>new</code>. Bên trong, <code>this</code> là object mới đang được tạo.</li>
+        <li><b>Khi nào dùng:</b> cần nhiều object cùng loại (người dùng, sản phẩm, công việc) với cùng thuộc tính và method.</li>
+        <li><b>Khi nào KHÔNG dùng:</b> chỉ cần một object duy nhất thì dùng object literal. Không gắn method vào từng object trong constructor khi tạo số lượng lớn, hãy dùng prototype / class.</li>
+        <li><b>Tránh xung đột khi web lớn:</b> quên <code>new</code> thì <code>this</code> trỏ vào <code>window</code> và âm thầm tạo biến toàn cục. Dùng <code>class</code> (báo lỗi nếu quên <code>new</code>) hoặc <code>"use strict"</code>. Tên constructor viết hoa, không trùng tên có sẵn (<code>Date</code>, <code>Map</code>, <code>Event</code>).</li>
+    </ol></div>
+
+    <h3> - Ví dụ 6.1: Tạo nhiều object từ một constructor </h3>
+    <pre data-src="s10"></pre>
+    <div class="vd">
+        Tên: <input id="i10a" value="An"> Tuổi: <input id="i10b" type="number" value="20">
+        <button id="b10">Thêm người</button>
+        <p id="o10" class="out"></p>
+    </div>
+    <script id="s10">
+function NguoiDung(ten, tuoi) {
+    this.ten = ten;
+    this.tuoi = tuoi;
+}
+const dsNguoi = [];
+
+byId("b10").onclick = function () {
+    dsNguoi.push(new NguoiDung(byId("i10a").value, Number(byId("i10b").value)));
+    byId("o10").textContent =
+        dsNguoi.map((n, i) => (i + 1) + ". " + n.ten + " (" + n.tuoi + " tuổi)").join("\n") +
+        "\nĐã tạo " + dsNguoi.length + " object";
+};
+    </script>
+
+    <h3> - Ví dụ 6.2: Quên <code>new</code> - function âm thầm lỗi, class báo lỗi ngay </h3>
+    <pre data-src="s11"></pre>
+    <div class="vd">
+        <button id="b11">Thử</button>
+        <p id="o11" class="out"></p>
+    </div>
+    <script id="s11">
+byId("b11").onclick = function () {
+    function Xe(hang) { this.hang = hang; }
+    class XeHoi { constructor(hang) { this.hang = hang; } }
+
+    const a = Xe("Fiat");                          // quên new
+    let kq = "Quên new với function → kết quả = " + a + ", window.hang = " + window.hang + "\n";
+    try { XeHoi("Volvo"); }                        // quên new
+    catch (loi) { kq += "Quên new với class → notOk " + loi.message; }
+    delete window.hang;                            // dọn dẹp
+    byId("o11").textContent = kq;
+};
+    </script>
+
+<hr>
+<h2 id="sec7"> 7. Object Iterations </h2>
+    <div class="kn"><ol>
+        <li><b>Định nghĩa:</b> duyệt object là đi qua từng key / value bằng <code>for...in</code>, <code>Object.keys()</code>, <code>Object.values()</code>, <code>Object.entries()</code> (thường kết hợp <code>for...of</code>).</li>
+        <li><b>Khi nào dùng:</b> in hoặc xử lý từng thuộc tính; tính tổng các giá trị; biến đổi cả object bằng <code>Object.entries</code> + <code>map</code> + <code>Object.fromEntries</code>.</li>
+        <li><b>Khi nào KHÔNG dùng:</b> không dùng <code>for...in</code> cho array; không dựa vào thứ tự key dạng số (luôn xếp tăng dần trước); không thêm / xóa key trong lúc đang duyệt.</li>
+        <li><b>Tránh xung đột khi web lớn:</b> <code>for...in</code> duyệt cả thuộc tính thừa kế. Nếu có file nào thêm gì đó vào <code>Object.prototype</code>, nó sẽ lọt vào mọi vòng lặp của cả trang. Dùng <code>Object.keys / entries</code> hoặc <code>Object.hasOwn</code>, và đừng bao giờ mở rộng <code>Object.prototype</code>.</li>
+    </ol></div>
+
+    <h3> - Ví dụ 7.1: Tăng giá cả bảng giá theo % (entries → map → fromEntries) </h3>
+    <pre data-src="s12"></pre>
+    <div class="vd">
+        Tăng: <input id="i12" type="number" value="10"> %
+        <button id="b12">Tính bảng giá mới</button>
+        <p id="o12" class="out"></p>
+    </div>
+    <script id="s12">
+byId("b12").onclick = function () {
+    const giaGoc = { "Cà phê": 30000, "Trà sữa": 40000, "Bánh mì": 20000 };
+    const phanTram = Number(byId("i12").value);
+    const giaMoi = Object.fromEntries(
+        Object.entries(giaGoc).map(([ten, gia]) => [ten, gia * (1 + phanTram / 100)])
+    );
+    let kq = "";
+    for (const [ten, gia] of Object.entries(giaMoi)) {
+        kq += ten + ": " + gia.toLocaleString("vi-VN") + " đ\n";
+    }
+    byId("o12").textContent = kq;
+};
+    </script>
+
+    <h3> - Ví dụ 7.2: <code>for...in</code> lọt cả thuộc tính thừa kế </h3>
+    <pre data-src="s13"></pre>
+    <div class="vd">
+        <button id="b13">Chạy</button>
+        <p id="o13" class="out"></p>
+    </div>
+    <script id="s13">
+byId("b13").onclick = function () {
+    const dongVat = { loai: "động vật" };
+    const meo = Object.create(dongVat);            // dongVat là prototype của meo
+    meo.ten = "Mimi";
+    const tatCa = [];
+    for (const k in meo) tatCa.push(k);
+    byId("o13").textContent =
+        "for...in → " + tatCa + "  (lọt cả 'loai' thừa kế)\n" +
+        "Object.keys → " + Object.keys(meo) + "\n" +
+        "Object.hasOwn(meo, 'loai') → " + Object.hasOwn(meo, "loai");
+};
+    </script>
+
+<hr>
+<h2 id="sec8"> 8. Object Get / Set </h2>
+    <div class="kn"><ol>
+        <li><b>Định nghĩa:</b> getter / setter (<code>get</code>, <code>set</code>) là thuộc tính "ảo": đọc và ghi như thuộc tính thường nhưng bên dưới thực sự chạy một hàm.</li>
+        <li><b>Khi nào dùng:</b> thuộc tính tính ra từ thuộc tính khác (họ tên đầy đủ); kiểm tra / chuẩn hóa dữ liệu khi gán (tuổi hợp lệ, cắt khoảng trắng); thuộc tính chỉ đọc (chỉ có getter).</li>
+        <li><b>Khi nào KHÔNG dùng:</b> getter không nên làm việc nặng hoặc có tác dụng phụ (gọi API). Setter không được ghi vào cùng tên chính nó (đệ quy vô hạn), hãy lưu vào <code>_ten</code> hoặc <code>#ten</code>. Thuộc tính đơn giản thì không cần.</li>
+        <li><b>Tránh xung đột khi web lớn:</b> setter có thể ném lỗi khi dữ liệu sai nên chỗ gán phải có <code>try/catch</code>. Getter chạy lại mỗi lần đọc, nếu tính toán nặng hãy lưu cache. Getter trong object literal xuất hiện khi <code>stringify</code>, getter của <code>class</code> thì không.</li>
+    </ol></div>
+
+    <h3> - Ví dụ 8.1: Getter ghép họ tên, setter tách ngược lại </h3>
+    <pre data-src="s14"></pre>
+    <div class="vd">
+        Họ tên mới: <input id="i14" class="wide" value="Trần Văn Bình">
+        <button id="b14">Gán vào hoTen</button>
+        <p id="o14" class="out"></p>
+    </div>
+    <script id="s14">
+const hoSoTen = {
+    ho: "Nguyễn",
+    ten: "An",
+    get hoTen() { return this.ho + " " + this.ten; },
+    set hoTen(giaTri) {
+        const phan = giaTri.trim().split(" ");
+        this.ho = phan.shift();                    // từ đầu tiên là họ
+        this.ten = phan.join(" ");                 // phần còn lại là tên
+    }
+};
+byId("b14").onclick = function () {
+    hoSoTen.hoTen = byId("i14").value;
+    byId("o14").textContent =
+        "ho = " + hoSoTen.ho + "\nten = " + hoSoTen.ten + "\nhoTen (getter) = " + hoSoTen.hoTen;
+};
+    </script>
+
+    <h3> - Ví dụ 8.2: Setter kiểm tra dữ liệu hợp lệ </h3>
+    <pre data-src="s15"></pre>
+    <div class="vd">
+        Tuổi: <input id="i15" type="number" value="25">
+        <button id="b15">Gán</button>
+        <p id="o15" class="out"></p>
+    </div>
+    <script id="s15">
+const taiKhoan = {
+    _tuoi: 18,
+    get tuoi() { return this._tuoi; },
+    set tuoi(giaTri) {
+        if (!Number.isInteger(giaTri) || giaTri < 0 || giaTri > 150) {
+            throw new RangeError("Tuổi phải là số nguyên từ 0 đến 150");
+        }
+        this._tuoi = giaTri;
+    }
+};
+byId("b15").onclick = function () {
+    try {
+        taiKhoan.tuoi = Number(byId("i15").value);
+        byId("o15").textContent = "ok tuoi = " + taiKhoan.tuoi;
+    } catch (loi) {
+        byId("o15").textContent = "notOk " + loi.name + ": " + loi.message + "\nGiữ nguyên: " + taiKhoan.tuoi;
+    }
+};
+    </script>
+
+<hr>
+<h2 id="sec9"> 9. Object Management </h2>
+    <div class="kn"><ol>
+        <li><b>Định nghĩa:</b> các thao tác quản lý object: sao chép (spread <code>{...a}</code>, <code>Object.assign</code>, <code>structuredClone</code>), gộp, tạo từ prototype (<code>Object.create</code>), nhóm (<code>Object.groupBy</code>), kiểm tra (<code>Object.hasOwn</code>).</li>
+        <li><b>Khi nào dùng:</b> sao chép trước khi sửa dữ liệu nhận từ nơi khác; gộp cấu hình mặc định với tùy chỉnh của người dùng; nhóm dữ liệu API theo loại.</li>
+        <li><b>Khi nào KHÔNG dùng:</b> spread và <code>assign</code> chỉ sao chép <u>nông</u>, object lồng bên trong vẫn dùng chung. <code>JSON.parse(JSON.stringify())</code> làm mất function / Date, nên ưu tiên <code>structuredClone</code>. Không so sánh object bằng <code>==</code> (chỉ so tham chiếu).</li>
+        <li><b>Tránh xung đột khi web lớn:</b> sửa trực tiếp object nhận từ module khác là sửa dữ liệu của họ, hãy copy trước. Khi gộp, vế sau ghi đè vế trước. Đừng gộp dữ liệu người dùng vào object mà không lọc key (nguy cơ <code>__proto__</code> pollution).</li>
+    </ol></div>
+
+    <h3> - Ví dụ 9.1: Copy nông và copy sâu </h3>
+    <pre data-src="s16"></pre>
+    <div class="vd">
+        Thành phố mới: <input id="i16" class="wide" value="Hải Phòng">
+        <button id="b16">Sửa trên bản copy</button>
+        <p id="o16" class="out"></p>
+    </div>
+    <script id="s16">
+byId("b16").onclick = function () {
+    const goc = { ten: "An", diaChi: { thanhPho: "Hà Nội" } };
+    const nong = { ...goc };                       // copy nông
+    const sau = structuredClone(goc);              // copy sâu
+    nong.diaChi.thanhPho = byId("i16").value;
+    byId("o16").textContent =
+        "goc.diaChi.thanhPho = " + goc.diaChi.thanhPho + "  (bị đổi theo: copy nông!)\n" +
+        "sau.diaChi.thanhPho = " + sau.diaChi.thanhPho + "  (copy sâu: an toàn)";
+};
+    </script>
+
+    <h3> - Ví dụ 9.2: Gộp cấu hình mặc định với tùy chỉnh </h3>
+    <pre data-src="s17"></pre>
+    <div class="vd">
+        Giao diện:
+        <select id="sel17"><option>sáng</option><option>tối</option><option>xanh</option></select>
+        <button id="b17">Gộp cấu hình</button>
+        <p id="o17" class="out"></p>
+    </div>
+    <script id="s17">
+byId("b17").onclick = function () {
+    const macDinh = { theme: "sáng", ngonNgu: "vi", coCoi: true };
+    const tuyChinh = { theme: byId("sel17").value };
+    const cuoiCung = { ...macDinh, ...tuyChinh };  // vế sau ghi đè vế trước
+    byId("o17").textContent =
+        "macDinh = " + JSON.stringify(macDinh) + "\ntuyChinh = " + JSON.stringify(tuyChinh) +
+        "\nketQua = " + JSON.stringify(cuoiCung);
+};
+    </script>
+
+<hr>
+<h2 id="sec10"> 10. Object Protection </h2>
+    <div class="kn"><ol>
+        <li><b>Định nghĩa:</b> các cách khóa object: <code>Object.freeze</code> (không thêm / sửa / xóa), <code>Object.seal</code> (không thêm / xóa, vẫn sửa giá trị), <code>Object.preventExtensions</code> (chỉ cấm thêm), và <code>Object.defineProperty</code> để khóa từng thuộc tính.</li>
+        <li><b>Khi nào dùng:</b> cấu hình / hằng số dùng chung; dữ liệu gốc không được phép bị sửa; chặn việc lỡ thêm thuộc tính mới do gõ sai tên.</li>
+        <li><b>Khi nào KHÔNG dùng:</b> <code>freeze</code> chỉ khóa tầng ngoài (nông). Không dùng cho object cần cập nhật thường xuyên. Đây không phải bảo mật thật, người dùng vẫn sửa được qua DevTools, kiểm tra quan trọng phải ở server.</li>
+        <li><b>Tránh xung đột khi web lớn:</b> ở sloppy mode, ghi vào object đã khóa bị bỏ qua <u>âm thầm</u>; chỉ <code>"use strict"</code> mới báo <code>TypeError</code>. Nên freeze cấu hình dùng chung ngay lúc tạo, và freeze đệ quy nếu có object lồng.</li>
+    </ol></div>
+
+    <h3> - Ví dụ 10.1: So sánh freeze, seal và preventExtensions </h3>
+    <pre data-src="s18"></pre>
+    <div class="vd">
+        Chế độ:
+        <select id="sel18">
+            <option value="none">Không bảo vệ</option>
+            <option value="freeze">Object.freeze</option>
+            <option value="seal">Object.seal</option>
+            <option value="chan">Object.preventExtensions</option>
+        </select>
+        <button id="b18">Thử thêm / sửa / xóa</button>
+        <p id="o18" class="out"></p>
+    </div>
+    <script id="s18">
+byId("b18").onclick = function () {
+    const sp = { ten: "Áo", gia: 100 };
+    const cheDo = byId("sel18").value;
+    if (cheDo === "freeze") Object.freeze(sp);
+    if (cheDo === "seal") Object.seal(sp);
+    if (cheDo === "chan") Object.preventExtensions(sp);
+
+    sp.mau = "đỏ";            // thử thêm
+    sp.gia = 200;             // thử sửa
+    delete sp.ten;            // thử xóa
+
+    byId("o18").textContent =
+        "Thêm được: " + ("mau" in sp) + "\nSửa được: " + (sp.gia === 200) +
+        "\nXóa được: " + !("ten" in sp) + "\nKết quả: " + JSON.stringify(sp);
+};
+    </script>
+
+    <h3> - Ví dụ 10.2: <code>freeze</code> chỉ khóa tầng ngoài, và strict mode báo lỗi </h3>
+    <pre data-src="s19"></pre>
+    <div class="vd">
+        <button id="b19">Chạy</button>
+        <p id="o19" class="out"></p>
+    </div>
+    <script id="s19">
+byId("b19").onclick = function () {
+    const cauHinh = Object.freeze({ lang: "vi", giaoDien: { theme: "sáng" } });
+    cauHinh.giaoDien.theme = "tối";                // tầng lồng bên trong KHÔNG bị khóa
+    let kq = "theme = " + cauHinh.giaoDien.theme + "  (freeze chỉ khóa tầng ngoài!)\n";
+    try {
+        (function () { "use strict"; cauHinh.lang = "en"; })();
+    } catch (loi) {
+        kq += "Strict mode → notOk " + loi.name + ": " + loi.message;
+    }
+    byId("o19").textContent = kq;
+};
+    </script>
+
+<hr>
+<h2 id="sec11"> 11. Object Prototypes </h2>
+    <div class="kn"><ol>
+        <li><b>Định nghĩa:</b> mỗi object có một prototype (nguyên mẫu). Khi không thấy thuộc tính trong chính nó, JS tìm ngược lên chuỗi prototype cho tới <code>Object.prototype</code>. Method đặt ở prototype được mọi object cùng loại dùng chung.</li>
+        <li><b>Khi nào dùng:</b> chia sẻ method cho nhiều object mà không copy cho từng cái; hiểu cơ chế của <code>class</code> và kế thừa; tạo object kế thừa bằng <code>Object.create(proto)</code>.</li>
+        <li><b>Khi nào KHÔNG dùng:</b> không sửa prototype của kiểu có sẵn (<code>Object.prototype</code>, <code>Array.prototype</code>). Không dùng <code>__proto__</code> trong code mới (dùng <code>Object.getPrototypeOf</code>). Không đặt dữ liệu thay đổi được (mảng, object) lên prototype.</li>
+        <li><b>Tránh xung đột khi web lớn:</b> thêm gì vào <code>Object.prototype</code> sẽ làm mọi <code>for...in</code> của cả trang nhận key lạ và có thể phá thư viện khác. Mảng đặt trên prototype bị mọi object dùng chung, dữ liệu riêng phải khởi tạo trong constructor.</li>
+    </ol></div>
+
+    <h3> - Ví dụ 11.1: Đổi method trên prototype, mọi object đều đổi theo </h3>
+    <pre data-src="s20"></pre>
+    <div class="vd">
+        Tiếng kêu: <input id="i20" value="gừ gừ">
+        <button id="b20">Gán lên Meo.prototype</button>
+        <p id="o20" class="out"></p>
+    </div>
+    <script id="s20">
+function Meo(ten) { this.ten = ten; }
+Meo.prototype.keu = function () { return this.ten + ": meo meo"; };
+const meoA = new Meo("Mimi");
+const meoB = new Meo("Tom");
+
+byId("b20").onclick = function () {
+    const tiengKeu = byId("i20").value;
+    Meo.prototype.keu = function () { return this.ten + ": " + tiengKeu; };
+    byId("o20").textContent =
+        meoA.keu() + "\n" + meoB.keu() + "\n" +
+        "meoA.keu === meoB.keu → " + (meoA.keu === meoB.keu) + "  (dùng chung 1 hàm)\n" +
+        "Object.hasOwn(meoA, 'keu') → " + Object.hasOwn(meoA, "keu");
+};
+    </script>
+
+    <h3> - Ví dụ 11.2: Mảng đặt trên prototype bị mọi object dùng chung </h3>
+    <pre data-src="s21"></pre>
+    <div class="vd">
+        Món cho giỏ 1: <input id="i21" value="Táo">
+        <button id="b21">Thêm vào giỏ 1</button>
+        <p id="o21" class="out"></p>
+    </div>
+    <script id="s21">
+byId("b21").onclick = function () {
+    function GioSai() {}
+    GioSai.prototype.mon = [];                     // SAI: mảng nằm trên prototype
+    function GioDung() { this.mon = []; }          // ĐÚNG: mỗi giỏ một mảng riêng
+
+    const s1 = new GioSai(), s2 = new GioSai();
+    const d1 = new GioDung(), d2 = new GioDung();
+    s1.mon.push(byId("i21").value);
+    d1.mon.push(byId("i21").value);
+
+    byId("o21").textContent =
+        "Bản sai:  giỏ 2 = " + JSON.stringify(s2.mon) + "  (bị lây từ giỏ 1!)\n" +
+        "Bản đúng: giỏ 2 = " + JSON.stringify(d2.mon) + "\n" +
+        "Chuỗi prototype: " + (Object.getPrototypeOf(d1) === GioDung.prototype) + " → " +
+        (Object.getPrototypeOf(GioDung.prototype) === Object.prototype);
+};
+    </script>
+
+<hr>
+<h2 id="sec12"> 12. Object Reference </h2>
+    <p> Bảng tra nhanh (đã có ví dụ ở các mục trên): </p>
+    <table cellpadding="5px" style="margin:auto;" border="1">
+        <tr><th>Method</th><th>Công dụng</th><th>Mục</th></tr>
+        <tr><td><code>Object.keys(o)</code></td><td>Mảng các key của chính object</td><td>7</td></tr>
+        <tr><td><code>Object.values(o)</code></td><td>Mảng các value</td><td>5, 7</td></tr>
+        <tr><td><code>Object.entries(o)</code></td><td>Mảng các cặp <code>[key, value]</code></td><td>5, 7</td></tr>
+        <tr><td><code>Object.fromEntries(arr)</code></td><td>Biến mảng cặp <code>[key, value]</code> thành object</td><td>7</td></tr>
+        <tr><td><code>Object.assign(đích, ...nguồn)</code></td><td>Copy nông / gộp object vào đích</td><td>9</td></tr>
+        <tr><td><code>structuredClone(o)</code></td><td>Copy sâu (hàm toàn cục, không thuộc Object)</td><td>9</td></tr>
+        <tr><td><code>Object.create(proto)</code></td><td>Tạo object mới với prototype chỉ định</td><td>7, 11</td></tr>
+        <tr><td><code>Object.hasOwn(o, key)</code></td><td>Key có thuộc chính object (không phải thừa kế) không</td><td>2, 7</td></tr>
+        <tr><td><code>Object.freeze / isFrozen</code></td><td>Khóa hoàn toàn / kiểm tra đã khóa</td><td>10</td></tr>
+        <tr><td><code>Object.seal / isSealed</code></td><td>Cấm thêm, xóa; vẫn sửa giá trị</td><td>10</td></tr>
+        <tr><td><code>Object.preventExtensions(o)</code></td><td>Chỉ cấm thêm thuộc tính mới</td><td>10</td></tr>
+        <tr><td><code>Object.defineProperty(o, key, mô tả)</code></td><td>Định nghĩa thuộc tính với <code>writable</code>, <code>enumerable</code>, <code>get</code>, <code>set</code>...</td><td>8, 10</td></tr>
+        <tr><td><code>Object.getPrototypeOf(o)</code></td><td>Lấy prototype của object</td><td>11</td></tr>
+        <tr><td><code>Object.groupBy(arr, hàm)</code></td><td>Nhóm các phần tử của mảng thành object theo khóa hàm trả về</td><td>9</td></tr>
+        <tr><td><code>obj.toString() / valueOf()</code></td><td>Chuyển object thành chuỗi / giá trị nguyên thủy</td><td>5</td></tr>
+    </table>
+
+<script>
+// Đổ code từ <script id="..."> vào <pre data-src="..."> tương ứng
+document.querySelectorAll("pre[data-src]").forEach(function (p) {
+    p.textContent = document.getElementById(p.dataset.src).textContent.trim();
+});
+</script>
+</body>
+</html>

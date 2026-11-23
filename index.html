@@ -1,0 +1,45 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>JavaScript Learning Hub</title>
+    <link rel="stylesheet" href="css/style.css">
+    <script src="js/app.js" defer></script>
+</head>
+<body>
+
+    <header class="topbar">
+        <div class="logo">JS Learning Hub</div>
+
+        <div class="search">
+            <input type="search" id="search-input" placeholder="Search lessons...">
+        </div>
+
+        <div class="account">
+            <img src="assets/avatar.png" alt="Account">
+        </div>
+    </header>
+
+    <aside class="sidebar">
+        <nav>
+            <a href="index.html">Home</a>
+            <a href="#lessons">All lessons</a>
+        </nav>
+    </aside>
+
+    <main class="main-content">
+        <section class="recently-accessed">
+            <h2>Recently accessed</h2>
+            <div id="recent-list"></div>
+        </section>
+
+        <section class="lessons" id="lessons">
+            <h2>All lessons</h2>
+            <div id="lesson-list"></div>
+        </section>
+    </main>
+
+</body>
+</html>

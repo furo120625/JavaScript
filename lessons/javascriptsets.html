@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html lang="vi" style="font-family: Arial, Helvetica, sans-serif;">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>JS Sets - Ví dụ tương tác</title>
+
+<script id="helper">
+const byId = id => document.getElementById(id);
+
+// Tách chuỗi "a, b, c" thành Set các chuỗi
+const tachTapHop = chuoi => new Set(chuoi.split(",").map(s => s.trim()).filter(Boolean));
+</script>
+</head>
+<body>
+<h1> JavaScript Sets – Ví dụ tương tác </h1>
+<p> Mục lục:
+    <a href="#sec1">JS Sets</a> |
+    <a href="#sec2">Set Methods</a> |
+    <a href="#sec3">Set Logic</a> |
+    <a href="#sec4">Set WeakSet</a> |
+    <a href="#sec5">Set Reference</a>
+</p>
+<p> Hàm trợ giúp dùng chung. Dữ liệu của từng ví dụ nằm trong hàm hoặc biến riêng để các ví dụ không giẫm lên nhau: </p>
+<pre data-src="helper"></pre>
+
+<hr>
+<h2 id="sec1"> 1. JS Sets </h2>
+    <div class="kn"><ol>
+        <li><b>Định nghĩa:</b> <code>Set</code> là tập hợp các giá trị <b>duy nhất</b> (không trùng), giữ thứ tự thêm vào. Tạo bằng <code>new Set(iterable)</code>, đếm bằng <code>size</code>, duyệt bằng <code>for...of</code>. Khi so trùng, <code>NaN</code> bằng <code>NaN</code>, còn <code>0</code> và <code>-0</code> coi là một.</li>
+        <li><b>Khi nào dùng:</b> loại trùng; kiểm tra tồn tại nhanh bằng <code>has</code> với tập lớn; theo dõi "đã thấy / đã chọn" (tag, id đã xử lý); các phép toán tập hợp (hợp, giao, hiệu).</li>
+        <li><b>Khi nào KHÔNG dùng:</b> cần truy cập theo chỉ số (<code>set[0]</code>) hoặc sắp xếp trực tiếp thì dùng array. Cần cặp key-value thì dùng <code>Map</code>. Cần giữ phần tử trùng hoặc thứ tự có ý nghĩa thì dùng array. Set <u>không</u> loại trùng các object "giống nhau" (chỉ so tham chiếu).</li>
+        <li><b>Tránh xung đột khi web lớn:</b> Set gán theo tham chiếu như mọi object (<code>b = a</code> không sao chép, dùng <code>new Set(a)</code>). <code>1</code> và <code>"1"</code> là hai phần tử khác nhau, nên dữ liệu từ ô input / API phải thống nhất kiểu. <code>JSON.stringify(set)</code> ra <code>{}</code>, hãy dùng <code>[...set]</code>.</li>
+    </ol></div>
+
+    <h3> - Ví dụ 1.1: Loại trùng một danh sách </h3>
+    <pre data-src="s1"></pre>
+    <div class="vd">
+        Danh sách: <input id="i1" class="wide" value="táo, cam, táo, xoài, cam, ổi">
+        <button id="b1">Loại trùng</button>
+        <p id="o1" class="out"></p>
+    </div>
+    <script id="s1">
+byId("b1").onclick = function () {
+    const dsGoc = byId("i1").value.split(",").map(s => s.trim());
+    const tapHop = new Set(dsGoc);
+    byId("o1").textContent =
+        "Mảng gốc: " + JSON.stringify(dsGoc) + "  (" + dsGoc.length + " phần tử)\n" +
+        "Sau new Set(...): " + JSON.stringify([...tapHop]) + "  (size = " + tapHop.size + ")\n" +
+        "Thứ tự giữ nguyên theo lần xuất hiện đầu tiên";
+};
+    </script>
+
+    <h3> - Ví dụ 1.2: Ô nhập tag – thêm trùng thì Set tự bỏ qua </h3>
+    <pre data-src="s2"></pre>
+    <div class="vd">
+        Tag: <input id="i2" value="javascript">
+        <button id="b2a">Thêm tag</button>
+        <button id="b2b">Xóa hết</button>
+        <p id="o2" class="out"></p>
+    </div>
+    <script id="s2">
+const tapTag = new Set();
+
+function hienTag() {
+    byId("o2").textContent = tapTag.size
+        ? "Tag (" + tapTag.size + "): " + [...tapTag].join(", ")
+        : "Chưa có tag nào";
+}
+byId("b2a").onclick = function () {
+    const tag = byId("i2").value.trim().toLowerCase();    // chuẩn hóa trước khi thêm
+    if (!tag) return;
+    const daCo = tapTag.has(tag);
+    tapTag.add(tag);
+    hienTag();
+    if (daCo) byId("o2").textContent += '\n("' + tag + '" đã có, Set bỏ qua)';
+};
+byId("b2b").onclick = function () { tapTag.clear(); hienTag(); };
+hienTag();
+    </script>
+
+    <h3> - Ví dụ 1.3: Những điều Set "không nói trước" </h3>
+    <pre data-src="s3"></pre>
+    <div class="vd">
+        <button id="b3">Chạy</button>
+        <p id="o3" class="out"></p>
+    </div>
+    <script id="s3">
+byId("b3").onclick = function () {
+    const s1 = new Set([1, "1", 1]);
+    const s2 = new Set([NaN, NaN, 0, -0]);
+    const s3 = new Set([{ id: 1 }, { id: 1 }]);
+    const s4 = new Set(["a", "b"]);
+    byId("o3").textContent =
+        "Set([1, '1', 1]).size = " + s1.size + "  (số 1 và chuỗi '1' là hai giá trị khác nhau)\n" +
+        "Set([NaN, NaN, 0, -0]).size = " + s2.size + "  (NaN trùng NaN; 0 và -0 là một)\n" +
+        "Set([{id:1}, {id:1}]).size = " + s3.size + "  (hai object khác tham chiếu → không bị loại trùng)\n" +
+        "JSON.stringify(set) = " + JSON.stringify(s4) + "  (mất dữ liệu!)\n" +
+        "JSON.stringify([...set]) = " + JSON.stringify([...s4]);
+};
+    </script>
+
+<hr>
+<h2 id="sec2"> 2. JS Set Methods </h2>
+    <div class="kn"><ol>
+        <li><b>Định nghĩa:</b> <code>add(x)</code> thêm (trả về chính Set nên nối tiếp được), <code>delete(x)</code> xóa (trả <code>true / false</code>), <code>has(x)</code> kiểm tra, <code>clear()</code> xóa hết, <code>size</code> đếm, <code>forEach</code>, <code>values() / keys() / entries()</code> để duyệt. Set duyệt được bằng <code>for...of</code> và spread.</li>
+        <li><b>Khi nào dùng:</b> <code>add / has / delete</code> để theo dõi trạng thái (đã like, đã chọn); chuyển sang mảng bằng <code>[...set]</code> để dùng <code>map / filter / sort</code>; <code>for...of</code> để duyệt.</li>
+        <li><b>Khi nào KHÔNG dùng:</b> không có <code>set.length</code> (dùng <code>size</code>) và không có <code>set[0]</code>. Không gọi <code>map / filter</code> trực tiếp trên Set, hãy chuyển sang mảng. Với vài phần tử, <code>array.includes</code> đã đủ, đừng dùng Set cho phức tạp.</li>
+        <li><b>Tránh xung đột khi web lớn:</b> phần tử được <u>thêm trong lúc đang duyệt</u> cũng sẽ được duyệt tới, nên <code>add</code> liên tục trong vòng lặp có thể chạy vô hạn. Đừng gán nhầm kết quả của <code>add</code> (là Set) vào biến khác. Set dùng chung toàn trang nên đặt trong object riêng của chức năng.</li>
+    </ol></div>
+
+    <h3> - Ví dụ 2.1: Chọn / bỏ chọn sản phẩm bằng <code>has</code>, <code>add</code>, <code>delete</code> </h3>
+    <pre data-src="s4"></pre>
+    <div class="vd">
+        <button id="b4a">Áo</button> <button id="b4b">Quần</button> <button id="b4c">Giày</button> <button id="b4d">Mũ</button>
+        <p id="o4" class="out">Chưa chọn món nào</p>
+    </div>
+    <script id="s4">
+const daChon = new Set();
+
+function hienDaChon() {
+    byId("o4").textContent = daChon.size
+        ? "Đã chọn (" + daChon.size + "): " + [...daChon].join(", ")
+        : "Chưa chọn món nào";
+}
+["Áo", "Quần", "Giày", "Mũ"].forEach(function (ten, i) {
+    byId("b4" + "abcd"[i]).onclick = function () {
+        if (daChon.has(ten)) daChon.delete(ten);          // đã chọn → bỏ chọn
+        else daChon.add(ten);                             // chưa chọn → chọn
+        this.textContent = (daChon.has(ten) ? "✔ " : "") + ten;
+        hienDaChon();
+    };
+});
+    </script>
+
+    <h3> - Ví dụ 2.2: <code>add</code> nối tiếp được, <code>delete</code> trả về <code>true / false</code> </h3>
+    <pre data-src="s5"></pre>
+    <div class="vd">
+        <button id="b5">Chạy</button>
+        <p id="o5" class="out"></p>
+    </div>
+    <script id="s5">
+byId("b5").onclick = function () {
+    const s = new Set();
+    s.add(1).add(2).add(2).add(3);                        // add trả về chính Set
+    const sauAdd = [...s];
+    const xoaCo = s.delete(2);
+    const xoaKhong = s.delete(99);
+    const truocClear = s.size;
+    s.clear();
+    byId("o5").textContent =
+        "Sau add(1).add(2).add(2).add(3): " + JSON.stringify(sauAdd) + "\n" +
+        "delete(2) → " + xoaCo + "  |  delete(99) → " + xoaKhong + "\n" +
+        "size trước clear = " + truocClear + "  |  size sau clear = " + s.size;
+};
+    </script>
+
+    <h3> - Ví dụ 2.3: Các cách duyệt Set, và phần tử thêm khi đang duyệt </h3>
+    <pre data-src="s6"></pre>
+    <div class="vd">
+        <button id="b6">Chạy</button>
+        <p id="o6" class="out"></p>
+    </div>
+    <script id="s6">
+byId("b6").onclick = function () {
+    const s = new Set(["a", "b", "c"]);
+    const duyetForOf = [];
+    for (const x of s) duyetForOf.push(x);
+    const duyetForEach = [];
+    s.forEach((giaTri, khoa) => duyetForEach.push(giaTri + "/" + khoa));
+
+    const dem = new Set([1]);
+    for (const n of dem) { if (n < 4) dem.add(n + 1); }   // phần tử mới thêm cũng được duyệt tới
+    byId("o6").textContent =
+        "for...of: " + duyetForOf + "\n" +
+        "forEach (value / key): " + duyetForEach + "  (Set không có key nên key = value)\n" +
+        "entries(): " + JSON.stringify([...s.entries()]) + "\n" +
+        "Spread rồi map: " + [...s].map(x => x.toUpperCase()) + "\n" +
+        "Thêm khi đang duyệt (n < 4 thì add n + 1): " + [...dem];
+};
+    </script>
+
+<hr>
+<h2 id="sec3"> 3. JS Set Logic </h2>
+ 
+<h2 id="sec4"> 4. JS Set WeakSet </h2>
+
+<h2 id="sec5"> 5. JS Set Reference </h2>
+    <p> Bảng tra nhanh (đã có ví dụ ở các mục trên): </p>
+    <table cellpadding="5px" style="margin:auto;" border="1">
+        <tr><th>Tên</th><th>Mô tả</th><th>Mục</th></tr>
+        <tr><td><code>new Set(iterable)</code></td><td>Tạo Set mới (tự loại trùng)</td><td>1</td></tr>
+        <tr><td><code>add(x)</code></td><td>Thêm phần tử, trả về chính Set</td><td>2</td></tr>
+        <tr><td><code>delete(x)</code></td><td>Xóa phần tử, trả về <code>true / false</code></td><td>2</td></tr>
+        <tr><td><code>has(x)</code></td><td>Kiểm tra phần tử có tồn tại không</td><td>2</td></tr>
+        <tr><td><code>clear()</code></td><td>Xóa toàn bộ phần tử</td><td>2</td></tr>
+        <tr><td><code>size</code></td><td>Số phần tử (thuộc tính, không phải method)</td><td>1, 2</td></tr>
+        <tr><td><code>forEach(callback)</code></td><td>Gọi callback cho từng phần tử</td><td>2</td></tr>
+        <tr><td><code>values() / keys() / entries()</code></td><td>Iterator các phần tử (<code>keys</code> giống <code>values</code>; <code>entries</code> ra cặp <code>[x, x]</code>)</td><td>2</td></tr>
+        <tr><td><code>union(B)</code></td><td>Hợp của hai Set (trả Set mới)</td><td>3</td></tr>
+        <tr><td><code>intersection(B)</code></td><td>Giao của hai Set</td><td>3</td></tr>
+        <tr><td><code>difference(B)</code></td><td>Phần có trong A mà không có trong B</td><td>3</td></tr>
+        <tr><td><code>symmetricDifference(B)</code></td><td>Phần chỉ có ở một trong hai Set</td><td>3</td></tr>
+        <tr><td><code>isSubsetOf(B)</code></td><td>Mọi phần tử của A đều nằm trong B?</td><td>3</td></tr>
+        <tr><td><code>isSupersetOf(B)</code></td><td>A chứa mọi phần tử của B?</td><td>3</td></tr>
+        <tr><td><code>isDisjointFrom(B)</code></td><td>A và B không có phần tử chung?</td><td>3</td></tr>
+        <tr><td><code>new WeakSet()</code></td><td>Tạo WeakSet, chỉ chứa object</td><td>4</td></tr>
+        <tr><td><code>WeakSet: add / has / delete</code></td><td>Chỉ có 3 method này, không có <code>size</code> và không duyệt được</td><td>4</td></tr>
+    </table>
+
+<script>
+// Đổ code từ <script id="..."> vào <pre data-src="..."> tương ứng
+document.querySelectorAll("pre[data-src]").forEach(function (p) {
+    p.textContent = document.getElementById(p.dataset.src).textContent.trim();
+});
+</script>
+</body>
+</html>

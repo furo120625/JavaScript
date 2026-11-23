@@ -1,0 +1,369 @@
+<!DOCTYPE html>
+<html lang="vi" style="font-family: Arial, Helvetica, sans-serif;">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>JS Scope</title>
+<style>
+    .out {
+    white-space: pre-line;
+}
+</style>
+<script id="helper">
+const byId = id => document.getElementById(id);
+
+const chayThu = code => {
+    try { const kq = new Function(code)(); return "ok " + (kq === undefined ? "chạy được" : kq); }
+    catch (loi) { return "notOk " + loi.name + ": " + loi.message; }
+};
+</script>
+</head>
+
+<body>
+<h1> JavaScript Scope - Ví dụ tương tác </h1>
+<p> Mục lục:
+    <a href="#sec1">JS Scope</a> |
+    <a href="#sec2">Code Blocks</a> |
+    <a href="#sec3">Hoisting</a> |
+    <a href="#sec4">var / let / const</a> |
+    <a href="#sec5">Strict Mode</a>
+</p>
+<p> Hàm trợ giúp dùng chung (<code>chayThu</code> chạy một đoạn code dạng chuỗi trong hàm riêng để bắt lỗi mà không làm hỏng trang): </p>
+<pre data-src="helper"></pre>
+
+<hr>
+<h2 id="sec1"> 1. JS Scope </h2>
+    <div class="kn"><ol>
+        <li><b>Định nghĩa:</b> scope (phạm vi) là vùng code mà một biến hoặc hàm "nhìn thấy" được. Có 3 loại chính: <b>global</b>, <b>function</b>, <b>block</b>. Code bên trong nhìn ra scope bên ngoài được (scope chain), code bên ngoài không nhìn vào trong được.</li>
+        <li><b>Khi nào dùng:</b> luôn có hiệu lực. Hãy tận dụng để giấu dữ liệu nội bộ trong hàm hoặc khối, chỉ để ở global những gì thực sự dùng chung.</li>
+        <li><b>Khi nào KHÔNG dùng:</b> không tạo biến global cho dữ liệu chỉ dùng cục bộ. Không đặt biến local trùng tên biến bên ngoài (shadowing) khi không chủ ý.</li>
+        <li><b>Tránh xung đột khi web lớn:</b> mọi thẻ <code>&lt;script&gt;</code> thường chung một global scope nên trùng tên là ghi đè nhau. <code>var</code> và function ở ngoài cùng còn thành thuộc tính của <code>window</code>. Quên khai báo thì tạo biến global ngầm. Hãy bọc code trong hàm / khối / module, hoặc gom dữ liệu chung vào một object.</li>
+    </ol></div>
+
+    <h3> - Ví dụ 1.1: Ba loại scope </h3>
+    <pre data-src="s1"></pre>
+    <div class="vd">
+        <button id="b1">Chạy</button>
+        <p id="o1" class="out"></p>
+    </div>
+    <script id="s1">
+const thongBaoToanCuc = "Tôi ở global scope";
+
+byId("b1").onclick = function () {
+    const trongHam = "Tôi ở function scope";
+    if (true) {
+        const trongKhoi = "Tôi ở block scope";
+    }
+    byId("o1").textContent =
+        "Thấy thongBaoToanCuc: " + thongBaoToanCuc + "\n" +
+        "Thấy trongHam: " + trongHam + "\n" +
+        "typeof trongKhoi = " + typeof trongKhoi + "  (ngoài khối không thấy)";
+};
+    </script>
+
+    <h3> - Ví dụ 1.2: Scope chain và che khuất tên (shadowing) </h3>
+    <pre data-src="s2"></pre>
+    <div class="vd">
+        <button id="b2">Chạy</button>
+        <p id="o2" class="out"></p>
+    </div>
+    <script id="s2">
+byId("b2").onclick = function () {
+    const mau = "đỏ";
+    function ngoai() {
+        const mau = "xanh";                         // che biến "mau" cùng tên bên ngoài
+        function trong() { return "trong() nhìn ra thấy mau = " + mau; }
+        return trong();
+    }
+    byId("o2").textContent = ngoai() + "\nNgoài cùng mau = " + mau;
+};
+    </script>
+
+    <h3> - Ví dụ 1.3: <code>var</code> và function ở global "rò" ra <code>window</code>, <code>let / const</code> thì không </h3>
+    <pre data-src="s3"></pre>
+    <div class="vd">
+        <button id="b3">Kiểm tra window</button>
+        <p id="o3" class="out"></p>
+    </div>
+    <script id="s3">
+var bienVarToanCuc = "var";
+let bienLetToanCuc = "let";
+const bienConstToanCuc = "const";
+function hamToanCuc() {}
+
+byId("b3").onclick = function () {
+    byId("o3").textContent =
+        "window.bienVarToanCuc → " + window.bienVarToanCuc + "\n" +
+        "window.bienLetToanCuc → " + window.bienLetToanCuc + "\n" +
+        "window.bienConstToanCuc → " + window.bienConstToanCuc + "\n" +
+        "typeof window.hamToanCuc → " + typeof window.hamToanCuc;
+};
+    </script>
+
+<hr>
+<h2 id="sec2"> 2. JS Code Blocks </h2>
+    <div class="kn"><ol>
+        <li><b>Định nghĩa:</b> code block là đoạn code nằm trong <code>{ }</code>, gom nhiều statement thành một đơn vị (thân <code>if</code>, <code>for</code>, <code>while</code>, function, hoặc khối đứng riêng). <code>let / const / class</code> khai báo trong khối chỉ sống trong khối; <code>var</code> thì thoát ra ngoài.</li>
+        <li><b>Khi nào dùng:</b> giới hạn tuổi thọ biến tạm (trong vòng lặp, <code>if</code>); bọc mỗi <code>case</code> của <code>switch</code>; tạo scope riêng cho một đoạn code mà không cần viết hàm.</li>
+        <li><b>Khi nào KHÔNG dùng:</b> không dùng <code>var</code> trong khối mà mong nó bị nhốt lại. Khối đứng riêng quá nhiều làm code khó đọc, hãy tách thành hàm. Không bỏ <code>{ }</code> ở <code>if</code> / <code>for</code> nhiều dòng.</li>
+        <li><b>Tránh xung đột khi web lớn:</b> bỏ <code>{ }</code> ở <code>if</code> rồi thêm dòng sau sẽ tạo lỗi logic âm thầm. Tên trong khối che tên bên ngoài dễ gây nhầm. Ở file không phải module, bọc code trong <code>{ }</code> giúp các <code>let / const</code> không đè lên khai báo của file khác.</li>
+    </ol></div>
+
+    <h3> - Ví dụ 2.1: <code>if</code> thiếu <code>{ }</code> - dòng thứ hai vẫn luôn chạy </h3>
+    <pre data-src="s4"></pre>
+    <div class="vd">
+        <label><input type="checkbox" id="c4"> co = true</label>
+        <button id="b4">Chạy</button>
+        <p id="o4" class="out"></p>
+    </div>
+    <script id="s4">
+function demoIfKhongNgoac(co) {
+    let kq = "";
+    if (co)
+        kq += "A ";
+        kq += "B ";               // tưởng thuộc về if, thực ra LUÔN chạy
+    return kq.trim();
+}
+function demoIfCoNgoac(co) {
+    let kq = "";
+    if (co) {
+        kq += "A ";
+        kq += "B ";
+    }
+    return kq.trim();
+}
+byId("b4").onclick = function () {
+    const co = byId("c4").checked;
+    byId("o4").textContent =
+        "co = " + co + "\nKhông có { } → \"" + demoIfKhongNgoac(co) + "\"\nCó { } → \"" + demoIfCoNgoac(co) + "\"";
+};
+    </script>
+
+    <h3> - Ví dụ 2.2: Khai báo trùng tên trong cùng khối, khác khối, và trong <code>switch</code> </h3>
+    <pre data-src="s5"></pre>
+    <div class="vd">
+        <button id="b5">Thử 5 trường hợp</button>
+        <p id="o5" class="out"></p>
+    </div>
+    <script id="s5">
+byId("b5").onclick = function () {
+    const cacCa = [
+        ["let x = 1; let x = 2;", "Hai let cùng tên, cùng phạm vi"],
+        ["{ let x = 1; } { let x = 2; } return 'OK';", "Hai let cùng tên nhưng ở 2 khối riêng"],
+        ["{ var y = 1; } return y;", "var trong khối vẫn dùng được bên ngoài"],
+        ["switch (1) { case 1: let z = 1; break; case 2: let z = 2; }", "let trùng nhau trong switch (cùng 1 khối)"],
+        ["switch (1) { case 1: { let z = 1; break; } case 2: { let z = 2; } } return 'OK';", "Bọc mỗi case bằng { }"]
+    ];
+    byId("o5").textContent = cacCa
+        .map(([code, moTa]) => moTa + "\n  " + code + "\n  → " + chayThu(code))
+        .join("\n\n");
+};
+    </script>
+
+<hr>
+<h2 id="sec3"> 3. JS Hoisting </h2>
+    <div class="kn"><ol>
+        <li><b>Định nghĩa:</b> hoisting là việc JS "kéo" phần <u>khai báo</u> lên đầu scope trước khi chạy code. Function declaration được kéo cả thân hàm; <code>var</code> được kéo và mang giá trị <code>undefined</code>; <code>let / const / class</code> cũng được kéo nhưng nằm trong "vùng chết" (TDZ) nên dùng trước là lỗi. Chỉ khai báo được kéo, <b>phép gán thì không</b>.</li>
+        <li><b>Khi nào dùng:</b> chủ yếu là hiểu để đọc lỗi. Có thể tận dụng có chủ ý: đặt phần chạy chính ở trên, các hàm phụ (function declaration) ở dưới.</li>
+        <li><b>Khi nào KHÔNG dùng:</b> không dựa vào hoisting của <code>var</code> để dùng biến trước khi khai báo. Function expression / arrow gán vào biến thì không gọi trước được. Hãy khai báo mọi thứ ở đầu scope.</li>
+        <li><b>Tránh xung đột khi web lớn:</b> hai function declaration trùng tên (ở hai file) thì cái sau <u>âm thầm ghi đè</u> cái trước, không có lỗi nào cả. Dùng <code>const</code> + function expression, đặt tên duy nhất hoặc dùng module để tránh.</li>
+    </ol></div>
+
+    <h3> - Ví dụ 3.1: <code>var</code> được kéo lên nhưng chưa có giá trị </h3>
+    <pre data-src="s6"></pre>
+    <div class="vd">
+        <button id="b6">Chạy</button>
+        <p id="o6" class="out"></p>
+    </div>
+    <script id="s6">
+function layGiaTriVar() {
+    const luc1 = tenBien;           // khai báo đã được kéo lên, nhưng chưa gán → undefined
+    var tenBien = "An";
+    return "Trước khi gán: " + luc1 + "\nSau khi gán: " + tenBien;
+}
+byId("b6").onclick = function () {
+    byId("o6").textContent = layGiaTriVar();
+};
+    </script>
+
+    <h3> - Ví dụ 3.2: Dùng trước khi khai báo với function, var, let, class </h3>
+    <pre data-src="s7"></pre>
+    <div class="vd">
+        <button id="b7">Thử 4 trường hợp</button>
+        <p id="o7" class="out"></p>
+    </div>
+    <script id="s7">
+byId("b7").onclick = function () {
+    const cacCa = [
+        ["return f(); function f() { return 'OK'; }", "Function declaration"],
+        ["return g(); var g = function () { return 'OK'; };", "var + function expression"],
+        ["return h; let h = 1;", "let (vùng chết TDZ)"],
+        ["return new C(); class C {}", "class"]
+    ];
+    byId("o7").textContent = cacCa
+        .map(([code, moTa]) => moTa + "\n  " + code + "\n  → " + chayThu(code))
+        .join("\n\n");
+};
+    </script>
+
+    <h3> - Ví dụ 3.3: Hai function trùng tên - cái sau ghi đè cái trước, không báo lỗi </h3>
+    <pre data-src="s8"></pre>
+    <div class="vd">
+        <button id="b8">Gọi layThongBao()</button>
+        <p id="o8" class="out"></p>
+    </div>
+    <script id="s8">
+function layThongBao() { return "Phiên bản 1 (giả sử từ file A)"; }
+function layThongBao() { return "Phiên bản 2 (giả sử từ file B)"; }   // ghi đè cái trên
+
+byId("b8").onclick = function () {
+    byId("o8").textContent = layThongBao();
+};
+    </script>
+
+<hr>
+<h2 id="sec4"> 4. JS var / let / const </h2>
+    <div class="kn"><ol>
+        <li><b>Định nghĩa:</b> ba từ khóa khai báo biến. <code>var</code> có phạm vi function, hoisted với <code>undefined</code>. <code>let</code> có phạm vi khối, gán lại được. <code>const</code> như <code>let</code> nhưng không gán lại được (object bên trong vẫn sửa được).</li>
+        <li><b>Khi nào dùng:</b> mặc định dùng <code>const</code>; dùng <code>let</code> khi giá trị sẽ thay đổi; <code>var</code> chỉ khi bảo trì code cũ hoặc phải hỗ trợ trình duyệt rất cũ.</li>
+        <li><b>Khi nào KHÔNG dùng:</b> không dùng <code>var</code> trong code mới. Không dùng <code>let</code> cho giá trị không đổi (dễ lỡ gán lại). Không nghĩ <code>const</code> là bất biến hoàn toàn.</li>
+        <li><b>Tránh xung đột khi web lớn:</b> <code>var</code> ở ngoài cùng tạo thuộc tính trên <code>window</code>, có thể đè lên thuộc tính có sẵn của trình duyệt (<code>name</code>, <code>status</code>, <code>top</code>...). Trộn <code>var</code> và <code>let</code> cùng tên trong cùng scope là <code>SyntaxError</code>. Bật quy tắc ESLint <code>no-var</code> và <code>prefer-const</code>.</li>
+    </ol></div>
+    <table cellpadding="5px" style="margin:auto;" border="1">
+        <tr><th></th><th>var</th><th>let</th><th>const</th></tr>
+        <tr><td>Phạm vi</td><td>Function</td><td>Block</td><td>Block</td></tr>
+        <tr><td>Khai báo lại cùng scope</td><td>Được</td><td>Không</td><td>Không</td></tr>
+        <tr><td>Gán lại</td><td>Được</td><td>Được</td><td>Không</td></tr>
+        <tr><td>Dùng trước khai báo</td><td>undefined</td><td>Lỗi (TDZ)</td><td>Lỗi (TDZ)</td></tr>
+        <tr><td>Thành thuộc tính window (global)</td><td>Có</td><td>Không</td><td>Không</td></tr>
+    </table>
+
+    <h3> - Ví dụ 4.1: Chọn từ khóa rồi tự kiểm chứng bảng trên </h3>
+    <pre data-src="s9"></pre>
+    <div class="vd">
+        Từ khóa:
+        <select id="sel9"><option>var</option><option>let</option><option>const</option></select>
+        <button id="b9">Kiểm tra</button>
+        <p id="o9" class="out"></p>
+    </div>
+    <script id="s9">
+byId("b9").onclick = function () {
+    const tu = byId("sel9").value;
+    byId("o9").textContent =
+        "Khai báo lại cùng scope: " + chayThu(tu + " a = 1; " + tu + " a = 2; return a;") + "\n" +
+        "Gán lại giá trị: " + chayThu(tu + " b = 1; b = 2; return b;") + "\n" +
+        "typeof ngoài khối: " + chayThu("{ " + tu + " c = 1; } return typeof c;") + "\n" +
+        "Dùng trước khai báo: " + chayThu("return d; " + tu + " d = 1;");
+};
+    </script>
+
+    <h3> - Ví dụ 4.2: <code>var</code> ở global có thể đè lên thuộc tính có sẵn của <code>window</code> </h3>
+    <pre data-src="s10"></pre>
+    <div class="vd">
+        <button id="b10">Chạy</button>
+        <p id="o10" class="out"></p>
+    </div>
+    <script id="s10">
+byId("b10").onclick = function () {
+    const nameCu = window.name;
+    (0, eval)("var name = 123;");                    // giống như viết var name = 123 ở ngoài cùng
+    const sau = typeof window.name + " → \"" + window.name + "\"";
+    window.name = nameCu;                           // khôi phục
+    byId("o10").textContent =
+        "Sau var name = 123, window.name là " + sau + "\n(bị ép thành chuỗi vì name là thuộc tính có sẵn của window)";
+};
+    </script>
+
+    <h3> - Ví dụ 4.3: Biến đếm của <code>for</code> - <code>var</code> sống sót sau vòng lặp </h3>
+    <pre data-src="s11"></pre>
+    <div class="vd">
+        <button id="b11">Chạy</button>
+        <p id="o11" class="out"></p>
+    </div>
+    <script id="s11">
+byId("b11").onclick = function () {
+    for (var i = 0; i < 3; i++) {}
+    for (let j = 0; j < 3; j++) {}
+    byId("o11").textContent =
+        "Sau vòng lặp: i (var) = " + i + "\ntypeof j (let) = " + typeof j;
+};
+    </script>
+
+<hr>
+<h2 id="sec5"> 5. JS Strict Mode </h2>
+    <div class="kn"><ol>
+        <li><b>Định nghĩa:</b> <code>"use strict";</code> chuyển JS sang chế độ nghiêm ngặt: biến phải được khai báo, cấm một số cú pháp xấu, biến nhiều lỗi âm thầm thành lỗi thật, và <code>this</code> trong hàm thường là <code>undefined</code>. Đặt ở đầu file hoặc đầu hàm. <code>class</code> và module <b>tự động</b> là strict.</li>
+        <li><b>Khi nào dùng:</b> mọi code mới; khi muốn bắt sớm lỗi gõ sai tên biến, ghi vào thuộc tính chỉ đọc, tham số trùng tên.</li>
+        <li><b>Khi nào KHÔNG dùng:</b> <code>"use strict"</code> không nằm ở dòng đầu thì vô tác dụng. Đừng đặt ở đầu một file khi file đó được nối với nhiều script cũ chưa tương thích (nó biến cả file thành strict và làm hỏng code cũ).</li>
+        <li><b>Tránh xung đột khi web lớn:</b> khi nối nhiều file lại thành một (bundle), <code>"use strict"</code> ở đầu có thể áp dụng sai phạm vi. Hãy đặt trong từng hàm / IIFE khi tích hợp code cũ, hoặc dùng module. Code cũ gán biến chưa khai báo, dùng <code>with</code>, số octal <code>010</code> sẽ lỗi khi bật strict.</li>
+    </ol></div>
+
+    <h3> - Ví dụ 5.1: Cùng một đoạn code, chạy ở chế độ thường và strict </h3>
+    <pre data-src="s12"></pre>
+    <div class="vd">
+        <button id="b12">So sánh 5 trường hợp</button>
+        <p id="o12" class="out"></p>
+    </div>
+    <script id="s12">
+byId("b12").onclick = function () {
+    const cacCa = [
+        ["bienRo = 1; return bienRo;", "Gán cho biến chưa khai báo"],
+        ["const o = Object.freeze({ a: 1 }); o.a = 2; return o.a;", "Ghi vào object đã freeze"],
+        ["function f(a, a) { return a; } return f(1, 2);", "Tham số trùng tên"],
+        ["return (function () { return this === undefined ? 'undefined' : 'window'; })();", "this trong hàm thường"],
+        ["return 010;", "Số octal kiểu cũ 010"]
+    ];
+    byId("o12").textContent = cacCa.map(([code, moTa]) =>
+        moTa + "\n  Thường: " + chayThu(code) + "\n  Strict: " + chayThu('"use strict"; ' + code)
+    ).join("\n\n");
+    delete window.bienRo;                           // dọn biến global ngầm vừa tạo
+};
+    </script>
+
+    <h3> - Ví dụ 5.2: Strict mode theo phạm vi hàm (hàm khác không bị ảnh hưởng) </h3>
+    <pre data-src="s13"></pre>
+    <div class="vd">
+        <button id="b13">Chạy</button>
+        <p id="o13" class="out"></p>
+    </div>
+    <script id="s13">
+function hamThuong() { tenLoi1 = 1; return "OK (tạo biến global ngầm)"; }
+function hamStrict() { "use strict"; tenLoi2 = 1; return "OK"; }
+
+byId("b13").onclick = function () {
+    let kq = "hamThuong() → ";
+    try { kq += hamThuong(); } catch (loi) { kq += "notOk " + loi.message; }
+    kq += "\nhamStrict() → ";
+    try { kq += hamStrict(); } catch (loi) { kq += "notOk " + loi.name + ": " + loi.message; }
+    delete window.tenLoi1;                          // dọn dẹp
+    byId("o13").textContent = kq;
+};
+    </script>
+
+    <h3> - Ví dụ 5.3: Method trong <code>class</code> tự động là strict </h3>
+    <pre data-src="s14"></pre>
+    <div class="vd">
+        <button id="b14">Chạy</button>
+        <p id="o14" class="out"></p>
+    </div>
+    <script id="s14">
+byId("b14").onclick = function () {
+    function thuong() { return this === window ? "window" : String(this); }
+    class Lop { phuongThuc() { return this === window ? "window" : String(this); } }
+
+    const f1 = thuong;                              // tách ra khỏi mọi object
+    const f2 = new Lop().phuongThuc;
+    byId("o14").textContent =
+        "Function thường (không strict) → this = " + f1() + "\n" +
+        "Method trong class (tự strict) → this = " + f2();
+};
+    </script>
+
+<script>
+// Đổ code từ <script id="..."> vào <pre data-src="..."> tương ứng
+document.querySelectorAll("pre[data-src]").forEach(function (p) {
+    p.textContent = document.getElementById(p.dataset.src).textContent.trim();
+});
+</script>
+</body>
+</html>

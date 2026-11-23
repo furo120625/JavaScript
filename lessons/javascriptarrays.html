@@ -1,0 +1,542 @@
+<!DOCTYPE html>
+<html lang="vi" style="font-family: Arial, Helvetica, sans-serif;">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>JS Arrays - Ví dụ tương tác</title>
+<style>
+    .out {
+    white-space: pre-line;
+}
+</style>
+<script id="helper">
+const byId = id => document.getElementById(id);
+</script>
+</head>
+
+<body>
+<h1> JavaScript Arrays – Ví dụ tương tác </h1>
+<p> Mục lục:
+    <a href="#sec1">Arrays</a> |
+    <a href="#sec2">Array Constructor</a> |
+    <a href="#sec3">Array Methods</a> |
+    <a href="#sec4">Array Search</a> |
+    <a href="#sec5">Array Sort</a> |
+    <a href="#sec6">Array Iterations</a> |
+    <a href="#sec7">Array Reference</a> |
+    <a href="#sec8">Array const</a>
+</p>
+<p> Hàm trợ giúp dùng chung. Dữ liệu của từng ví dụ nằm trong hàm hoặc biến riêng để các ví dụ không giẫm lên nhau: </p>
+<pre data-src="helper"></pre>
+
+<hr>
+<h2 id="sec1"> 1. JS Arrays </h2>
+    <div class="kn"><ol>
+        <li><b>Định nghĩa:</b> array là object đặc biệt lưu danh sách giá trị có thứ tự, chỉ số bắt đầu từ 0, <code>length</code> tự cập nhật. Tạo bằng <code>[ ... ]</code>, phần tử có thể khác kiểu. <code>typeof</code> của array là <code>"object"</code>, nên kiểm tra bằng <code>Array.isArray()</code>.</li>
+        <li><b>Khi nào dùng:</b> danh sách cùng loại cần thứ tự hoặc cần lặp (sản phẩm, điểm số, bình luận); dữ liệu dạng danh sách từ API / JSON; xử lý hàng loạt phần tử.</li>
+        <li><b>Khi nào KHÔNG dùng:</b> cần tra cứu theo khóa chữ thì dùng object / <code>Map</code>. Cần loại trùng, kiểm tra tồn tại nhanh thì dùng <code>Set</code>. Mỗi vị trí có ý nghĩa khác nhau (tên, tuổi, email) thì dùng object.</li>
+        <li><b>Tránh xung đột khi web lớn:</b> array được gán theo <u>tham chiếu</u> (<code>b = a</code> không sao chép). Hàm nhận mảng từ nơi khác mà gọi <code>push / sort / splice</code> sẽ sửa luôn dữ liệu của họ, hãy copy bằng <code>[...a]</code> trước. Dữ liệu dùng chung nên gom vào một object riêng thay vì nhiều mảng global.</li>
+    </ol></div>
+
+    <h3> - Ví dụ 1.1: Truy cập phần tử, <code>length</code>, <code>at()</code> và <code>Array.isArray</code> </h3>
+    <pre data-src="s1"></pre>
+    <div class="vd">
+        Danh sách (cách nhau dấu phẩy): <input id="i1" class="wide" value="Táo, Cam, Xoài, Ổi">
+        <button id="b1">Đọc</button>
+        <p id="o1" class="out"></p>
+    </div>
+    <strong> Khi vọc vạc lại code, em phát hiện đoạn code trên có nguy cơ bị khai thác DoS rất lớn, vì độ dài của mảng trực tiếp ảnh hưởng đến khả năng xử lí của main thread (thử nhập tầm vài trăm nghìn đã gần đơ rồi)</strong>
+    <script id="s1">
+byId("b1").onclick = function () {
+    const ds = byId("i1").value.split(",").map(s => s.trim());
+    byId("o1").textContent =
+        "ds = " + JSON.stringify(ds) + "\n" +
+        "ds.length = " + ds.length + "\n" +
+        "ds[0] = " + ds[0] + "  |  ds[ds.length - 1] = " + ds[ds.length - 1] + "\n" +
+        "ds.at(-1) = " + ds.at(-1) + "  (đếm từ cuối)\n" +
+        "ds[99] = " + ds[99] + "  (ngoài phạm vi → undefined, không báo lỗi)\n" +
+        "typeof ds = " + typeof ds + "  |  Array.isArray(ds) = " + Array.isArray(ds);
+};
+    </script>
+
+    <h3> - Ví dụ 1.2: <code>b = a</code> không sao chép mảng </h3>
+    <pre data-src="s2"></pre>
+    <div class="vd">
+        Thêm vào b: <input id="i2" value="Xoài">
+        <button id="b2">Chạy</button>
+        <p id="o2" class="out"></p>
+    </div>
+    <script id="s2">
+byId("b2").onclick = function () {
+    const a = ["Táo", "Cam"];
+    const b = a;                  // cùng tham chiếu
+    const c = [...a];             // bản sao thật
+    b.push(byId("i2").value);
+    byId("o2").textContent =
+        "a = " + JSON.stringify(a) + "  (bị đổi theo b!)\n" +
+        "c = " + JSON.stringify(c) + "  (bản sao, không đổi)\n" +
+        "a === b → " + (a === b) + "  |  a === c → " + (a === c);
+};
+    </script>
+
+<hr>
+<h2 id="sec2"> 2. JS Array Constructor </h2>
+    <div class="kn"><ol>
+        <li><b>Định nghĩa:</b> các cách tạo mảng: literal <code>[]</code>, <code>new Array(...)</code>, <code>Array.of(...)</code>, <code>Array.from(iterable, hàmBiếnĐổi)</code>, <code>new Array(n).fill(x)</code>, spread <code>[...x]</code>.</li>
+        <li><b>Khi nào dùng:</b> <code>[]</code> là mặc định. <code>Array.from({length: n}, fn)</code> để tạo dãy số hoặc bảng. <code>Array.from</code> để đổi chuỗi / <code>Set</code> / <code>NodeList</code> thành mảng. <code>Array.of</code> khi cần mảng chỉ có một số.</li>
+        <li><b>Khi nào KHÔNG dùng:</b> <code>new Array(5)</code> tạo 5 ô <u>trống</u> chứ không phải <code>[5]</code>. <code>new Array(3).fill([])</code> cho 3 ô cùng trỏ vào một mảng. Không cần <code>new Array(...)</code> khi <code>[]</code> là đủ.</li>
+        <li><b>Tránh xung đột khi web lớn:</b> <code>new Array(5)</code> và <code>new Array(5, 6)</code> hành xử khác nhau (độ dài hay danh sách), rất dễ gây lỗi khi tham số đến từ biến. <code>fill</code> với object / mảng làm mọi ô <b>dùng chung tham chiếu</b>, sửa một ô là đổi tất cả. Dùng <code>Array.from</code> kèm callback để mỗi ô là một object riêng.</li>
+    </ol></div>
+
+    <h3> - Ví dụ 2.1: <code>new Array(3)</code> khác <code>[3]</code> </h3>
+    <pre data-src="s3"></pre>
+    <div class="vd">
+        <button id="b3">So sánh</button>
+        <p id="o3" class="out"></p>
+    </div>
+    <script id="s3">
+byId("b3").onclick = function () {
+    const hienThi = (ten, mang) => ten + " → length " + mang.length + ", " + JSON.stringify(mang);
+    byId("o3").textContent = [
+        hienThi("[3]", [3]),
+        hienThi("new Array(3)", new Array(3)),
+        hienThi("new Array(3, 4)", new Array(3, 4)),
+        hienThi("Array.of(3)", Array.of(3)),
+        hienThi("new Array(3).fill(0)", new Array(3).fill(0))
+    ].join("\n") + "\n\n(JSON.stringify hiển thị ô trống thành null)";
+};
+    </script>
+
+    <h3> - Ví dụ 2.2: <code>Array.from</code> – tạo dãy, đổi chuỗi, loại trùng </h3>
+    <pre data-src="s4"></pre>
+    <div class="vd">
+        n = <input id="i4" type="number" value="5" min="0" max="50">
+        <button id="b4">Tạo</button>
+        <p id="o4" class="out"></p>
+    </div>
+    <script id="s4">
+byId("b4").onclick = function () {
+    const n = Number(byId("i4").value);
+    const day = Array.from({ length: n }, (_, i) => i + 1);           // 1..n
+    const kyTu = Array.from("Việt");                                  // chuỗi → mảng ký tự
+    const khongTrung = Array.from(new Set([1, 2, 2, 3, 3, 3]));       // Set → mảng, đã loại trùng
+    byId("o4").textContent =
+        "Dãy 1..n: " + day + "\nTừ chuỗi: " + JSON.stringify(kyTu) + "\nLoại trùng: " + khongTrung;
+};
+    </script>
+
+    <h3> - Ví dụ 2.3: Tạo bảng 3×3 – <code>fill</code> dùng chung hàng, <code>Array.from</code> thì không </h3>
+    <pre data-src="s5"></pre>
+    <div class="vd">
+        <button id="b5">Gán ô [0][0] = 2</button>
+        <p id="o5" class="out"></p>
+    </div>
+    <script id="s5">
+byId("b5").onclick = function () {
+    const sai = new Array(3).fill(new Array(3).fill(0));              // 3 hàng là CÙNG 1 mảng
+    const dung = Array.from({ length: 3 }, () => new Array(3).fill(0));
+    sai[0][0] = 2;
+    dung[0][0] =2;
+    byId("o5").textContent =
+        "Bản sai (fill):\n" + sai.map(hang => hang.join(" ")).join("\n") +
+        "\n\nBản đúng (Array.from):\n" + dung.map(hang => hang.join(" ")).join("\n");
+};
+    </script>
+
+<hr>
+<h2 id="sec3"> 3. JS Array Methods </h2>
+    <div class="kn"><ol>
+        <li><b>Định nghĩa:</b> các method thao tác trên mảng: thêm / bớt ở đầu hoặc cuối (<code>push, pop, shift, unshift</code>), cắt và ghép (<code>slice, splice, concat, flat</code>), chuyển thành chuỗi (<code>join</code>). Chia hai nhóm: <b>sửa mảng gốc</b> (<code>push, pop, shift, unshift, splice, sort, reverse, fill</code>) và <b>trả mảng mới</b> (<code>slice, concat, toSorted, toReversed, toSpliced, with</code>).</li>
+        <li><b>Khi nào dùng:</b> <code>push / pop</code> cho ngăn xếp; <code>push / shift</code> cho hàng đợi; <code>slice</code> để lấy một đoạn hoặc sao chép; <code>splice</code> để chèn / xóa ở giữa; <code>join</code> để ghép chuỗi.</li>
+        <li><b>Khi nào KHÔNG dùng:</b> tránh <code>shift / unshift</code> trên mảng rất lớn (phải dịch cả mảng). Đừng nhầm <code>slice</code> (không sửa) với <code>splice</code> (sửa). Không dùng <code>delete arr[i]</code> (để lại ô trống), hãy dùng <code>splice</code>.</li>
+        <li><b>Tránh xung đột khi web lớn:</b> luôn nhớ method nào <u>sửa mảng gốc</u>: mảng dùng chung bị đổi bất ngờ là lỗi khó tìm nhất. Khi quản lý state (React, Vue...) hãy dùng bản trả mảng mới. Mảng nhận từ bên ngoài thì copy trước khi sửa.</li>
+    </ol></div>
+
+    <h3> - Ví dụ 3.1: Danh sách việc – <code>push</code>, <code>unshift</code>, <code>pop</code>, <code>shift</code> </h3>
+    <pre data-src="s6"></pre>
+    <div class="vd">
+        Việc: <input id="i6" class="wide" value="Ôn bài">
+        <button id="b6a">push (thêm cuối)</button>
+        <button id="b6b">unshift (thêm đầu)</button>
+        <button id="b6c">pop (bỏ cuối)</button>
+        <button id="b6d">shift (bỏ đầu)</button>
+        <p id="o6" class="out"></p>
+    </div>
+    <script id="s6">
+const dsViec = ["Học JS"];
+
+function hienDsViec(ghiChu) {
+    byId("o6").textContent =
+        JSON.stringify(dsViec) + "  (length " + dsViec.length + ")" + (ghiChu ? "\n" + ghiChu : "");
+}
+byId("b6a").onclick = function () { dsViec.push(byId("i6").value); hienDsViec(); };
+byId("b6b").onclick = function () { dsViec.unshift(byId("i6").value); hienDsViec(); };
+byId("b6c").onclick = function () { const bo = dsViec.pop(); hienDsViec("pop() trả về: " + bo); };
+byId("b6d").onclick = function () { const bo = dsViec.shift(); hienDsViec("shift() trả về: " + bo); };
+hienDsViec();
+    </script>
+
+    <h3> - Ví dụ 3.2: <code>slice</code> (không sửa) và <code>splice</code> (sửa mảng gốc) </h3>
+    <pre data-src="s7"></pre>
+    <div class="vd">
+        Bắt đầu từ: <input id="i7a" type="number" value="1" min="0"> Số phần tử: <input id="i7b" type="number" value="2" min="0">
+        <button id="b7">Chạy</button>
+        <p id="o7" class="out"></p>
+    </div>
+    <script id="s7">
+byId("b7").onclick = function () {
+    const bat = Number(byId("i7a").value);
+    const soLuong = Number(byId("i7b").value);
+    const mangA = ["A", "B", "C", "D", "E"];
+    const mangB = ["A", "B", "C", "D", "E"];
+    const lat = mangA.slice(bat, bat + soLuong);       // lấy đoạn, KHÔNG sửa mangA
+    const biXoa = mangB.splice(bat, soLuong, "★");     // xóa đoạn (rồi chèn ★), SỬA mangB
+    byId("o7").textContent =
+        "slice  → lấy được " + JSON.stringify(lat) + ", mangA vẫn là " + JSON.stringify(mangA) + "\n" +
+        "splice → xóa đi " + JSON.stringify(biXoa) + ", mangB giờ là " + JSON.stringify(mangB);
+};
+    </script>
+
+    <h3> - Ví dụ 3.3: Bản trả mảng mới (<code>toReversed</code>, <code>with</code>, <code>toSpliced</code>) và bản sửa tại chỗ </h3>
+    <pre data-src="s8"></pre>
+    <div class="vd">
+        <button id="b8">Chạy</button>
+        <p id="o8" class="out"></p>
+    </div>
+    <script id="s8">
+byId("b8").onclick = function () {
+    const goc = [1, 2, 3];
+    const daoNguoc = goc.toReversed();     // mảng mới
+    const thayDau = goc.with(0, 99);       // mảng mới, thay phần tử ở vị trí 0
+    const boGiua = goc.toSpliced(1, 1);    // mảng mới, bỏ phần tử ở vị trí 1
+    const suaTaiCho = [1, 2, 3];
+    suaTaiCho.reverse();                   // sửa chính mảng này
+    byId("o8").textContent =
+        "goc sau 3 method mới = " + JSON.stringify(goc) + "  (không đổi)\n" +
+        "toReversed → " + JSON.stringify(daoNguoc) + "\nwith(0, 99) → " + JSON.stringify(thayDau) +
+        "\ntoSpliced(1, 1) → " + JSON.stringify(boGiua) +
+        "\n\nreverse() tại chỗ → " + JSON.stringify(suaTaiCho) + "  (đã bị sửa)";
+};
+    </script>
+
+<hr>
+<h2 id="sec4"> 4. JS Array Search </h2>
+    <div class="kn"><ol>
+        <li><b>Định nghĩa:</b> các cách tìm trong mảng: <code>indexOf / lastIndexOf</code> (vị trí, so sánh bằng <code>===</code>), <code>includes</code> (có hay không), <code>find / findIndex / findLast</code> (theo điều kiện), <code>filter</code> (tất cả phần tử khớp), <code>some / every</code> (có ít nhất một / tất cả đều thỏa).</li>
+        <li><b>Khi nào dùng:</b> <code>includes</code> cho giá trị đơn giản; <code>find</code> để tìm object theo điều kiện (ví dụ theo id); <code>findIndex</code> khi cần vị trí để sửa / xóa; <code>filter</code> khi cần nhiều kết quả; <code>some / every</code> để kiểm tra điều kiện.</li>
+        <li><b>Khi nào KHÔNG dùng:</b> <code>indexOf / includes</code> không tìm được object theo "nội dung giống nhau" (chỉ so tham chiếu). Không dùng <code>filter(...)[0]</code> thay cho <code>find</code>. Tìm đi tìm lại trong mảng rất lớn thì chuyển sang <code>Map</code> / <code>Set</code>.</li>
+        <li><b>Tránh xung đột khi web lớn:</b> <code>indexOf</code> trả về <code>-1</code> khi không có (không phải <code>false</code>), nên <code>if (arr.indexOf(x))</code> luôn sai. <code>find</code> trả về <u>chính object trong mảng</u>, sửa nó là sửa dữ liệu gốc. Kết quả <code>find</code> có thể là <code>undefined</code>, phải kiểm tra. Thống nhất kiểu của id (<code>"5"</code> khác <code>5</code>).</li>
+    </ol></div>
+
+    <h3> - Ví dụ 4.1: Cái bẫy <code>if (arr.indexOf(x))</code> </h3>
+    <pre data-src="s9"></pre>
+    <div class="vd">
+        Tìm: <input id="i9" class="wide" value="Táo"> <small>(thử "Táo" – ở vị trí 0, và "Mít" – không có)</small>
+        <button id="b9">Tìm</button>
+        <p id="o9" class="out"></p>
+    </div>
+    <script id="s9">
+byId("b9").onclick = function () {
+    const ds = ["Táo", "Cam", "Xoài", "Cam"];
+    const tim = byId("i9").value;
+    const viTri = ds.indexOf(tim);
+    byId("o9").textContent =
+        "indexOf = " + viTri + "  |  lastIndexOf = " + ds.lastIndexOf(tim) + "  |  includes = " + ds.includes(tim) + "\n" +
+        "if (ds.indexOf(tim))  → " + (ds.indexOf(tim) ? "coi là TÌM THẤY" : "coi là KHÔNG thấy") + "   (SAI: 0 là falsy, -1 là truthy)\n" +
+        "if (viTri !== -1)     → " + (viTri !== -1 ? "tìm thấy" : "không thấy") + "   (cách viết đúng)";
+};
+    </script>
+
+    <h3> - Ví dụ 4.2: <code>find</code>, <code>findIndex</code>, <code>filter</code>, <code>some</code>, <code>every</code> trên danh sách sản phẩm </h3>
+    <pre data-src="s10"></pre>
+    <div class="vd">
+        Giá tối đa: <input id="i10" type="number" value="40000" style="width:90px">
+        <button id="b10">Tìm</button>
+        <p id="o10" class="out"></p>
+    </div>
+    <script id="s10">
+byId("b10").onclick = function () {
+    const dsSp = [
+        { id: 1, ten: "Cà phê", gia: 30000 }, { id: 2, ten: "Trà sữa", gia: 45000 },
+        { id: 3, ten: "Bánh mì", gia: 20000 }, { id: 4, ten: "Sinh tố", gia: 55000 }
+    ];
+    const tran = Number(byId("i10").value);
+    byId("o10").textContent =
+        "find (món đầu tiên giá ≤ " + tran + "): " + dsSp.find(sp => sp.gia <= tran)?.ten + "\n" +
+        "findIndex: " + dsSp.findIndex(sp => sp.gia <= tran) + "\n" +
+        "filter (tất cả món giá ≤ " + tran + "): " + dsSp.filter(sp => sp.gia <= tran).map(sp => sp.ten).join(", ") + "\n" +
+        "some (có món giá > 50.000?): " + dsSp.some(sp => sp.gia > 50000) + "\n" +
+        "every (mọi món giá > 10.000?): " + dsSp.every(sp => sp.gia > 10000);
+};
+    </script>
+
+    <h3> - Ví dụ 4.3: <code>includes</code> so tham chiếu, và <code>find</code> trả về chính object trong mảng </h3>
+    <pre data-src="s11"></pre>
+    <div class="vd">
+        <button id="b11">Chạy</button>
+        <p id="o11" class="out"></p>
+    </div>
+    <script id="s11">
+byId("b11").onclick = function () {
+    const dsSp = [{ id: 1, ten: "Cà phê" }, { id: 2, ten: "Trà sữa" }];
+    const timThay = dsSp.find(sp => sp.id === 2);
+    timThay.ten = "Trà đào";                       // sửa kết quả find = sửa object trong mảng
+    byId("o11").textContent =
+        "includes({ id: 1, ten: 'Cà phê' }) → " + dsSp.includes({ id: 1, ten: "Cà phê" }) + "  (so tham chiếu, không so nội dung)\n" +
+        "find(sp => sp.id === 1) → " + JSON.stringify(dsSp.find(sp => sp.id === 1)) + "\n" +
+        "Sau khi sửa kết quả find: dsSp[1].ten = " + dsSp[1].ten + "  (mảng gốc bị đổi theo!)";
+};
+    </script>
+
+<hr>
+<h2 id="sec5"> 5. JS Array Sort </h2>
+    <div class="kn"><ol>
+        <li><b>Định nghĩa:</b> <code>sort()</code> sắp xếp <u>tại chỗ</u> và mặc định coi mọi phần tử là <b>chuỗi</b> (so theo mã Unicode). Truyền hàm so sánh để sắp xếp đúng: <code>(a, b) =&gt; a - b</code> cho số, <code>a.localeCompare(b, "vi")</code> cho chữ tiếng Việt. <code>toSorted()</code> trả mảng mới, <code>reverse()</code> đảo ngược.</li>
+        <li><b>Khi nào dùng:</b> sắp xếp danh sách hiển thị (theo giá, tên, ngày), xếp hạng, tìm phần tử nhỏ nhất / lớn nhất theo tiêu chí.</li>
+        <li><b>Khi nào KHÔNG dùng:</b> không gọi <code>sort()</code> không có hàm so sánh cho số (<code>[10, 9, 100]</code> ra <code>10, 100, 9</code>). Không sắp xếp cả mảng chỉ để lấy max (dùng <code>Math.max</code> hoặc <code>reduce</code>). Không xáo trộn bằng <code>sort(() =&gt; Math.random() - 0.5)</code> vì kết quả không đều, hãy dùng thuật toán Fisher–Yates.</li>
+        <li><b>Tránh xung đột khi web lớn:</b> <code>sort()</code> <u>sửa mảng gốc</u>, nên mảng dùng chung bị đổi thứ tự bất ngờ. Hãy dùng <code>toSorted()</code> hoặc <code>[...a].sort()</code>. Tiếng Việt cần <code>localeCompare("vi")</code> thì Ă, Â, Đ, Ổ mới xếp đúng. Phần tử <code>undefined</code> luôn bị đẩy xuống cuối.</li>
+    </ol></div>
+
+    <h3> - Ví dụ 5.1: <code>sort()</code> mặc định coi số là chuỗi </h3>
+    <pre data-src="s12"></pre>
+    <div class="vd">
+        Các số: <input id="i12" class="wide" value="40, 100, 1, 5, 25, 10">
+        <button id="b12">Sắp xếp</button>
+        <p id="o12" class="out"></p>
+    </div>
+    <script id="s12">
+byId("b12").onclick = function () {
+    const so = byId("i12").value.split(",").map(Number);
+    byId("o12").textContent =
+        "Gốc: " + so + "\n" +
+        "sort() mặc định: " + [...so].sort() + "  (xếp như CHUỖI!)\n" +
+        "sort((a, b) => a - b): " + [...so].sort((a, b) => a - b) + "\n" +
+        "sort((a, b) => b - a): " + [...so].sort((a, b) => b - a);
+};
+    </script>
+
+    <h3> - Ví dụ 5.2: Sắp xếp danh sách object theo trường và chiều tùy chọn </h3>
+    <pre data-src="s13"></pre>
+    <div class="vd">
+        Theo:
+        <select id="sel13a"><option value="ten">Tên</option><option value="gia">Giá</option></select>
+        Chiều:
+        <select id="sel13b"><option value="tang">Tăng dần</option><option value="giam">Giảm dần</option></select>
+        <button id="b13">Sắp xếp</button>
+        <p id="o13" class="out"></p>
+    </div>
+    <script id="s13">
+byId("b13").onclick = function () {
+    const dsSp = [
+        { ten: "Ổi", gia: 20000 }, { ten: "Ăn vặt", gia: 35000 },
+        { ten: "Bánh", gia: 15000 }, { ten: "Đào", gia: 50000 }
+    ];
+    const truong = byId("sel13a").value;
+    const chieu = byId("sel13b").value === "tang" ? 1 : -1;
+    const sapXep = dsSp.toSorted((a, b) => {
+        const kq = typeof a[truong] === "string"
+            ? a[truong].localeCompare(b[truong], "vi")     // chữ tiếng Việt
+            : a[truong] - b[truong];                       // số
+        return kq * chieu;
+    });
+    byId("o13").textContent = sapXep.map(sp => sp.ten + " – " + sp.gia.toLocaleString("vi-VN")).join("\n");
+};
+    </script>
+
+    <h3> - Ví dụ 5.3: <code>sort()</code> sửa mảng gốc, <code>toSorted()</code> thì không </h3>
+    <pre data-src="s14"></pre>
+    <div class="vd">
+        <button id="b14">Chạy</button>
+        <p id="o14" class="out"></p>
+    </div>
+    <script id="s14">
+byId("b14").onclick = function () {
+    const goc = [3, 1, 2];
+    const thamChieu = goc;                       // ai đó khác đang giữ cùng mảng
+    goc.sort((a, b) => a - b);
+
+    const khac = [3, 1, 2];
+    const moi = khac.toSorted((a, b) => a - b);
+    byId("o14").textContent =
+        "goc sau sort() = " + goc + "\nthamChieu (cùng mảng) = " + thamChieu + "  (cũng bị đổi thứ tự!)\n\n" +
+        "khac sau toSorted() = " + khac + "  (giữ nguyên)\nmoi = " + moi;
+};
+    </script>
+
+<hr>
+<h2 id="sec6"> 6. JS Array Iterations </h2>
+    <div class="kn"><ol>
+        <li><b>Định nghĩa:</b> các cách duyệt mảng: <code>forEach</code> (làm việc với từng phần tử, không trả về gì), <code>map</code> (biến đổi, trả mảng mới cùng độ dài), <code>filter</code> (lọc), <code>reduce</code> (gộp thành một giá trị), <code>for...of</code> (dễ đọc, dùng được <code>break</code> và <code>await</code>), <code>entries()</code> (lấy cả chỉ số).</li>
+        <li><b>Khi nào dùng:</b> <code>map</code> để dựng danh sách hiển thị; <code>filter</code> rồi <code>map</code> nối tiếp nhau; <code>reduce</code> để tính tổng, đếm, nhóm; <code>for...of</code> khi cần dừng giữa chừng hoặc dùng <code>await</code>; <code>forEach</code> khi chỉ cần thực hiện hành động.</li>
+        <li><b>Khi nào KHÔNG dùng:</b> không dùng <code>map</code> nếu bỏ phí kết quả (dùng <code>forEach</code>). Không dùng <code>forEach</code> với <code>async/await</code> vì nó không chờ. Không dùng <code>for...in</code> cho mảng. Không thêm / xóa phần tử trong lúc đang duyệt. <code>reduce</code> quá phức tạp thì viết vòng lặp rõ ràng hơn.</li>
+        <li><b>Tránh xung đột khi web lớn:</b> callback sửa biến bên ngoài (tác dụng phụ) khiến kết quả khó đoán, hãy viết hàm thuần. <code>reduce</code> trên mảng rỗng mà không có giá trị khởi tạo sẽ ném lỗi. Arrow function dùng <code>{ }</code> mà quên <code>return</code> thì <code>map</code> ra toàn <code>undefined</code>. <code>forEach</code> không dừng được bằng <code>break</code>.</li>
+    </ol></div>
+
+    <h3> - Ví dụ 6.1: Giỏ hàng – <code>map</code>, <code>reduce</code>, <code>filter</code> nối tiếp nhau </h3>
+    <pre data-src="s15"></pre>
+    <div class="vd">
+        Giảm giá: <input id="i15" type="number" value="10"> %
+        <button id="b15">Tính</button>
+        <p id="o15" class="out"></p>
+    </div>
+    <script id="s15">
+byId("b15").onclick = function () {
+    const gioHang = [
+        { ten: "Cà phê", gia: 30000, sl: 2 },
+        { ten: "Bánh mì", gia: 20000, sl: 3 },
+        { ten: "Sinh tố", gia: 55000, sl: 1 }
+    ];
+    const giam = Number(byId("i15").value);
+    const dong = gioHang.map(sp => sp.ten + " × " + sp.sl + " = " + (sp.gia * sp.sl).toLocaleString("vi-VN"));
+    const tong = gioHang.reduce((t, sp) => t + sp.gia * sp.sl, 0);     // 0 là giá trị khởi tạo
+    const monDat = gioHang.filter(sp => sp.gia >= 30000).map(sp => sp.ten);
+    byId("o15").textContent =
+        dong.join("\n") + "\nTổng: " + tong.toLocaleString("vi-VN") + " đ" +
+        "\nSau giảm " + giam + "%: " + (tong * (1 - giam / 100)).toLocaleString("vi-VN") + " đ" +
+        "\nMón giá từ 30.000: " + monDat.join(", ");
+};
+    </script>
+
+    <h3> - Ví dụ 6.2: <code>reduce</code> đếm số lần xuất hiện của từng từ, và lỗi khi thiếu giá trị khởi tạo </h3>
+    <pre data-src="s16"></pre>
+    <div class="vd">
+        Câu: <input id="i16" class="wide" value="to be or not to be">
+        <button id="b16">Đếm</button>
+        <p id="o16" class="out"></p>
+    </div>
+    <script id="s16">
+byId("b16").onclick = function () {
+    const dsTu = byId("i16").value.toLowerCase().split(/\s+/).filter(Boolean);
+    const dem = dsTu.reduce((kq, tu) => {
+        kq[tu] = (kq[tu] || 0) + 1;
+        return kq;
+    }, {});
+    let ketQua = "Đếm từ: " + JSON.stringify(dem) + "\n";
+    try { [].reduce((a, b) => a + b); }
+    catch (loi) { ketQua += "[].reduce không có giá trị khởi tạo → ❌ " + loi.name + ": " + loi.message; }
+    byId("o16").textContent = ketQua;
+};
+    </script>
+
+    <h3> - Ví dụ 6.3: <code>forEach</code> không chờ <code>await</code>, <code>for...of</code> thì có </h3>
+    <pre data-src="s17"></pre>
+    <div class="vd">
+        <button id="b17">Chạy (mất khoảng 0,2 giây)</button>
+        <p id="o17" class="out"></p>
+    </div>
+    <script id="s17">
+const cho = ms => new Promise(xong => setTimeout(xong, ms));
+
+byId("b17").onclick = async function () {
+    byId("o17").textContent = "Đang chạy...";
+    const ketQuaForEach = [];
+    [1, 2, 3].forEach(async n => { await cho(50); ketQuaForEach.push(n); });
+    const lucDo = "forEach vừa chạy xong: đã có " + ketQuaForEach.length + " kết quả";   // chưa ai xong cả!
+
+    const ketQuaForOf = [];
+    for (const n of [1, 2, 3]) { await cho(50); ketQuaForOf.push(n); }
+    byId("o17").textContent = lucDo + "\nfor...of vừa chạy xong: đã có " + ketQuaForOf.length + " kết quả";
+};
+    </script>
+
+<hr>
+<h2 id="sec7"> 7. JS Array Reference </h2>
+    <p> Bảng tra nhanh (cột "Sửa gốc?" cho biết method có thay đổi chính mảng đang gọi hay không): </p>
+    <table cellpadding="5px" style="margin:auto;" border="1">
+        <tr><th>Method</th><th>Công dụng</th><th>Sửa gốc?</th><th>Mục</th></tr>
+        <tr><td><code>push / pop</code></td><td>Thêm / bỏ phần tử ở cuối</td><td>Có</td><td>3</td></tr>
+        <tr><td><code>unshift / shift</code></td><td>Thêm / bỏ phần tử ở đầu</td><td>Có</td><td>3</td></tr>
+        <tr><td><code>splice(vị trí, số lượng, ...mới)</code></td><td>Xóa / chèn / thay ở giữa</td><td>Có</td><td>3</td></tr>
+        <tr><td><code>slice(đầu, cuối)</code></td><td>Lấy một đoạn thành mảng mới</td><td>Không</td><td>3</td></tr>
+        <tr><td><code>concat / [...a, ...b]</code></td><td>Ghép các mảng</td><td>Không</td><td>3</td></tr>
+        <tr><td><code>join(ký tự)</code></td><td>Ghép các phần tử thành chuỗi</td><td>Không</td><td>3</td></tr>
+        <tr><td><code>toReversed / toSorted / toSpliced / with</code></td><td>Bản "trả mảng mới" của reverse, sort, splice, gán phần tử</td><td>Không</td><td>3, 5</td></tr>
+        <tr><td><code>indexOf / includes</code></td><td>Tìm vị trí / kiểm tra có tồn tại</td><td>Không</td><td>4</td></tr>
+        <tr><td><code>find / findIndex / filter</code></td><td>Tìm một / vị trí / tất cả phần tử thỏa điều kiện</td><td>Không</td><td>4</td></tr>
+        <tr><td><code>some / every</code></td><td>Có ít nhất một / tất cả thỏa điều kiện không</td><td>Không</td><td>4</td></tr>
+        <tr><td><code>sort / reverse</code></td><td>Sắp xếp / đảo ngược</td><td>Có</td><td>5</td></tr>
+        <tr><td><code>map / forEach / reduce</code></td><td>Biến đổi / duyệt / gộp thành một giá trị</td><td>Không</td><td>6</td></tr>
+        <tr><td><code>fill(giá trị)</code></td><td>Điền một giá trị vào các ô</td><td>Có</td><td>2</td></tr>
+        <tr><td><code>flat / flatMap</code></td><td>San phẳng mảng lồng nhau</td><td>Không</td><td>-</td></tr>
+        <tr><td><code>at(chỉ số)</code></td><td>Lấy phần tử, hỗ trợ số âm</td><td>Không</td><td>1</td></tr>
+        <tr><td><code>Array.isArray / from / of</code></td><td>Kiểm tra là mảng / tạo mảng từ iterable / tạo từ danh sách giá trị</td><td>-</td><td>1, 2</td></tr>
+    </table>
+
+<hr>
+<h2 id="sec8"> 8. JS Array const </h2>
+    <div class="kn"><ol>
+        <li><b>Định nghĩa:</b> <code>const ds = [...]</code> khóa <u>tham chiếu</u>: không gán lại <code>ds = ...</code> được. Nhưng nội dung bên trong vẫn sửa tự do (<code>push</code>, <code>pop</code>, <code>sort</code>, <code>ds[0] = ...</code>).</li>
+        <li><b>Khi nào dùng:</b> nên là mặc định cho mọi mảng, kể cả mảng cần thêm / bớt / sửa phần tử, vì thường bạn không cần gán lại cả mảng.</li>
+        <li><b>Khi nào KHÔNG dùng:</b> đừng tưởng <code>const</code> làm mảng bất biến (muốn thế phải dùng <code>Object.freeze</code>, mà cũng chỉ khóa tầng ngoài). Đừng gán lại <code>ds = []</code> để "reset" khi khai báo bằng <code>const</code> (lỗi), hãy dùng <code>ds.length = 0</code> hoặc khai báo bằng <code>let</code>.</li>
+        <li><b>Tránh xung đột khi web lớn:</b> mảng <code>const</code> dùng chung giữa các file vẫn bị file khác <code>push</code> vào. Khi export hãy trả bản sao hoặc <code>freeze</code>. <code>ds.length = 0</code> xóa luôn dữ liệu của <u>mọi nơi đang giữ cùng tham chiếu</u>. <code>const</code> ở ngoài cùng trùng tên với biến ở thẻ <code>&lt;script&gt;</code> khác sẽ gây <code>SyntaxError</code>.</li>
+    </ol></div>
+
+    <h3> - Ví dụ 8.1: Sửa nội dung mảng <code>const</code> thì được, gán lại thì lỗi </h3>
+    <pre data-src="s18"></pre>
+    <div class="vd">
+        <button id="b18">Chạy</button>
+        <p id="o18" class="out"></p>
+    </div>
+    <script id="s18">
+byId("b18").onclick = function () {
+    const ds = ["Táo"];
+    ds.push("Cam");                          // sửa nội dung: được
+    ds[0] = "Xoài";
+    let kq = "Sau push và gán ds[0]: " + JSON.stringify(ds) + "\n";
+    try { ds = ["Ổi"]; }                     // gán lại cả mảng: lỗi
+    catch (loi) { kq += "Gán lại cả mảng → ❌ " + loi.name + ": " + loi.message; }
+    byId("o18").textContent = kq;
+};
+    </script>
+
+    <h3> - Ví dụ 8.2: Muốn mảng không bị sửa thì dùng <code>Object.freeze</code> (và giới hạn của nó) </h3>
+    <pre data-src="s19"></pre>
+    <div class="vd">
+        <button id="b19">Chạy</button>
+        <p id="o19" class="out"></p>
+    </div>
+    <script id="s19">
+byId("b19").onclick = function () {
+    const ds = Object.freeze([1, 2, 3]);
+    let kq = "";
+    try { ds.push(4); }
+    catch (loi) { kq += "push → ❌ " + loi.name + ": " + loi.message + "\n"; }
+    ds[0] = 99;                              // không strict: bị bỏ qua âm thầm
+    kq += "Sau ds[0] = 99: " + JSON.stringify(ds) + "\n";
+
+    const dsObj = Object.freeze([{ ten: "An" }]);
+    dsObj[0].ten = "Bình";                   // freeze chỉ khóa tầng ngoài
+    kq += "Object bên trong vẫn sửa được: " + JSON.stringify(dsObj);
+    byId("o19").textContent = kq;
+};
+    </script>
+
+    <h3> - Ví dụ 8.3: "Reset" mảng bằng <code>length = 0</code> ảnh hưởng đến mọi nơi giữ tham chiếu </h3>
+    <pre data-src="s20"></pre>
+    <div class="vd">
+        <button id="b20">Chạy</button>
+        <p id="o20" class="out"></p>
+    </div>
+    <script id="s20">
+byId("b20").onclick = function () {
+    const a = [1, 2, 3];
+    const b = a;                             // b giữ cùng tham chiếu với a
+    a.length = 0;                            // xóa sạch NỘI DUNG của chính mảng đó
+    const ketQua1 = "Sau a.length = 0: a = " + JSON.stringify(a) + ", b = " + JSON.stringify(b) + "  (b cũng rỗng!)";
+
+    let c = [1, 2, 3];
+    const d = c;
+    c = [];                                  // let: trỏ c sang mảng MỚI, d vẫn giữ mảng cũ
+    byId("o20").textContent =
+        ketQua1 + "\nSau c = []: c = " + JSON.stringify(c) + ", d = " + JSON.stringify(d) + "  (d còn nguyên)";
+};
+    </script>
+
+<script>
+// Đổ code từ <script id="..."> vào <pre data-src="..."> tương ứng
+document.querySelectorAll("pre[data-src]").forEach(function (p) {
+    p.textContent = document.getElementById(p.dataset.src).textContent.trim();
+});
+</script>
+</body>
+</html>
