@@ -1,0 +1,649 @@
+
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Destructuring | JavaScript Learning Hub</title>
+    <link rel="stylesheet" href="../../css/style.css">
+    <style>
+        .out {
+            white-space: pre-line;
+        }
+    </style>
+</head>
+
+<body class="lesson-page">
+
+    <p><a href="../../index.html">← Back to lessons</a></p>
+    <h1>JavaScript Destructuring</h1>
+    <p>
+        Destructuring (phân rã) là cú pháp cho phép trích xuất các giá trị từ
+        Array hoặc Object và gán chúng vào những biến riêng biệt một cách ngắn gọn.
+    </p>
+
+    <p>
+        <a href="#sec1">1. Tổng quan</a> |
+        <a href="#sec2">2. Array Destructuring</a> |
+        <a href="#sec3">3. Object Destructuring</a> |
+        <a href="#sec4">4. Nested Destructuring</a> |
+        <a href="#sec5">5. Destructuring trong Function</a> |
+        <a href="#sec6">6. Tổng kết</a>
+    </p>
+
+    <hr>
+    <h2 id="sec1">1. Tổng quan về Destructuring</h2>
+
+    <div class="kn">
+        <ol>
+            <li>
+                <b>Định nghĩa:</b> Destructuring là cách lấy dữ liệu từ Array
+                hoặc Object và gán trực tiếp vào các biến.
+            </li>
+            <li>
+                <b>Mục đích:</b> giúp code ngắn gọn, dễ đọc và thuận tiện khi
+                làm việc với dữ liệu có nhiều thuộc tính.
+            </li>
+            <li>
+                <b>Array Destructuring:</b> lấy giá trị dựa trên vị trí của
+                phần tử trong Array.
+            </li>
+            <li>
+                <b>Object Destructuring:</b> lấy giá trị dựa trên tên thuộc
+                tính (key) của Object.
+            </li>
+        </ol>
+    </div>
+
+    <h3>Ví dụ 1.1: Không sử dụng Destructuring</h3>
+
+    <pre data-src="s1"></pre>
+    <script id="s1">
+const colors = ["red", "green", "blue"];
+
+const firstColor = colors[0];
+const secondColor = colors[1];
+const thirdColor = colors[2];
+
+console.log(firstColor);
+console.log(secondColor);
+console.log(thirdColor);
+    </script>
+
+    <h3>Ví dụ 1.2: Sử dụng Destructuring</h3>
+
+    <pre data-src="s2"></pre>
+    <script id="s2">
+const colorsWithDestructuring = ["red", "green", "blue"];
+
+const [first, second, third] = colorsWithDestructuring;
+
+console.log(first);
+console.log(second);
+console.log(third);
+    </script>
+
+    <div class="kn">
+        <b>Nhận xét:</b>
+        <ul>
+            <li>Hai ví dụ đều lấy ra ba giá trị từ cùng một Array.</li>
+            <li>Destructuring giúp giảm số lần truy cập bằng chỉ số.</li>
+            <li>
+                Với Array, thứ tự các biến quyết định giá trị được nhận.
+            </li>
+        </ul>
+    </div>
+
+    <hr>
+    <h2 id="sec2">2. Array Destructuring</h2>
+
+    <p>
+        Array Destructuring cho phép phân rã một Array thành nhiều biến.
+        Các biến được gán giá trị theo đúng thứ tự phần tử trong Array.
+    </p>
+
+    <h3>Ví dụ 2.1: Lấy các phần tử theo thứ tự</h3>
+
+    <pre data-src="s3"></pre>
+    <script id="s3">
+const fruits = ["Apple", "Orange", "Banana"];
+
+const [fruit1, fruit2, fruit3] = fruits;
+
+console.log(fruit1); // Apple
+console.log(fruit2); // Orange
+console.log(fruit3); // Banana
+    </script>
+
+    <h3>Ví dụ 2.2: Bỏ qua phần tử không cần thiết</h3>
+
+    <p>
+        Ta có thể bỏ qua một hoặc nhiều phần tử bằng cách để trống vị trí
+        tương ứng giữa hai dấu phẩy.
+    </p>
+
+    <pre data-src="s4"></pre>
+    <script id="s4">
+const numbers = [10, 20, 30, 40, 50];
+
+const [firstNumber, , thirdNumber, , fifthNumber] = numbers;
+
+console.log(firstNumber);  // 10
+console.log(thirdNumber);  // 30
+console.log(fifthNumber);  // 50
+    </script>
+
+    <div class="kn">
+        <b>Giải thích:</b>
+        <ul>
+            <li><code>firstNumber</code> nhận phần tử ở index 0.</li>
+            <li>Vị trí thứ hai bị bỏ qua.</li>
+            <li><code>thirdNumber</code> nhận phần tử ở index 2.</li>
+            <li>Vị trí thứ tư bị bỏ qua.</li>
+            <li><code>fifthNumber</code> nhận phần tử ở index 4.</li>
+        </ul>
+    </div>
+
+    <h3>Ví dụ 2.3: Giá trị mặc định (Default Values)</h3>
+
+    <p>
+        Nếu Array không có đủ phần tử để gán cho các biến, những biến còn
+        thiếu sẽ nhận giá trị <code>undefined</code>. Ta có thể cung cấp
+        giá trị mặc định để tránh điều này.
+    </p>
+
+    <pre data-src="s5"></pre>
+    <script id="s5">
+const animals = ["Dog", "Cat"];
+
+const [animal1, animal2, animal3 = "Unknown"] = animals;
+
+console.log(animal1); // Dog
+console.log(animal2); // Cat
+console.log(animal3); // Unknown
+    </script>
+
+    <div class="kn">
+        <b>Lưu ý:</b>
+        <ul>
+            <li>
+                Giá trị mặc định chỉ được sử dụng khi giá trị nhận được là
+                <code>undefined</code>.
+            </li>
+            <li>
+                Nếu giá trị là <code>null</code>, giá trị mặc định không
+                được sử dụng.
+            </li>
+        </ul>
+    </div>
+
+    <h3>Ví dụ 2.4: Rest trong Array Destructuring</h3>
+
+    <p>
+        Toán tử Rest (<code>...</code>) cho phép thu thập những phần tử còn
+        lại trong Array vào một Array mới.
+    </p>
+
+    <pre data-src="s6"></pre>
+    <script id="s6">
+const scores = [85, 90, 75, 95, 80];
+
+const [highestScore, secondScore, ...remainingScores] = scores;
+
+console.log(highestScore);      // 85
+console.log(secondScore);       // 90
+console.log(remainingScores);   // [75, 95, 80]
+    </script>
+
+    <div class="kn">
+        <b>Ghi nhớ:</b>
+        <ul>
+            <li><code>highestScore</code> nhận phần tử đầu tiên.</li>
+            <li><code>secondScore</code> nhận phần tử thứ hai.</li>
+            <li>
+                <code>remainingScores</code> nhận tất cả phần tử còn lại.
+            </li>
+            <li>
+                Rest phải nằm ở cuối danh sách Destructuring.
+            </li>
+        </ul>
+    </div>
+
+    <h3>Ví dụ 2.5: Hoán đổi giá trị hai biến</h3>
+
+    <p>
+        Destructuring cho phép hoán đổi giá trị hai biến mà không cần
+        sử dụng biến trung gian.
+    </p>
+
+    <pre data-src="s7"></pre>
+    <script id="s7">
+let a = 10;
+let b = 20;
+
+[a, b] = [b, a];
+
+console.log(a); // 20
+console.log(b); // 10
+    </script>
+
+    <div class="vd">
+        <p>Thử hoán đổi giá trị hai biến:</p>
+
+        <label for="swap-a">Biến A:</label>
+        <input id="swap-a" type="number" value="10">
+
+        <label for="swap-b">Biến B:</label>
+        <input id="swap-b" type="number" value="20">
+
+        <button id="swap-button">Swap</button>
+
+        <p id="swap-output" class="out" aria-live="polite">
+            A = 10
+            B = 20
+        </p>
+    </div>
+
+    <hr>
+    <h2 id="sec3">3. Object Destructuring</h2>
+
+    <p>
+        Object Destructuring cho phép trích xuất các thuộc tính của Object
+        và gán chúng vào những biến riêng biệt.
+    </p>
+
+    <p>
+        Khác với Array, Object Destructuring dựa trên tên thuộc tính (key),
+        không dựa trên vị trí.
+    </p>
+
+    <h3>Ví dụ 3.1: Lấy các thuộc tính từ Object</h3>
+
+    <pre data-src="s8"></pre>
+    <script id="s8">
+const person = {
+    firstName: "Phong",
+    lastName: "Dinh",
+    age: 19
+};
+
+const { firstName, lastName, age } = person;
+
+console.log(firstName); // Phong
+console.log(lastName);  // Dinh
+console.log(age);       // 19
+    </script>
+
+    <div class="kn">
+        <b>Giải thích:</b>
+        <ul>
+            <li><code>firstName</code> nhận giá trị từ <code>person.firstName</code>.</li>
+            <li><code>lastName</code> nhận giá trị từ <code>person.lastName</code>.</li>
+            <li><code>age</code> nhận giá trị từ <code>person.age</code>.</li>
+            <li>
+                Tên biến mặc định phải trùng với tên thuộc tính cần lấy.
+            </li>
+        </ul>
+    </div>
+
+    <h3>Ví dụ 3.2: Đổi tên biến (Renaming Variables)</h3>
+
+    <p>
+        Nếu muốn sử dụng tên biến khác với tên thuộc tính trong Object,
+        ta sử dụng cú pháp <code>property: variable</code>.
+    </p>
+
+    <pre data-src="s9"></pre>
+    <script id="s9">
+const student = {
+    name: "An",
+    score: 9.5
+};
+
+const { name: studentName, score: studentScore } = student;
+
+console.log(studentName);  // An
+console.log(studentScore); // 9.5
+    </script>
+
+    <div class="kn">
+        <b>Lưu ý:</b>
+        <ul>
+            <li><code>name</code> là tên thuộc tính trong Object.</li>
+            <li><code>studentName</code> là tên biến mới.</li>
+            <li>
+                Không thể sử dụng <code>name</code> như một biến vừa được
+                khai báo trong ví dụ trên.
+            </li>
+        </ul>
+    </div>
+
+    <h3>Ví dụ 3.3: Giá trị mặc định trong Object Destructuring</h3>
+
+    <p>
+        Tương tự Array, Object Destructuring cũng hỗ trợ giá trị mặc định
+        khi thuộc tính không tồn tại hoặc có giá trị <code>undefined</code>.
+    </p>
+
+    <pre data-src="s10"></pre>
+    <script id="s10">
+const account = {
+    username: "phong123",
+    email: "phong@example.com"
+};
+
+const {
+    username,
+    email,
+    role = "Guest"
+} = account;
+
+console.log(username); // phong123
+console.log(email);    // phong@example.com
+console.log(role);     // Guest
+    </script>
+
+    <h3>Ví dụ 3.4: Rest trong Object Destructuring</h3>
+
+    <p>
+        Rest có thể thu thập những thuộc tính còn lại của Object thành
+        một Object mới.
+    </p>
+
+    <pre data-src="s11"></pre>
+    <script id="s11">
+const employee = {
+    name: "Phong",
+    age: 19,
+    department: "IT",
+    salary: 1500
+};
+
+const { name, age, ...otherInformation } = employee;
+
+console.log(name);               // Phong
+console.log(age);                // 19
+console.log(otherInformation);   // { department: "IT", salary: 1500 }
+    </script>
+
+    <div class="kn">
+        <b>Ghi nhớ:</b>
+        <ul>
+            <li>
+                Rest thu thập những thuộc tính chưa được phân rã.
+            </li>
+            <li>
+                Rest phải nằm ở cuối danh sách Destructuring.
+            </li>
+            <li>
+                Object được tạo bởi Rest là một Object mới, nhưng các
+                thuộc tính lồng bên trong vẫn có thể tham chiếu đến dữ liệu
+                ban đầu.
+            </li>
+        </ul>
+    </div>
+
+    <hr>
+    <h2 id="sec4">4. Nested Destructuring</h2>
+
+    <p>
+        Nested Destructuring (phân rã lồng nhau) cho phép lấy dữ liệu từ
+        những Array hoặc Object nằm bên trong một Array hoặc Object khác.
+    </p>
+
+    <h3>Ví dụ 4.1: Nested Object Destructuring</h3>
+
+    <pre data-src="s12"></pre>
+    <script id="s12">
+const user = {
+    name: "Phong",
+    address: {
+        city: "Ha Noi",
+        country: "Vietnam"
+    }
+};
+
+const {
+    name,
+    address: { city, country }
+} = user;
+
+console.log(name);    // Phong
+console.log(city);    // Ha Noi
+console.log(country); // Vietnam
+    </script>
+
+    <div class="kn">
+        <b>Giải thích:</b>
+        <ul>
+            <li><code>name</code> được lấy từ thuộc tính cấp ngoài.</li>
+            <li>
+                <code>city</code> và <code>country</code> được lấy từ
+                Object <code>address</code>.
+            </li>
+            <li>
+                Trong cú pháp này, biến <code>address</code> không được
+                tạo ra, vì ta chỉ phân rã các thuộc tính bên trong nó.
+            </li>
+        </ul>
+    </div>
+
+    <h3>Ví dụ 4.2: Nested Array Destructuring</h3>
+
+    <pre data-src="s13"></pre>
+    <script id="s13">
+const matrix = [
+    [1, 2],
+    [3, 4],
+    [5, 6]
+];
+
+const [
+    [a1, a2],
+    [b1, b2],
+    [c1, c2]
+] = matrix;
+
+console.log(a1, a2); // 1 2
+console.log(b1, b2); // 3 4
+console.log(c1, c2); // 5 6
+    </script>
+
+    <h3>Ví dụ 4.3: Kết hợp Object và Array Destructuring</h3>
+
+    <pre data-src="s14"></pre>
+    <script id="s14">
+const product = {
+    name: "Laptop",
+    price: 2000,
+    specifications: ["16GB RAM", "512GB SSD"]
+};
+
+const {
+    name: productName,
+    price,
+    specifications: [ram, storage]
+} = product;
+
+console.log(productName); // Laptop
+console.log(price);       // 2000
+console.log(ram);         // 16GB RAM
+console.log(storage);     // 512GB SSD
+    </script>
+
+    <hr>
+    <h2 id="sec5">5. Destructuring trong Function</h2>
+
+    <p>
+        Destructuring có thể được sử dụng ngay trong tham số của Function.
+        Cách này đặc biệt hữu ích khi Function nhận một Object chứa nhiều
+        thuộc tính.
+    </p>
+
+    <h3>Ví dụ 5.1: Object Destructuring trong tham số</h3>
+
+    <pre data-src="s15"></pre>
+    <script id="s15">
+function displayPerson({ name, age, city }) {
+    console.log("Name: " + name);
+    console.log("Age: " + age);
+    console.log("City: " + city);
+}
+
+const personInfo = {
+    name: "Phong",
+    age: 19,
+    city: "Ha Noi"
+};
+
+displayPerson(personInfo);
+    </script>
+
+    <div class="kn">
+        <b>Giải thích:</b>
+        <ul>
+            <li>
+                Function <code>displayPerson()</code> nhận một Object làm
+                tham số.
+            </li>
+            <li>
+                Các thuộc tính <code>name</code>, <code>age</code> và
+                <code>city</code> được phân rã ngay trong danh sách tham số.
+            </li>
+            <li>
+                Ta không cần viết <code>person.name</code>,
+                <code>person.age</code> hay <code>person.city</code>.
+            </li>
+        </ul>
+    </div>
+
+    <h3>Ví dụ 5.2: Destructuring với Function trả về Object</h3>
+
+    <pre data-src="s16"></pre>
+    <script id="s16">
+function getUser() {
+    return {
+        username: "phong123",
+        age: 19
+    };
+}
+
+const { username, age } = getUser();
+
+console.log(username); // phong123
+console.log(age);      // 19
+    </script>
+
+    <hr>
+    <h2 id="sec6">6. Tổng kết</h2>
+
+    <table>
+        <thead>
+            <tr>
+                <th>Kiểu</th>
+                <th>Cú pháp</th>
+                <th>Công dụng</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>Array</td>
+                <td><code>const [a, b] = arr</code></td>
+                <td>Lấy giá trị theo vị trí</td>
+            </tr>
+            <tr>
+                <td>Object</td>
+                <td><code>const { a, b } = obj</code></td>
+                <td>Lấy giá trị theo tên thuộc tính</td>
+            </tr>
+            <tr>
+                <td>Default Values</td>
+                <td><code>const [a = 10] = arr</code></td>
+                <td>Thiết lập giá trị mặc định</td>
+            </tr>
+            <tr>
+                <td>Renaming</td>
+                <td><code>{ a: newA }</code></td>
+                <td>Đổi tên biến khi phân rã Object</td>
+            </tr>
+            <tr>
+                <td>Rest</td>
+                <td><code>...rest</code></td>
+                <td>Thu thập các phần tử hoặc thuộc tính còn lại</td>
+            </tr>
+            <tr>
+                <td>Nested</td>
+                <td><code>{ a: { b } }</code></td>
+                <td>Phân rã dữ liệu lồng nhau</td>
+            </tr>
+            <tr>
+                <td>Function</td>
+                <td><code>function fn({ a })</code></td>
+                <td>Phân rã trực tiếp trong tham số</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <div class="kn">
+        <b>Những điều cần ghi nhớ:</b>
+        <ul>
+            <li>
+                Array Destructuring dựa trên vị trí của phần tử.
+            </li>
+            <li>
+                Object Destructuring dựa trên tên thuộc tính.
+            </li>
+            <li>
+                Có thể sử dụng Default Values để tránh nhận
+                <code>undefined</code>.
+            </li>
+            <li>
+                Rest (<code>...</code>) phải nằm ở cuối danh sách.
+            </li>
+            <li>
+                Có thể kết hợp Destructuring với Nested Array, Nested Object
+                và Function.
+            </li>
+            <li>
+                Destructuring không tự tạo bản sao sâu (deep copy) của dữ
+                liệu lồng nhau.
+            </li>
+        </ul>
+    </div>
+
+    <script>
+        // Hiển thị source code trong các thẻ pre
+        document.querySelectorAll("pre[data-src]").forEach(function (pre) {
+            const source = document.getElementById(pre.dataset.src);
+
+            if (source) {
+                pre.textContent = source.textContent.trim();
+            }
+        });
+
+        // Interactive example: Swap two variables
+        document.getElementById("swap-button").addEventListener("click", function () {
+            const inputA = document.getElementById("swap-a");
+            const inputB = document.getElementById("swap-b");
+            const output = document.getElementById("swap-output");
+
+            let a = Number(inputA.value);
+            let b = Number(inputB.value);
+
+            if (inputA.value.trim() === "" || inputB.value.trim() === "" ||
+                !Number.isFinite(a) || !Number.isFinite(b)) {
+                output.textContent = "Vui lòng nhập hai giá trị số hợp lệ.";
+                return;
+            }
+
+            [a, b] = [b, a];
+
+            output.textContent =
+                "Sau khi Destructuring:\n" +
+                "A = " + a + "\n" +
+                "B = " + b;
+        });
+    </script>
+
+</body>
+</html>

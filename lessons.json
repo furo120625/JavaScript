@@ -42,5 +42,13 @@
     {
         "title": "Inheritance and Super",
         "path": "lessons/Inheritance và Super/"
+    },
+    {
+        "title":"Getter-Setter",
+        "path": "lessons/Getter-Setter/"
+    },
+    {
+        "title":"Destructoring",
+        "path": "lessons/Destructoring/"
     }
 ]
