@@ -451,11 +451,11 @@ console.log(formattedRectangle.area);    // "12.0 cm²"
                 const result = new Function("console", source.textContent)(capturedConsole);
                 if (result && typeof result.then === "function") {
                     result.then(() => {
-                        output.textContent = lines.join("\\n") || "Ví dụ đã chạy. Không có dữ liệu được in ra.";
+                        output.textContent = lines.join("\n") || "Ví dụ đã chạy. Không có dữ liệu được in ra.";
                     }).catch(error => output.textContent = "Runtime error: " + error.message);
                     return;
                 }
-                output.textContent = lines.join("\\n") || "Ví dụ đã chạy. Không có dữ liệu được in ra.";
+                output.textContent = lines.join("\n") || "Ví dụ đã chạy. Không có dữ liệu được in ra.";
             } catch (error) {
                 output.textContent = "Runtime error: " + error.message;
             }
