@@ -72,11 +72,11 @@ class Animal {
     alive = true;
 
     eat() {
-        console.log(`${this.name} is eating`);
+        return `${this.name} is eating`;
     }
 
     sleep() {
-        console.log(`${this.name} is sleeping`);
+        return `${this.name} is sleeping`;
     }
 }
 
@@ -96,13 +96,7 @@ const rabbit = new Rabbit();
 const fish = new Fish();
 const hawk = new Hawk();
 
-rabbit.eat();
-fish.sleep();
-hawk.eat();
-
-console.log(rabbit.alive);
-console.log(fish.alive);
-console.log(hawk.alive);
+// Kết quả được hiển thị bằng nút tương tác bên dưới.
 </script>
 
 <script>
@@ -160,9 +154,7 @@ class RabbitChild extends AnimalParent {
 
 const rabbitChild = new RabbitChild();
 
-console.log(rabbitChild.eat());
-console.log(rabbitChild.run());
-console.log(rabbitChild instanceof AnimalParent);
+// Kết quả được hiển thị bằng nút tương tác bên dưới.
 </script>
 
 <script>
@@ -247,9 +239,7 @@ class RabbitSuper extends AnimalSuper {
 
 const rabbitSuper = new RabbitSuper("Rabbit", 2, 25);
 
-console.log(rabbitSuper.name);
-console.log(rabbitSuper.age);
-console.log(rabbitSuper.runSpeed);
+// Kết quả được hiển thị bằng nút tương tác bên dưới.
 </script>
 
 <script>
@@ -312,7 +302,7 @@ class RabbitMove extends AnimalMove {
 
 const rabbitMove = new RabbitMove("Rabbit", 2, 25);
 
-console.log(rabbitMove.run());
+// Kết quả được hiển thị bằng nút tương tác bên dưới.
 </script>
 
 <script>
