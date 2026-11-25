@@ -48,7 +48,7 @@
         <button id="b1">Sort and Print</button>
         <p id="o1" class="out"></p>
     </div>
-    <script id="s1">
+    <script id="s1" type="text/plain">
 const fruits = ["Banana", "Orange", "Apple", "Mango"];
 fruits.sort();
 document.getElementById("b1").onclick = function () {
@@ -91,7 +91,7 @@ document.getElementById("o1").innerHTML = fruits.join(", ");
     <button type="button" id="lesson-button-s2" data-run-source="s2" data-run-output="lesson-output-s2">Chạy 1.2. Sorting Numbers</button>
     <p id="lesson-output-s2" class="out" aria-live="polite">Nhấn nút để chạy ví dụ.</p>
 </div>
-    <script  id="s2">
+    <script  id="s2" type="text/plain">
 const array = [40, 10, 100, 5, 25];
 
 array.sort(function(a, b) {
@@ -141,7 +141,7 @@ console.log(array);
         <button id="b3">Sort and Print</button>
         <p id="o3" class="out"></p>
     </div>
-    <script  id="s3">
+    <script  id="s3" type="text/plain">
 const numbers3 = [40, 10, 100, 5, 25];
 document.getElementById("b3").onclick = function () {
     numbers3.sort(function(a, b) {
@@ -163,7 +163,7 @@ document.getElementById("b3").onclick = function () {
         <button id="b5">Sort and Print</button>
         <p id="o5" class="out"></p>
     </div>
-    <script  id="s5">
+    <script  id="s5" type="text/plain">
     const numbers5 = [40, 10, 100, 5, 25];
     document.getElementById("b5").onclick = function () {
     numbers5.sort(function(a, b) {
@@ -193,7 +193,7 @@ document.getElementById("b3").onclick = function () {
         <button id="b6">Sort and Print</button>
         <p id="o6" class="out"></p>
     </div>
-    <script  id="s6">
+    <script  id="s6" type="text/plain">
 const names6 = ["Phong", "An", "Minh", "Bao"];
 document.getElementById("b6").onclick = function () {
     names6.sort();
@@ -213,7 +213,7 @@ document.getElementById("b6").onclick = function () {
         <button id="b7">Sort and Print</button>
         <p id="o7" class="out"></p>
     </div>
-    <script  id="s7">
+    <script  id="s7" type="text/plain">
 const names7 = ["Phong", "an", "Minh", "bao"];
 document.getElementById("b7").onclick = function(){
     names7.sort((a, b) => a.localeCompare(b));
@@ -231,7 +231,7 @@ document.getElementById("o7").innerHTML = names7.join(", ");
         <button id="b8">Sort and Print</button>
         <p id="o8" class="out"></p>
     </div>
-    <script  id="s8">
+    <script  id="s8" type="text/plain">
 const names8 = ["Phong", "an", "Minh", "bao"];
 document.getElementById("b8").onclick = function() {
 names8.sort((a, b) =>
@@ -257,7 +257,7 @@ console.log(names8);
     <button type="button" id="lesson-button-s9" data-run-source="s9" data-run-output="lesson-output-s9">Chạy 1.6. Sorting Objects</button>
     <p id="lesson-output-s9" class="out" aria-live="polite">Nhấn nút để chạy ví dụ.</p>
 </div>
-    <script  id="s9">
+    <script  id="s9" type="text/plain">
 const students = [
     { name: "Phong", age: 19 },
     { name: "Minh", age: 21 },
@@ -281,7 +281,7 @@ console.log(students);
     <button type="button" id="lesson-button-s10" data-run-source="s10" data-run-output="lesson-output-s10">Chạy 1.6. Sorting Objects</button>
     <p id="lesson-output-s10" class="out" aria-live="polite">Nhấn nút để chạy ví dụ.</p>
 </div>
-    <script  id="s10">
+    <script  id="s10" type="text/plain">
 const students = [
     { name: "Phong", age: 19 },
     { name: "Minh", age: 21 },
@@ -309,7 +309,7 @@ console.log(students);
     <button type="button" id="lesson-button-s11" data-run-source="s11" data-run-output="lesson-output-s11">Chạy 1.7. toSorted()</button>
     <p id="lesson-output-s11" class="out" aria-live="polite">Nhấn nút để chạy ví dụ.</p>
 </div>
-    <script  id="s11">
+    <script  id="s11" type="text/plain">
 const numbers = [40, 10, 100, 5, 25];
 
 const sortedNumbers = numbers.toSorted((a, b) => a - b);
@@ -389,7 +389,7 @@ console.log(numbers);
     <button type="button" id="lesson-button-s12" data-run-source="s12" data-run-output="lesson-output-s12">Chạy 1.8. Interactive Example: Sorting</button>
     <p id="lesson-output-s12" class="out" aria-live="polite">Nhấn nút để chạy ví dụ.</p>
 </div>
-    <script  id="s12">
+    <script  id="s12" type="text/plain">
 const numbers = [1, 2, 3, 4, 5];
     </script>
 
@@ -402,7 +402,7 @@ const numbers = [1, 2, 3, 4, 5];
     <button type="button" id="lesson-button-s13" data-run-source="s13" data-run-output="lesson-output-s13">Chạy 1.8. Interactive Example: Sorting</button>
     <p id="lesson-output-s13" class="out" aria-live="polite">Nhấn nút để chạy ví dụ.</p>
 </div>
-    <script  id="s13">
+    <script  id="s13" type="text/plain">
 [3, 1, 5, 2, 4]
     </script>
 
@@ -422,7 +422,7 @@ const numbers = [1, 2, 3, 4, 5];
     <button type="button" id="lesson-button-s14" data-run-source="s14" data-run-output="lesson-output-s14">Chạy 2.1. Math.random()</button>
     <p id="lesson-output-s14" class="out" aria-live="polite">Nhấn nút để chạy ví dụ.</p>
 </div>
-    <script  id="s14">
+    <script  id="s14" type="text/plain">
 console.log(Math.random());
 
 // Ví dụ kết quả:
@@ -441,7 +441,7 @@ console.log(Math.random());
     <button type="button" id="lesson-button-s15" data-run-source="s15" data-run-output="lesson-output-s15">Chạy 2.1. Math.random()</button>
     <p id="lesson-output-s15" class="out" aria-live="polite">Nhấn nút để chạy ví dụ.</p>
 </div>
-    <script  id="s15">
+    <script  id="s15" type="text/plain">
 // Random integer from 0 to 9
 const randomNumber = Math.floor(Math.random() * 10);
 
@@ -485,7 +485,7 @@ console.log(randomNumber);
     <button type="button" id="lesson-button-s16" data-run-source="s16" data-run-output="lesson-output-s16">Chạy 2.3. Implement Fisher-Yates</button>
     <p id="lesson-output-s16" class="out" aria-live="polite">Nhấn nút để chạy ví dụ.</p>
 </div>
-    <script  id="s16">
+    <script  id="s16" type="text/plain">
 const numbers = [1, 2, 3, 4, 5];
 
 for (let i = numbers.length - 1; i > 0; i--) {
@@ -535,7 +535,7 @@ console.log(numbers);
     <button type="button" id="lesson-button-s17" data-run-source="s17" data-run-output="lesson-output-s17">Chạy 2.4. Shuffle an Array using a Function</button>
     <p id="lesson-output-s17" class="out" aria-live="polite">Nhấn nút để chạy ví dụ.</p>
 </div>
-    <script  id="s17">
+    <script  id="s17" type="text/plain">
 function shuffleArray(array) {
     const shuffled = [...array];
 
@@ -583,7 +583,7 @@ console.log("Shuffled:", result);
     <button type="button" id="lesson-button-s18" data-run-source="s18" data-run-output="lesson-output-s18">Chạy 2.5. A Common but Incorrect Shuffle</button>
     <p id="lesson-output-s18" class="out" aria-live="polite">Nhấn nút để chạy ví dụ.</p>
 </div>
-    <script  id="s18">
+    <script  id="s18" type="text/plain">
 const numbers = [1, 2, 3, 4, 5];
 
 numbers.sort(() => Math.random() - 0.5);
