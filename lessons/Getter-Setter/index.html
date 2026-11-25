@@ -1,0 +1,397 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Getter and Setter | JavaScript Learning Hub</title>
+    <link rel="stylesheet" href="../../css/style.css">
+</head>
+<body class="lesson-page">
+
+    <p><a href="../../index.html">← Back to lessons</a></p>
+    <h1>JavaScript Getter and Setter</h1>
+    <p>Getter và Setter là các phương thức đặc biệt cho phép kiểm soát cách đọc và ghi một thuộc tính của object.</p>
+
+    <p>
+        <a href="#sec1">1. Tổng quan</a> |
+        <a href="#sec2">2. Setter</a> |
+        <a href="#sec3">3. Getter</a> |
+        <a href="#sec4">4. Getter tính toán</a> |
+        <a href="#sec5">5. Tổng kết</a>
+    </p>
+
+    <hr>
+    <h2 id="sec1">1. Tổng quan về Getter và Setter</h2>
+    <div class="kn">
+        <ol>
+            <li><b>Getter:</b> phương thức đặc biệt dùng để đọc giá trị của một thuộc tính. Khai báo bằng từ khóa <code>get</code>.</li>
+            <li><b>Setter:</b> phương thức đặc biệt được gọi khi ta gán giá trị mới cho một thuộc tính. Khai báo bằng từ khóa <code>set</code>.</li>
+            <li><b>Mục đích:</b> kiểm tra dữ liệu đầu vào, ngăn những giá trị không hợp lệ và bổ sung logic khi đọc hoặc ghi thuộc tính.</li>
+            <li><b>Cách sử dụng:</b> Getter và Setter được truy cập giống thuộc tính thông thường, không gọi bằng dấu ngoặc đơn <code>()</code>.</li>
+        </ol>
+    </div>
+
+    <pre data-src="s1"></pre>
+    <script id="s1">
+class Person {
+    constructor(name) {
+        this.name = name;
+    }
+
+    get displayName() {
+        return this.name;
+    }
+
+    set displayName(newName) {
+        if (typeof newName === "string" && newName.trim().length > 0) {
+            this.name = newName.trim();
+        } else {
+            console.error("Name must be a non-empty string");
+        }
+    }
+}
+
+const person = new Person("Phong");
+
+console.log(person.displayName);      // Getter: đọc giá trị
+person.displayName = "Hai Phong";     // Setter: cập nhật giá trị
+console.log(person.displayName);      // Hai Phong
+    </script>
+
+    <p><b>Lưu ý:</b> <code>person.displayName</code> là cách truy cập đúng. Không viết <code>person.displayName()</code>, vì Getter không phải method được gọi theo cách thông thường.</p>
+
+    <hr>
+    <h2 id="sec2">2. Setter: kiểm soát dữ liệu khi ghi</h2>
+    <p>Trong video, Bro Code sử dụng class <code>Rectangle</code> với hai thuộc tính <code>width</code> và <code>height</code>. Ta không muốn chiều rộng hoặc chiều cao nhận giá trị âm hay dữ liệu không phải số.</p>
+
+    <h3>Ví dụ 2.1: Tạo Setter cho width và height</h3>
+    <pre data-src="s2"></pre>
+    <script id="s2">
+class Rectangle {
+    constructor(width, height) {
+        this.width = width;
+        this.height = height;
+    }
+
+    set width(newWidth) {
+        if (newWidth > 0) {
+            this._width = newWidth;
+        } else {
+            console.error("Width must be a positive number");
+        }
+    }
+
+    set height(newHeight) {
+        if (newHeight > 0) {
+            this._height = newHeight;
+        } else {
+            console.error("Height must be a positive number");
+        }
+    }
+}
+    </script>
+
+    <div class="kn">
+        <ol>
+            <li>Khi chạy <code>new Rectangle(-100, "Pizza")</code>, constructor thực hiện hai phép gán <code>this.width = width</code> và <code>this.height = height</code>.</li>
+            <li>Do đã khai báo Setter, JavaScript gọi Setter tương ứng thay vì ghi trực tiếp vào thuộc tính.</li>
+            <li>Điều kiện <code>newWidth &gt; 0</code> và <code>newHeight &gt; 0</code> giúp từ chối giá trị không hợp lệ.</li>
+            <li>Giá trị hợp lệ được lưu vào <code>_width</code> và <code>_height</code>.</li>
+        </ol>
+    </div>
+
+    <p><b>Vì sao dùng dấu gạch dưới?</b> Trong ví dụ này, <code>_width</code> và <code>_height</code> là tên quy ước để phân biệt dữ liệu lưu trữ bên trong với các thuộc tính có Setter. Dấu gạch dưới <b>không</b> tự tạo ra private field trong JavaScript.</p>
+
+    <h3>Thử nghiệm Setter</h3>
+    <div class="vd">
+        <p>Nhập chiều rộng và chiều cao. Bạn có thể thử số dương, số âm hoặc chữ <code>Pizza</code>.</p>
+        <label for="width-input">Width:</label>
+        <input id="width-input" type="text" value="300">
+        <label for="height-input">Height:</label>
+        <input id="height-input" type="text" value="200">
+        <button id="create-rectangle">Tạo Rectangle</button>
+        <button id="update-rectangle">Cập nhật kích thước</button>
+        <p id="rectangle-output" class="out" aria-live="polite">Chưa tạo Rectangle.</p>
+    </div>
+
+    <hr>
+    <h2 id="sec3">3. Getter: kiểm soát dữ liệu khi đọc</h2>
+    <p>Ở phần trước, ta mới có thể ghi dữ liệu thông qua Setter. Để đọc được giá trị đã lưu trong <code>_width</code> và <code>_height</code>, ta cần Getter.</p>
+
+    <pre data-src="s3"></pre>
+    <script id="s3">
+class RectangleWithGetters {
+    constructor(width, height) {
+        this.width = width;
+        this.height = height;
+    }
+
+    set width(newWidth) {
+        if (newWidth > 0) {
+            this._width = newWidth;
+        } else {
+            console.error("Width must be a positive number");
+        }
+    }
+
+    set height(newHeight) {
+        if (newHeight > 0) {
+            this._height = newHeight;
+        } else {
+            console.error("Height must be a positive number");
+        }
+    }
+
+    get width() {
+        return this._width;
+    }
+
+    get height() {
+        return this._height;
+    }
+}
+
+const rectangleWithGetters = new RectangleWithGetters(3, 4);
+console.log(rectangleWithGetters.width);   // 3
+console.log(rectangleWithGetters.height);  // 4
+    </script>
+
+    <div class="kn">
+        <ol>
+            <li><code>get width()</code> trả về giá trị đang được lưu trong <code>_width</code>.</li>
+            <li><code>get height()</code> trả về giá trị đang được lưu trong <code>_height</code>.</li>
+            <li>Khi viết <code>rectangle.width</code>, Getter tự động được gọi.</li>
+            <li>Khi viết <code>rectangle.width = 5</code>, Setter tự động được gọi.</li>
+        </ol>
+    </div>
+
+    <p>Getter và Setter có thể dùng chung tên thuộc tính. Điều quan trọng là bên trong Getter/Setter phải truy cập biến lưu trữ khác tên, chẳng hạn <code>_width</code>, để tránh tự gọi lại chính Getter/Setter và gây đệ quy vô hạn.</p>
+
+    <hr>
+    <h2 id="sec4">4. Getter dùng để tính toán một giá trị</h2>
+    <p>Getter không nhất thiết phải trả về một field đã tồn tại. Ta có thể tạo một thuộc tính dẫn xuất (computed property), được tính từ các thuộc tính khác.</p>
+
+    <h3>Ví dụ 4.1: Tính diện tích hình chữ nhật</h3>
+    <pre data-src="s4"></pre>
+    <script id="s4">
+class RectangleWithArea {
+    constructor(width, height) {
+        this.width = width;
+        this.height = height;
+    }
+
+    set width(newWidth) {
+        if (newWidth > 0) {
+            this._width = newWidth;
+        } else {
+            console.error("Width must be a positive number");
+        }
+    }
+
+    set height(newHeight) {
+        if (newHeight > 0) {
+            this._height = newHeight;
+        } else {
+            console.error("Height must be a positive number");
+        }
+    }
+
+    get width() {
+        return this._width;
+    }
+
+    get height() {
+        return this._height;
+    }
+
+    get area() {
+        return this._width * this._height;
+    }
+}
+
+const rectangleWithArea = new RectangleWithArea(3, 4);
+console.log(rectangleWithArea.area); // 12
+    </script>
+
+    <div class="vd">
+        <p>Thử thay đổi kích thước để xem Getter <code>area</code> tự tính lại diện tích.</p>
+        <label for="area-width">Width:</label>
+        <input id="area-width" type="number" min="0.1" step="0.1" value="3">
+        <label for="area-height">Height:</label>
+        <input id="area-height" type="number" min="0.1" step="0.1" value="4">
+        <button id="calculate-area">Tính diện tích</button>
+        <p id="area-output" class="out" aria-live="polite">Width: 3 cm | Height: 4 cm | Area: 12 cm²</p>
+    </div>
+
+    <h3>Ví dụ 4.2: Thêm logic định dạng dữ liệu trong Getter</h3>
+    <pre data-src="s5"></pre>
+    <script id="s5">
+class FormattedRectangle {
+    constructor(width, height) {
+        this.width = width;
+        this.height = height;
+    }
+
+    set width(value) {
+        if (value > 0) this._width = value;
+        else console.error("Width must be a positive number");
+    }
+
+    set height(value) {
+        if (value > 0) this._height = value;
+        else console.error("Height must be a positive number");
+    }
+
+    get width() {
+        return this._width.toFixed(1) + " cm";
+    }
+
+    get height() {
+        return this._height.toFixed(1) + " cm";
+    }
+
+    get area() {
+        return (this._width * this._height).toFixed(1) + " cm²";
+    }
+}
+
+const formattedRectangle = new FormattedRectangle(3, 4);
+console.log(formattedRectangle.width);   // "3.0 cm"
+console.log(formattedRectangle.height);  // "4.0 cm"
+console.log(formattedRectangle.area);    // "12.0 cm²"
+    </script>
+
+    <p>Ở ví dụ này, Getter định dạng kết quả bằng <code>toFixed(1)</code>. Giá trị gốc vẫn được lưu trong <code>_width</code> và <code>_height</code>; Getter chỉ định dạng khi đọc dữ liệu.</p>
+
+    <hr>
+    <h2 id="sec5">5. Tổng kết</h2>
+    <table>
+        <thead>
+            <tr><th>Thành phần</th><th>Công dụng</th><th>Cách sử dụng</th></tr>
+        </thead>
+        <tbody>
+            <tr><td><code>get</code></td><td>Đọc giá trị hoặc trả về kết quả tính toán</td><td><code>rectangle.width</code></td></tr>
+            <tr><td><code>set</code></td><td>Kiểm tra và cập nhật giá trị</td><td><code>rectangle.width = 5</code></td></tr>
+            <tr><td><code>_width</code></td><td>Field lưu trữ theo quy ước đặt tên</td><td><code>this._width</code></td></tr>
+            <tr><td><code>area</code></td><td>Computed property được tạo bằng Getter</td><td><code>rectangle.area</code></td></tr>
+        </tbody>
+    </table>
+
+    <div class="kn">
+        <b>Ghi nhớ:</b>
+        <ul>
+            <li>Getter được gọi khi đọc thuộc tính.</li>
+            <li>Setter được gọi khi gán giá trị cho thuộc tính.</li>
+            <li>Không gọi Getter/Setter bằng dấu ngoặc đơn.</li>
+            <li>Getter có thể chỉ đọc nếu không khai báo Setter tương ứng.</li>
+            <li>Dấu <code>_</code> chỉ là quy ước. Muốn field thực sự private, JavaScript hỗ trợ cú pháp <code>#width</code>.</li>
+        </ul>
+    </div>
+
+    <script>
+        document.querySelectorAll("pre[data-src]").forEach(function (pre) {
+            const source = document.getElementById(pre.dataset.src);
+            if (source) pre.textContent = source.textContent.trim();
+        });
+
+        let currentRectangle = null;
+
+        function renderRectangle() {
+            const output = document.getElementById("rectangle-output");
+
+            if (!currentRectangle) {
+                output.textContent = "Chưa tạo Rectangle.";
+                return;
+            }
+
+            output.textContent =
+                "Width: " + currentRectangle.width +
+                "\nHeight: " + currentRectangle.height +
+                "\nArea: " + currentRectangle.area;
+        }
+
+        class InteractiveRectangle {
+            constructor(width, height) {
+                this.width = width;
+                this.height = height;
+            }
+
+            set width(value) {
+                const number = Number(value);
+                if (Number.isFinite(number) && number > 0) {
+                    this._width = number;
+                } else {
+                    throw new Error("Width phải là một số lớn hơn 0.");
+                }
+            }
+
+            set height(value) {
+                const number = Number(value);
+                if (Number.isFinite(number) && number > 0) {
+                    this._height = number;
+                } else {
+                    throw new Error("Height phải là một số lớn hơn 0.");
+                }
+            }
+
+            get width() {
+                return this._width;
+            }
+
+            get height() {
+                return this._height;
+            }
+
+            get area() {
+                return this._width * this._height;
+            }
+        }
+
+        document.getElementById("create-rectangle").addEventListener("click", function () {
+            const output = document.getElementById("rectangle-output");
+            try {
+                currentRectangle = new InteractiveRectangle(
+                    document.getElementById("width-input").value,
+                    document.getElementById("height-input").value
+                );
+                renderRectangle();
+            } catch (error) {
+                output.textContent = error.message;
+            }
+        });
+
+        document.getElementById("update-rectangle").addEventListener("click", function () {
+            const output = document.getElementById("rectangle-output");
+            if (!currentRectangle) {
+                output.textContent = "Hãy tạo Rectangle trước khi cập nhật.";
+                return;
+            }
+
+            try {
+                currentRectangle.width = document.getElementById("width-input").value;
+                currentRectangle.height = document.getElementById("height-input").value;
+                renderRectangle();
+            } catch (error) {
+                output.textContent = error.message;
+            }
+        });
+
+        document.getElementById("calculate-area").addEventListener("click", function () {
+            const width = Number(document.getElementById("area-width").value);
+            const height = Number(document.getElementById("area-height").value);
+            const output = document.getElementById("area-output");
+
+            if (!Number.isFinite(width) || !Number.isFinite(height) || width <= 0 || height <= 0) {
+                output.textContent = "Width và Height phải là số lớn hơn 0.";
+                return;
+            }
+
+            const rectangle = new InteractiveRectangle(width, height);
+            output.textContent =
+                "Width: " + rectangle.width + " cm" +
+                " | Height: " + rectangle.height + " cm" +
+                " | Area: " + rectangle.area.toFixed(1) + " cm²";
+        });
+    </script>
+</body>
+</html>
