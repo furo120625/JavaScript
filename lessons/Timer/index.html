@@ -1,0 +1,413 @@
+<!DOCTYPE html>
+<html lang="vi" style="font-family: Arial, Helvetica, sans-serif;">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="stylesheet" href="../../css/style.css">
+<title>JS Timers</title>
+
+<style>
+    .out {
+    white-space: pre-line;
+}
+</style>
+<script id="helper">
+const byId = id => document.getElementById(id);
+</script>
+</head>
+
+<body class="lesson-page">
+<h1> JavaScript Timers  </h1>
+
+<p> Hàm trợ giúp dùng chung cho mọi ví dụ (dữ liệu của từng ví dụ được gom vào object riêng để các ví dụ không ghi đè lẫn nhau): </p>
+<pre data-src="helper"></pre>
+
+<hr>
+<h2 id="sec1"> 1. Timer Functions (tổng quan) </h2>
+    <div class="kn"><ol>
+        <li><b>Định nghĩa:</b> Timer là nhóm hàm có sẵn của trình duyệt (thuộc <code>window</code>) để chạy một hàm sau một khoảng thời gian (mili-giây) hoặc lặp lại đều đặn. Mỗi lần đặt hẹn giờ, trình duyệt trả về một <b>timer ID</b> (số nguyên) để sau này hủy.</li>
+        <li><b>Khi nào dùng:</b> cần chờ rồi mới làm (ẩn thông báo, trì hoãn), cần lặp đều đặn (đồng hồ, đếm ngược, slideshow), hoặc chờ người dùng ngừng thao tác (debounce).</li>
+        <li><b>Khi nào KHÔNG dùng:</b> không dùng để "đợi" dữ liệu từ server (dùng <code>fetch</code> + <code>await</code>); không dùng làm animation mượt (dùng CSS hoặc <code>requestAnimationFrame</code>); không dựa vào nó để đo thời gian chính xác tuyệt đối.</li>
+        <li><b>Tránh xung đột khi web lớn:</b> luôn lưu timer ID (trong biến / object riêng của từng chức năng) và <code>clear</code> khi không cần nữa hoặc trước khi đặt cái mới. Đặt tên rõ (<code>timerDongHo</code>, <code>timerToast</code>) để các chức năng không ghi đè ID của nhau.</li>
+    </ol></div>
+    <table cellpadding="5px" style="margin:auto;" border="1">
+        <tr><th>Function</th><th>Description</th><th>Ghi chú</th></tr>
+        <tr><td><code>setTimeout()</code></td><td>Runs a function once after a delay.</td><td>Chạy 1 lần, trả về ID</td></tr>
+        <tr><td><code>setInterval()</code></td><td>Runs a function repeatedly.</td><td>Chạy lặp lại, trả về ID</td></tr>
+        <tr><td><code>clearTimeout()</code></td><td>Cancels a timeout.</td><td>Nhận ID của setTimeout</td></tr>
+        <tr><td><code>clearInterval()</code></td><td>Stops an interval.</td><td>Nhận ID của setInterval</td></tr>
+    </table>
+
+    <h3> - Ví dụ 1.1: Mỗi timer trả về một ID riêng </h3>
+    <pre data-src="s1"></pre>
+    <div class="vd">
+        <button id="b1">Tạo 2 timer rồi hủy ngay</button>
+        <p id="o1" class="out"></p>
+    </div>
+    <script id="s1">
+byId("b1").onclick = function () {
+    const id1 = setTimeout(function () {}, 1000);
+    const id2 = setInterval(function () {}, 1000);
+    clearTimeout(id1);        // hủy ngay, không bao giờ chạy
+    clearInterval(id2);
+    byId("o1").textContent =
+        "setTimeout trả về ID = " + id1 + " (" + typeof id1 + ")\n" +
+        "setInterval trả về ID = " + id2 + "\n→ mỗi timer có ID riêng, dùng ID đó để hủy";
+};
+    </script>
+
+<hr>
+<h2 id="sec2"> 2. setTimeout() </h2>
+    <div class="kn"><ol>
+        <li><b>Định nghĩa:</b> <code>setTimeout(hàm, delay, ...thamSo)</code> chạy hàm <b>một lần</b> sau <code>delay</code> mili-giây và trả về timer ID.</li>
+        <li><b>Khi nào dùng:</b> trì hoãn một hành động: tự ẩn thông báo, hiện popup sau vài giây, chờ người dùng ngừng gõ, chuyển trang sau khi báo "Thành công".</li>
+        <li><b>Khi nào KHÔNG dùng:</b> đừng dùng nó để "đoán" một việc bất đồng bộ đã xong (ví dụ chờ 1000ms rồi giả định <code>fetch</code> xong), hãy dùng <code>await</code> / <code>.then</code>. Đừng viết <code>setTimeout(fn(), 1000)</code> (có ngoặc sẽ chạy ngay lập tức).</li>
+        <li><b>Tránh xung đột khi web lớn:</b> <code>delay</code> chỉ là thời gian chờ <u>tối thiểu</u>. Bấm nút nhiều lần sẽ tạo nhiều timer, nên lưu ID và <code>clearTimeout</code> cái cũ trước khi đặt cái mới. Khi callback chạy, trang có thể đã thay đổi, hãy kiểm tra phần tử còn tồn tại.</li>
+    </ol></div>
+
+    <h3> - Ví dụ 2.1: Thông báo tự biến mất sau 2 giây (bấm liên tục thì tính lại từ đầu) </h3>
+    <pre data-src="s2"></pre>
+    <div class="vd">
+        <button id="b2">Lưu</button>
+        <div id="o2" style="display:none; background:#16a34a; color:#fff; padding:8px 12px; margin-top:8px; width:220px;">Đã lưu thành công ok</div>
+    </div>
+    <script id="s2">
+const toastHen = { id: null };
+
+byId("b2").onclick = function () {
+    const toast = byId("o2");
+    toast.style.display = "block";
+    clearTimeout(toastHen.id);
+    toastHen.id = setTimeout(function () {
+        toast.style.display = "none";
+    }, 2000);
+};
+    </script>
+
+    <h3> - Ví dụ 2.2: Truyền tham số cho hàm được hẹn giờ </h3>
+    <pre data-src="s3"></pre>
+    <div class="vd">
+        Tên: <input id="i3a" value="Phong"> Chờ: <input id="i3b" type="number" value="2" min="0"> giây
+        <button id="b3">Hẹn chào</button>
+        <p id="o3" class="out"></p>
+    </div>
+    <script id="s3">
+function loiChao(ten, cauChao) {
+    byId("o3").textContent = cauChao + ", " + ten + "!";
+}
+byId("b3").onclick = function () {
+    const ten = byId("i3a").value;
+    const giay = Number(byId("i3b").value);
+    byId("o3").textContent = "Chờ " + giay + " giây...";
+    setTimeout(loiChao, giay * 1000, ten, "Xin chào");   // tham số từ vị trí thứ 3 trở đi
+};
+    </script>
+
+    <h3> - Ví dụ 2.3: <code>setTimeout(..., 0)</code> vẫn chạy SAU code đang chạy </h3>
+    <pre data-src="s4"></pre>
+    <div class="vd">
+        <button id="b4">Chạy</button>
+        <p id="o4" class="out"></p>
+    </div>
+    <script id="s4">
+byId("b4").onclick = function () {
+    const nhatKy = [];
+    nhatKy.push("1. Dòng đầu tiên");
+    setTimeout(function () {
+        nhatKy.push("3. setTimeout 0ms (phải xếp hàng chờ)");
+        byId("o4").textContent = nhatKy.join("\n");
+    }, 0);
+    nhatKy.push("2. Dòng kế tiếp (chạy trước dù timeout là 0ms)");
+};
+    </script>
+
+<hr>
+<h2 id="sec3"> 3. setInterval() </h2>
+    <div class="kn"><ol>
+        <li><b>Định nghĩa:</b> <code>setInterval(hàm, delay)</code> chạy hàm <b>lặp lại</b> mỗi <code>delay</code> mili-giây, cho tới khi bị <code>clearInterval</code> hoặc đóng trang.</li>
+        <li><b>Khi nào dùng:</b> đồng hồ, đếm ngược, slideshow, thanh tiến trình, cập nhật dữ liệu định kỳ (số người online, giá).</li>
+        <li><b>Khi nào KHÔNG dùng:</b> khi mỗi lần chạy mất thời gian không cố định (ví dụ gọi API): lần sau có thể chồng lên lần trước, hãy dùng <code>setTimeout</code> đệ quy. Không dùng cho animation mượt (<code>requestAnimationFrame</code>) hay việc chỉ chạy một lần.</li>
+        <li><b>Tránh xung đột khi web lớn:</b> interval không tự dừng, luôn phải có đường dừng. Mỗi chức năng chỉ nên có 1 interval chạy (kiểm tra ID trước khi tạo). Quá nhiều interval làm nặng máy, và tab nền bị trình duyệt giảm tần suất chạy.</li>
+    </ol></div>
+
+    <h3> - Ví dụ 3.1: Đồng hồ số chạy từ lúc mở trang </h3>
+    <pre data-src="s5"></pre>
+    <div class="vd">
+        <p id="o5" class="out" style="font-size:28px;"></p>
+    </div>
+    <script id="s5">
+function capNhatDongHo() {
+    byId("o5").textContent = new Date().toLocaleTimeString("vi-VN");
+}
+capNhatDongHo();                                   // hiện ngay, không chờ 1 giây
+const dongHo = { id: setInterval(capNhatDongHo, 1000) };
+    </script>
+
+    <h3> - Ví dụ 3.2: Thanh tiến trình tự chạy rồi tự dừng </h3>
+    <pre data-src="s6"></pre>
+    <div class="vd">
+        <div style="border:1px solid #888; width:300px;"><div id="o6" style="height:18px; width:0; background:seagreen;"></div></div>
+        <p id="t6" class="out">0%</p>
+        <button id="b6">Chạy</button>
+    </div>
+    <script id="s6">
+byId("b6").onclick = function () {
+    let phanTram = 0;
+    byId("b6").disabled = true;                    // tránh bấm khi đang chạy
+    const id = setInterval(function () {
+        phanTram += 5;
+        byId("o6").style.width = phanTram + "%";
+        byId("t6").textContent = phanTram + "%";
+        if (phanTram >= 100) {
+            clearInterval(id);                     // tự dừng khi đạt 100%
+            byId("b6").disabled = false;
+        }
+    }, 100);
+};
+    </script>
+
+<hr>
+<h2 id="sec4"> 4. clearTimeout() </h2>
+    <div class="kn"><ol>
+        <li><b>Định nghĩa:</b> <code>clearTimeout(id)</code> hủy một timeout chưa chạy. Nếu timeout đã chạy xong hoặc ID không có thì không có gì xảy ra, cũng không báo lỗi.</li>
+        <li><b>Khi nào dùng:</b> người dùng hủy thao tác; đặt lại hẹn giờ khi có tương tác mới (debounce, tự đăng xuất khi không hoạt động); đóng popup trước khi nó kịp tự đóng.</li>
+        <li><b>Khi nào KHÔNG dùng:</b> không cần gọi nếu timeout đã chắc chắn chạy xong. Không thể hủy nếu bạn không lưu ID (<code>setTimeout(...)</code> mà không gán vào đâu thì mất quyền hủy).</li>
+        <li><b>Tránh xung đột khi web lớn:</b> ID phải lưu ở nơi các lần gọi sau còn nhìn thấy (không khai báo <code>let</code> bên trong hàm bị gọi lại), nhưng cũng không nên là biến toàn cục trần. Hãy gom vào object riêng của chức năng, và gán <code>null</code> sau khi hủy.</li>
+    </ol></div>
+
+    <h3> - Ví dụ 4.1: Hẹn giờ 3 giây và nút Hủy </h3>
+    <pre data-src="s7"></pre>
+    <div class="vd">
+        <button id="b7a">Hẹn 3 giây</button>
+        <button id="b7b">Hủy</button>
+        <p id="o7" class="out"></p>
+    </div>
+    <script id="s7">
+const henGio = { id: null };
+
+byId("b7a").onclick = function () {
+    clearTimeout(henGio.id);                       // hủy cái cũ (nếu có) trước khi hẹn mới
+    byId("o7").textContent = "⏳ Sẽ có thông báo sau 3 giây...";
+    henGio.id = setTimeout(function () {
+        byId("o7").textContent = "🔔 Đến giờ rồi!";
+        henGio.id = null;
+    }, 3000);
+};
+byId("b7b").onclick = function () {
+    clearTimeout(henGio.id);
+    henGio.id = null;
+    byId("o7").textContent = "notOk Đã hủy hẹn giờ";
+};
+    </script>
+
+    <h3> - Ví dụ 4.2: Debounce - chỉ tìm kiếm khi người dùng ngừng gõ 0,6 giây </h3>
+    <pre data-src="s8"></pre>
+    <div class="vd">
+        <input id="i8" class="wide" placeholder="Gõ nhanh vào đây...">
+        <p id="o8" class="out">Hãy gõ vào ô trên</p>
+    </div>
+    <script id="s8">
+const timKiem = { id: null, soLanGo: 0, soLanTim: 0 };
+
+byId("i8").oninput = function () {
+    timKiem.soLanGo++;
+    clearTimeout(timKiem.id);                      // mỗi lần gõ: hủy hẹn cũ
+    timKiem.id = setTimeout(function () {
+        timKiem.soLanTim++;
+        byId("o8").textContent =
+            "Đã gõ " + timKiem.soLanGo + " lần, chỉ tìm kiếm " + timKiem.soLanTim +
+            " lần\nTừ khóa: " + byId("i8").value;
+    }, 600);
+};
+    </script>
+
+<hr>
+<h2 id="sec5"> 5. clearInterval() </h2>
+    <div class="kn"><ol>
+        <li><b>Định nghĩa:</b> <code>clearInterval(id)</code> dừng một interval đã tạo bằng <code>setInterval</code>.</li>
+        <li><b>Khi nào dùng:</b> nút Dừng / Reset; tự dừng khi đạt điều kiện (đếm ngược về 0, thanh tiến trình đầy); tạm dừng khi rê chuột hoặc khi tab bị ẩn; dọn dẹp khi rời khỏi chức năng.</li>
+        <li><b>Khi nào KHÔNG dùng:</b> không thay thế được cho việc lưu ID (mất ID là không dừng được nữa). Không dùng để dừng animation <code>requestAnimationFrame</code> (dùng <code>cancelAnimationFrame</code>).</li>
+        <li><b>Tránh xung đột khi web lớn:</b> lỗi kinh điển là bấm "Bắt đầu" nhiều lần làm nhiều interval chạy chồng: đồng hồ nhanh gấp đôi, gấp ba và chỉ dừng được cái cuối. Quy tắc: kiểm tra <code>if (id !== null) return;</code> hoặc <code>clearInterval(id)</code> trước khi tạo mới, và gán <code>id = null</code> sau khi dừng.</li>
+    </ol></div>
+
+    <h3> - Ví dụ 5.1: Đồng hồ bấm giờ (Bắt đầu / Dừng / Reset) </h3>
+    <pre data-src="s9"></pre>
+    <div class="vd">
+        <p id="o9" class="out" style="font-size:28px;">0.0 s</p>
+        <button id="b9a">Bắt đầu</button>
+        <button id="b9b">Dừng</button>
+        <button id="b9c">Reset</button>
+    </div>
+    <script id="s9">
+const bamGio = { id: null, phan10: 0 };
+
+function hienBamGio() {
+    byId("o9").textContent = (bamGio.phan10 / 10).toFixed(1) + " s";
+}
+byId("b9a").onclick = function () {
+    if (bamGio.id !== null) return;                // đang chạy rồi → không tạo thêm interval
+    bamGio.id = setInterval(function () {
+        bamGio.phan10++;
+        hienBamGio();
+    }, 100);
+};
+byId("b9b").onclick = function () {
+    clearInterval(bamGio.id);
+    bamGio.id = null;
+};
+byId("b9c").onclick = function () {
+    clearInterval(bamGio.id);
+    bamGio.id = null;
+    bamGio.phan10 = 0;
+    hienBamGio();
+};
+    </script>
+
+    <h3> - Ví dụ 5.2: Bấm nhiều lần - bản lỗi (interval chồng nhau) và bản đúng </h3>
+    <pre data-src="s10"></pre>
+    <div class="vd">
+        <button id="b10a">Bắt đầu (bản lỗi)</button>
+        <button id="b10b">Bắt đầu (bản đúng)</button>
+        <button id="b10c">Dừng hết</button>
+        <p id="o10a" class="out">Bản lỗi: 0</p>
+        <p id="o10b" class="out">Bản đúng: 0</p>
+    </div>
+    <script id="s10">
+const thiNghiem = { idSai: [], idDung: null, demSai: 0, demDung: 0 };
+
+byId("b10a").onclick = function () {               // KHÔNG kiểm tra: mỗi lần bấm thêm 1 interval
+    thiNghiem.idSai.push(setInterval(function () {
+        thiNghiem.demSai++;
+        byId("o10a").textContent = "Bản lỗi: " + thiNghiem.demSai +
+            " (đang có " + thiNghiem.idSai.length + " interval chạy chồng)";
+    }, 1000));
+};
+byId("b10b").onclick = function () {               // ĐÚNG: hủy cái cũ trước khi tạo mới
+    clearInterval(thiNghiem.idDung);
+    thiNghiem.idDung = setInterval(function () {
+        thiNghiem.demDung++;
+        byId("o10b").textContent = "Bản đúng: " + thiNghiem.demDung + " (luôn chỉ 1 interval)";
+    }, 1000);
+};
+byId("b10c").onclick = function () {
+    thiNghiem.idSai.forEach(clearInterval);
+    thiNghiem.idSai = [];
+    clearInterval(thiNghiem.idDung);
+    thiNghiem.idDung = null;
+    thiNghiem.demSai = 0;
+    thiNghiem.demDung = 0;
+    byId("o10a").textContent = "Bản lỗi: 0";
+    byId("o10b").textContent = "Bản đúng: 0";
+};
+    </script>
+
+<hr>
+<h2 id="sec6"> 6. Ứng dụng thực tế </h2>
+    <div class="kn"><ol>
+        <li><b>Định nghĩa:</b> là các mẫu ghép timer với DOM và sự kiện để giao diện thay đổi theo thời gian: tự ẩn, đếm ngược, tự chuyển slide, debounce, hiệu ứng gõ chữ.</li>
+        <li><b>Khi nào dùng:</b> khi giao diện cần tự thay đổi theo thời gian mà không chờ người dùng bấm.</li>
+        <li><b>Khi nào KHÔNG dùng:</b> chuyển động mượt thì dùng CSS transition / animation. Thông báo quan trọng (đặc biệt là lỗi) không nên tự biến mất quá nhanh. Slide tự chuyển phải cho phép tạm dừng.</li>
+        <li><b>Tránh xung đột khi web lớn:</b> mỗi chức năng một object timer riêng; dừng timer khi người dùng tương tác (hover, focus); dọn timer khi phần tử bị gỡ khỏi trang; kiểm tra <code>document.hidden</code> để không chạy lãng phí khi tab bị ẩn.</li>
+    </ol></div>
+    <table cellpadding="5px" style="margin:auto;" border="1">
+        <tr><th>Ứng dụng</th><th>Hàm dùng</th><th>Ví dụ thực tế</th></tr>
+        <tr><td>Thông báo tự ẩn (toast)</td><td>setTimeout</td><td>"Đã lưu thành công"</td></tr>
+        <tr><td>Đồng hồ / đếm ngược</td><td>setInterval + clearInterval</td><td>Flash sale, mã OTP hết hạn</td></tr>
+        <tr><td>Slideshow / banner tự chuyển</td><td>setInterval + clearInterval</td><td>Trang chủ cửa hàng</td></tr>
+        <tr><td>Debounce ô tìm kiếm</td><td>setTimeout + clearTimeout</td><td>Gợi ý tìm kiếm khi gõ</td></tr>
+        <tr><td>Hiệu ứng gõ chữ</td><td>setTimeout đệ quy</td><td>Landing page, chatbot</td></tr>
+        <tr><td>Cập nhật dữ liệu định kỳ (polling)</td><td>setTimeout đệ quy / setInterval</td><td>Số đơn hàng mới, giá cổ phiếu</td></tr>
+        <tr><td>Tự đăng xuất khi không hoạt động</td><td>setTimeout + clearTimeout</td><td>Ngân hàng online</td></tr>
+    </table>
+
+    <h3> - Ví dụ 6.1: Đếm ngược </h3>
+    <pre data-src="s11"></pre>
+    <div class="vd">
+        Số giây: <input id="i11" type="number" value="5" min="1">
+        <button id="b11">Bắt đầu đếm ngược</button>
+        <p id="o11" class="out" style="font-size:28px;"></p>
+    </div>
+    <script id="s11">
+const demNguoc = { id: null };
+
+byId("b11").onclick = function () {
+    clearInterval(demNguoc.id);                    // tránh chạy chồng khi bấm nhiều lần
+    let conLai = Number(byId("i11").value);
+    byId("o11").textContent = conLai;
+    demNguoc.id = setInterval(function () {
+        conLai--;
+        byId("o11").textContent = conLai > 0 ? conLai : "🎉 Hết giờ!";
+        if (conLai <= 0) clearInterval(demNguoc.id);
+    }, 1000);
+};
+    </script>
+
+    <h3> - Ví dụ 6.2: Slideshow tự chuyển, rê chuột vào thì tạm dừng </h3>
+    <pre data-src="s12"></pre>
+    <div class="vd">
+        <div id="o12" style="width:300px; height:80px; line-height:80px; text-align:center; font-size:20px; color:#fff; background:#e11d48; cursor:pointer;">Slide 1 - Khuyến mãi</div>
+        <small>Tự chuyển mỗi 2 giây, rê chuột vào khung để dừng.</small>
+    </div>
+    <script id="s12">
+const trinhChieu = { id: null, vi: 0 };
+const dsSlide = [["Slide 1 - Khuyến mãi", "#e11d48"],
+                 ["Slide 2 - Sản phẩm mới", "#2563eb"],
+                 ["Slide 3 - Liên hệ", "#16a34a"]];
+
+function chuyenSlide() {
+    trinhChieu.vi = (trinhChieu.vi + 1) % dsSlide.length;
+    const [chu, mau] = dsSlide[trinhChieu.vi];
+    byId("o12").textContent = chu;
+    byId("o12").style.background = mau;
+}
+function batDauSlide() {
+    clearInterval(trinhChieu.id);
+    trinhChieu.id = setInterval(chuyenSlide, 2000);
+}
+function dungSlide() { clearInterval(trinhChieu.id); }
+
+byId("o12").onmouseenter = dungSlide;
+byId("o12").onmouseleave = batDauSlide;
+batDauSlide();
+    </script>
+
+    <h3> - Ví dụ 6.3: Hiệu ứng gõ chữ bằng <code>setTimeout</code> đệ quy </h3>
+    <pre data-src="s13"></pre>
+    <div class="vd">
+        <input id="i13" class="wide" value="Xin chào, mình đang học JavaScript!">
+        <button id="b13">Gõ chữ</button>
+        <p id="o13" class="out" style="min-height:1.5em;"></p>
+    </div>
+    <script id="s13">
+const goChu = { id: null };
+
+byId("b13").onclick = function () {
+    clearTimeout(goChu.id);                        // bấm lại giữa chừng → hủy lượt cũ
+    const cau = byId("i13").value;
+    let vi = 0;
+    byId("o13").textContent = "";
+    function goTiep() {
+        if (vi >= cau.length) return;
+        byId("o13").textContent += cau[vi];
+        vi++;
+        goChu.id = setTimeout(goTiep, 80);         // đệ quy: mỗi lần tự hẹn lần kế tiếp
+    }
+    goTiep();
+};
+    </script>
+
+<script>
+// Đổ code từ <script id="..."> vào <pre data-src="..."> tương ứng
+document.querySelectorAll("pre[data-src]").forEach(function (pre) {
+    const source = document.getElementById(pre.dataset.src);
+
+    if (!source) {
+        console.warn(`Cannot find source element: ${pre.dataset.src}`);
+        return;
+    }
+
+    pre.textContent = source.textContent.trim();
+});
+</script>
+</body>
+</html>

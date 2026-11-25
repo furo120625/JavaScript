@@ -1,0 +1,424 @@
+<!DOCTYPE html>
+<html lang="vi" style="font-family: Arial, Helvetica, sans-serif;">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="stylesheet" href="../../css/style.css">
+<title>JS Dates </title>
+<style>
+    .out {
+    white-space: pre-line;
+}
+</style>
+<script id="helper">
+const byId = id => document.getElementById(id);
+</script>
+</head>
+
+<body class="lesson-page">
+<h1> JavaScript Dates  </h1>
+<p> Mục lục:
+    <a href="#sec1">JS Dates</a> |
+    <a href="#sec2">Date Formats</a> |
+    <a href="#sec3">Date Get</a> |
+    <a href="#sec4">Date Set</a> |
+    <a href="#sec5">Date Methods</a>
+</p>
+<p> Hàm trợ giúp dùng chung: </p>
+<pre data-src="helper"></pre>
+
+<hr>
+<h2 id="sec1"> 1. JS Dates </h2>
+    <div class="kn"><ol>
+        <li><b>Định nghĩa:</b> <code>Date</code> lưu một thời điểm dưới dạng số mili-giây kể từ 00:00 ngày 1/1/1970 UTC. Tạo bằng <code>new Date()</code> (bây giờ), <code>new Date(ms)</code>, <code>new Date("chuỗi")</code> hoặc <code>new Date(năm, tháng, ngày, giờ...)</code>. Khi hiển thị, trình duyệt dùng múi giờ của máy.</li>
+        <li><b>Khi nào dùng:</b> lấy thời điểm hiện tại, tính khoảng thời gian (tuổi, đếm ngược), đặt lịch, đánh dấu thời gian (timestamp) cho dữ liệu.</li>
+        <li><b>Khi nào KHÔNG dùng:</b> không tin giờ máy người dùng cho nghiệp vụ quan trọng (dùng giờ server). Không đo hiệu năng bằng <code>Date</code> (dùng <code>performance.now()</code>). Không tự cộng 86.400.000 ms để "thêm 1 ngày" vì có thể lệch khi đổi giờ mùa hè.</li>
+        <li><b>Tránh xung đột khi web lớn:</b> <b>tháng đếm từ 0</b>. Chuỗi ngày không theo chuẩn bị mỗi trình duyệt hiểu một kiểu, hãy dùng ISO <code>YYYY-MM-DDTHH:mm:ss</code>. <code>Date</code> là object <u>có thể sửa</u> (mutable) nên truyền qua hàm có thể bị sửa mất. Hai Date không so sánh bằng <code>===</code>, hãy so bằng <code>getTime()</code>. Server và client khác múi giờ thì lưu dạng UTC / ISO.</li>
+    </ol></div>
+
+    <h3> - Ví dụ 1.1: Vài cách tạo Date</h3>
+    <pre>
+new Date()
+new Date(date string)
+
+new Date(year,month)
+new Date(year,month,day)
+new Date(year,month,day,hours)
+new Date(year,month,day,hours,minutes)
+new Date(year,month,day,hours,minutes,seconds)
+new Date(year,month,day,hours,minutes,seconds,ms)
+
+new Date(milliseconds)
+    </pre>
+    <div class="vd">
+        <p id="o1" class="out"></p>
+    </div>
+    <script id="s1">
+    </script>
+
+    <h3> - Ví dụ 1.2: Tính tuổi từ ngày sinh </h3>
+    <pre data-src="s2"></pre>
+    <div class="vd">
+        Ngày sinh: <input id="i2" type="date" value="yyyy-mm-dd">
+        <button id="b2">Tính tuổi</button>
+        <p id="o2" class="out"></p>
+    </div>
+    <script id="s2">
+function tinhTuoi(ngaySinh, homNay) {
+    let tuoi = homNay.getFullYear() - ngaySinh.getFullYear();
+    const chuaSinhNhat = homNay.getMonth() < ngaySinh.getMonth() ||
+        (homNay.getMonth() === ngaySinh.getMonth() && homNay.getDate() < ngaySinh.getDate());
+    if (chuaSinhNhat) tuoi--;
+    return tuoi;
+}
+byId("b2").onclick = function () {
+    const [nam, thang, ngay] = byId("i2").value.split("-").map(Number);
+    if (!nam) { byId("o2").textContent = "Hãy chọn ngày sinh"; return; }
+    const ngaySinh = new Date(nam, thang - 1, ngay);
+    const homNay = new Date();
+    const soNgay = Math.floor((homNay - ngaySinh) / 86400000);   // trừ 2 Date ra mili-giây
+    byId("o2").textContent =
+        "Tuổi: " + tinhTuoi(ngaySinh, homNay) + "\nĐã sống khoảng " + soNgay.toLocaleString("vi-VN") + " ngày";
+};
+    </script>
+
+    <h3> - Ví dụ 1.3: So sánh hai Date và cái bẫy "cùng một object" </h3>
+    <pre data-src="s3"></pre>
+    <div class="vd">
+        <button id="b3">Chạy</button>
+        <p id="o3" class="out"></p>
+    </div>
+    <script id="s3">
+byId("b3").onclick = function () {
+    const a = new Date(2026, 9, 26);
+    const b = new Date(2026, 9, 26);
+    const ketQuaSoSanh =
+        "a === b → " + (a === b) + "\n" +
+        "a.getTime() === b.getTime() → " + (a.getTime() === b.getTime());
+    const c = a;                          // c và a là CÙNG một object
+    c.setDate(c.getDate() + 1);           // sửa c = sửa a
+    byId("o3").textContent =
+        ketQuaSoSanh + "\n\nSau c.setDate(+1): a = " + a.toLocaleDateString("vi-VN") + "  (a bị đổi theo c!)";
+};
+    </script>
+
+<hr>
+<h2 id="sec2"> 2. JS Date Formats </h2>
+    <div class="kn"><ol>
+        <li><b>Định nghĩa:</b> ngày có nhiều dạng chuỗi để <u>nhập</u> (ISO <code>2026-10-26</code>, kiểu ngắn <code>10/26/2026</code> theo tháng/ngày/năm, kiểu dài <code>Oct 26 2026</code>) và để <u>xuất</u> (<code>toISOString</code>, <code>toString</code>, <code>toLocaleDateString</code>, <code>Intl.DateTimeFormat</code>). ISO 8601 là chuẩn quốc tế.</li>
+        <li><b>Khi nào dùng:</b> dùng ISO khi lưu hoặc gửi cho API. Dùng <code>toLocaleDateString("vi-VN", {...})</code> hoặc <code>Intl.DateTimeFormat</code> khi hiển thị cho người dùng.</li>
+        <li><b>Khi nào KHÔNG dùng:</b> không parse <code>dd/mm/yyyy</code> bằng <code>new Date("26/10/2026")</code> (ra <code>Invalid Date</code>, còn <code>"10/11/2026"</code> bị hiểu là 11 tháng 10). Không tự ghép chuỗi bằng tay khi đã có <code>Intl</code>. Không lưu chuỗi đã định dạng theo locale vào CSDL.</li>
+        <li><b>Tránh xung đột khi web lớn:</b> cùng một chuỗi ngày có thể được hiểu khác nhau giữa trình duyệt và giữa <code>dd/mm</code> với <code>mm/dd</code>. Quy ước: lưu ISO / UTC, hiển thị theo locale của người dùng, và gom việc định dạng vào một hàm duy nhất.</li>
+    </ol></div>
+
+    <h3> - Ví dụ 2.1: Trình duyệt hiểu các chuỗi ngày này thế nào? </h3>
+    <pre data-src="s4"></pre>
+    <div class="vd">
+        <button id="b4">Thử 6 chuỗi</button>
+        <p id="o4" class="out"></p>
+    </div>
+    <script id="s4">
+byId("b4").onclick = function () {
+    const dsChuoi = ["2026-10-26", "2026-10-26T08:30:00", "10/11/2026", "26/10/2026", "Oct 26 2026", "26 October 2026"];
+    byId("o4").textContent = dsChuoi.map(function (chuoi) {
+        const ngay = new Date(chuoi);
+        const kq = isNaN(ngay) ? "Invalid Date" : " " + ngay.toLocaleDateString("vi-VN");
+        return '"' + chuoi + '" → ' + kq;
+    }).join("\n") + '\n\n(Chú ý: "10/11/2026" bị hiểu là THÁNG 10, ngày 11)';
+};
+    </script>
+
+    <h3> - Ví dụ 2.2: Cùng một thời điểm, định dạng theo từng locale </h3>
+    <pre data-src="s5"></pre>
+    <div class="vd">
+        Locale:
+        <select id="sel5">
+            <option value="vi-VN">vi-VN (Việt Nam)</option>
+            <option value="en-US">en-US (Mỹ)</option>
+            <option value="ja-JP">ja-JP (Nhật)</option>
+            <option value="de-DE">de-DE (Đức)</option>
+        </select>
+        <button id="b5">Định dạng</button>
+        <p id="o5" class="out"></p>
+    </div>
+    <script id="s5">
+byId("b5").onclick = function () {
+    const locale = byId("sel5").value;
+    const bayGio = new Date();
+    byId("o5").textContent =
+        "Ngắn: " + bayGio.toLocaleDateString(locale) + "\n" +
+        "Đầy đủ: " + bayGio.toLocaleDateString(locale, { weekday: "long", year: "numeric", month: "long", day: "numeric" }) + "\n" +
+        "Giờ: " + bayGio.toLocaleTimeString(locale) + "\n" +
+        "ISO (để lưu / gửi API): " + bayGio.toISOString();
+};
+    </script>
+
+    <h3> - Ví dụ 2.3: Nhập ngày kiểu <code>dd/mm/yyyy</code> và kiểm tra hợp lệ </h3>
+    <pre data-src="s6"></pre>
+    <div class="vd">
+        Ngày: <input id="i6" value="31/02/2026">
+        <button id="b6">Kiểm tra</button>
+        <p id="o6" class="out"></p>
+    </div>
+    <script id="s6">
+function phanTichNgayVN(chuoi) {
+    const [ngay, thang, nam] = chuoi.split("/").map(Number);
+    const ketQua = new Date(nam, thang - 1, ngay);
+    const hopLe = ketQua.getFullYear() === nam &&
+                  ketQua.getMonth() === thang - 1 &&
+                  ketQua.getDate() === ngay;            // ngày tràn sẽ tự cuộn nên phải so lại
+    return hopLe ? ketQua : null;
+}
+byId("b6").onclick = function () {
+    const ngay = phanTichNgayVN(byId("i6").value);
+    byId("o6").textContent = ngay
+        ? "Hợp lệ: " + ngay.toLocaleDateString("vi-VN", { weekday: "long", day: "numeric", month: "long", year: "numeric" })
+        : "Ngày không hợp lệ\n(new Date(2026, 1, 31) sẽ tự cuộn thành " + new Date(2026, 1, 31).toLocaleDateString("vi-VN") + ")";
+};
+    </script>
+
+<hr>
+<h2 id="sec3"> 3. JS Date Get </h2>
+    <div class="kn"><ol>
+        <li><b>Định nghĩa:</b> các method <code>get...</code> đọc từng thành phần của Date: <code>getFullYear</code>, <code>getMonth</code> (0-11), <code>getDate</code> (1-31), <code>getDay</code> (0 = Chủ nhật), <code>getHours</code>, <code>getMinutes</code>, <code>getSeconds</code>, <code>getTime</code>, <code>getTimezoneOffset</code>. Mỗi cái có bản UTC (<code>getUTCDate</code>...).</li>
+        <li><b>Khi nào dùng:</b> hiển thị từng phần của ngày giờ; kiểm tra điều kiện (cuối tuần, quý nào); làm đồng hồ; tính tuổi.</li>
+        <li><b>Khi nào KHÔNG dùng:</b> không dùng <code>getYear()</code> (đã bỏ). Đừng nhầm <code>getDay()</code> (thứ trong tuần) với <code>getDate()</code> (ngày trong tháng). Để so sánh hay lưu giữa server và client, đừng dùng bản local, hãy dùng <code>getUTC...</code> hoặc <code>getTime()</code>.</li>
+        <li><b>Tránh xung đột khi web lớn:</b> <code>getMonth()</code> bắt đầu từ 0, <code>getDay()</code> bắt đầu từ Chủ nhật. Cùng một timestamp, hai người ở hai múi giờ có thể thấy hai <u>ngày</u> khác nhau (nhất là gần nửa đêm). Thống nhất quy ước: lưu UTC, chuyển sang giờ địa phương chỉ khi hiển thị.</li>
+    </ol></div>
+
+    <h3> - Ví dụ 3.1: Đọc từng thành phần của một ngày giờ </h3>
+    <pre data-src="s7"></pre>
+    <div class="vd">
+        <input id="i7" type="datetime-local" value="2026-10-26T08:30">
+        <button id="b7">Đọc</button>
+        <p id="o7" class="out"></p>
+    </div>
+    <script id="s7">
+byId("b7").onclick = function () {
+    const ngay = new Date(byId("i7").value);
+    if (isNaN(ngay)) { byId("o7").textContent = "Hãy chọn ngày giờ"; return; }
+    const tenThu = ["Chủ nhật", "Thứ hai", "Thứ ba", "Thứ tư", "Thứ năm", "Thứ sáu", "Thứ bảy"];
+    byId("o7").textContent =
+        "getFullYear() = " + ngay.getFullYear() + "\n" +
+        "getMonth() = " + ngay.getMonth() + "  (0-11, tức tháng " + (ngay.getMonth() + 1) + ")\n" +
+        "getDate() = " + ngay.getDate() + "  (ngày trong tháng)\n" +
+        "getDay() = " + ngay.getDay() + "  (" + tenThu[ngay.getDay()] + ")\n" +
+        "getHours() = " + ngay.getHours() + "\ngetMinutes() = " + ngay.getMinutes() + "\n" +
+        "getTime() = " + ngay.getTime() + "  (ms kể từ 1/1/1970 UTC)";
+};
+    </script>
+
+    <h3> - Ví dụ 3.2: Ngày này có phải cuối tuần không? </h3>
+    <pre data-src="s8"></pre>
+    <div class="vd">
+        <input id="i8" type="date" value="2026-10-31">
+        <button id="b8">Kiểm tra</button>
+        <p id="o8" class="out"></p>
+    </div>
+    <script id="s8">
+function laCuoiTuan(ngay) {
+    const thu = ngay.getDay();
+    return thu === 0 || thu === 6;
+}
+byId("b8").onclick = function () {
+    const [nam, thang, ngay] = byId("i8").value.split("-").map(Number);
+    const d = new Date(nam, thang - 1, ngay);
+    byId("o8").textContent = isNaN(d)
+        ? "Hãy chọn ngày"
+        : d.toLocaleDateString("vi-VN", { weekday: "long", day: "numeric", month: "numeric", year: "numeric" }) +
+          (laCuoiTuan(d) ? " → cuối tuần 🎉" : " → ngày làm việc 💼");
+};
+    </script>
+
+    <h3> - Ví dụ 3.3: Giờ địa phương và UTC có thể ra hai ngày khác nhau </h3>
+    <pre data-src="s9"></pre>
+    <div class="vd">
+        <button id="b9">Chạy</button>
+        <p id="o9" class="out"></p>
+    </div>
+    <script id="s9">
+byId("b9").onclick = function () {
+    const ngay = new Date("2026-10-26T23:30:00Z");       // 23:30 ngày 26 theo UTC
+    byId("o9").textContent =
+        "Cùng một thời điểm 2026-10-26T23:30:00Z\n" +
+        "getUTCDate() = " + ngay.getUTCDate() + ",  getUTCHours() = " + ngay.getUTCHours() + "\n" +
+        "getDate() = " + ngay.getDate() + ",  getHours() = " + ngay.getHours() + "  (theo múi giờ máy bạn)\n" +
+        "getTimezoneOffset() = " + ngay.getTimezoneOffset() + " phút  (âm nghĩa là sớm hơn UTC)";
+};
+    </script>
+
+<hr>
+<h2 id="sec4"> 4. JS Date Set </h2>
+    <div class="kn"><ol>
+        <li><b>Định nghĩa:</b> các method <code>set...</code> (<code>setFullYear</code>, <code>setMonth</code>, <code>setDate</code>, <code>setHours</code>, <code>setMinutes</code>, <code>setTime</code>...) sửa trực tiếp Date. Giá trị tràn sẽ tự "cuộn" sang đơn vị lớn hơn (<code>setDate(32)</code>, <code>setMonth(12)</code>).</li>
+        <li><b>Khi nào dùng:</b> cộng / trừ ngày, tháng (hạn thanh toán, lịch hẹn); đặt giờ cụ thể; đưa về đầu / cuối ngày; tìm ngày cuối tháng bằng <code>new Date(năm, tháng, 0)</code>.</li>
+        <li><b>Khi nào KHÔNG dùng:</b> không sửa trực tiếp Date nhận từ nơi khác. Không tự cộng mili-giây để "thêm 1 tháng". Không dùng <code>setMonth</code> thẳng khi ngày hiện tại là 29, 30, 31.</li>
+        <li><b>Tránh xung đột khi web lớn:</b> <code>Date</code> là mutable nên hàm "thêm ngày" viết ẩu sẽ <u>sửa luôn Date của người gọi</u>, hãy <code>new Date(d)</code> sao chép trước. Giá trị tràn tự cuộn cho kết quả bất ngờ (31/1 + 1 tháng = 3/3), cần kiểm tra lại. Khi đặt giờ vào ngày đổi giờ mùa hè, giờ có thể lệch.</li>
+    </ol></div>
+
+    <h3> - Ví dụ 4.1: Cộng ngày - bản an toàn và bản sửa mất Date gốc </h3>
+    <pre data-src="s10"></pre>
+    <div class="vd">
+        Cộng thêm: <input id="i10" type="number" value="30"> ngày
+        <button id="b10">Tính</button>
+        <p id="o10" class="out"></p>
+    </div>
+    <script id="s10">
+function themNgay(ngay, soNgay) {
+    const ketQua = new Date(ngay);           // sao chép để không sửa Date gốc
+    ketQua.setDate(ketQua.getDate() + soNgay);
+    return ketQua;
+}
+function themNgayLoi(ngay, soNgay) {
+    ngay.setDate(ngay.getDate() + soNgay);   // sửa thẳng vào Date của người gọi!
+    return ngay;
+}
+byId("b10").onclick = function () {
+    const soNgay = Number(byId("i10").value);
+    const dinhDang = ngay => ngay.toLocaleDateString("vi-VN");
+    const goc = new Date();
+    const gocLoi = new Date(goc);
+    const ketQua = themNgay(goc, soNgay);
+    themNgayLoi(gocLoi, soNgay);
+    byId("o10").textContent =
+        "Hôm nay: " + dinhDang(goc) + "\n" +
+        "Cộng " + soNgay + " ngày (bản đúng): " + dinhDang(ketQua) + "\n" +
+        "Ngày gốc sau bản đúng: " + dinhDang(goc) + "  (không đổi)\n" +
+        "Ngày gốc sau bản lỗi: " + dinhDang(gocLoi) + "  (bị sửa mất!)";
+};
+    </script>
+
+    <h3> - Ví dụ 4.2: Một tháng có bao nhiêu ngày? (mẹo ngày số 0) </h3>
+    <pre data-src="s11"></pre>
+    <div class="vd">
+        Năm: <input id="i11a" type="number" value="2028"> Tháng (1-12): <input id="i11b" type="number" value="2" min="1" max="12">
+        <button id="b11">Tính</button>
+        <p id="o11" class="out"></p>
+    </div>
+    <script id="s11">
+function soNgayTrongThang(nam, thang) {
+    return new Date(nam, thang, 0).getDate();   // ngày số 0 của tháng sau = ngày cuối của tháng này
+}
+byId("b11").onclick = function () {
+    const nam = Number(byId("i11a").value);
+    const thang = Number(byId("i11b").value);
+    byId("o11").textContent =
+        "Tháng " + thang + "/" + nam + " có " + soNgayTrongThang(nam, thang) + " ngày";
+};
+    </script>
+
+    <h3> - Ví dụ 4.3: Cộng 1 tháng vào ngày 31/01 - tràn tháng và cách xử lý </h3>
+    <pre data-src="s12"></pre>
+    <div class="vd">
+        <button id="b12">Chạy</button>
+        <p id="o12" class="out"></p>
+    </div>
+    <script id="s12">
+function themThangAnToan(ngay, soThang) {
+    const ketQua = new Date(ngay);
+    const ngayGoc = ketQua.getDate();
+    ketQua.setDate(1);                                   // về mùng 1 để không bị tràn
+    ketQua.setMonth(ketQua.getMonth() + soThang);
+    const cuoiThang = new Date(ketQua.getFullYear(), ketQua.getMonth() + 1, 0).getDate();
+    ketQua.setDate(Math.min(ngayGoc, cuoiThang));        // không vượt quá ngày cuối tháng
+    return ketQua;
+}
+byId("b12").onclick = function () {
+    const dinhDang = ngay => ngay.toLocaleDateString("vi-VN");
+    const goc = new Date(2026, 0, 31);                   // 31/01/2026
+    const ngayLoi = new Date(goc);
+    ngayLoi.setMonth(ngayLoi.getMonth() + 1);            // cộng thẳng 1 tháng
+    byId("o12").textContent =
+        "Ngày gốc: " + dinhDang(goc) + "\n" +
+        "setMonth(+1) thẳng → " + dinhDang(ngayLoi) + "  (tràn sang tháng 3!)\n" +
+        "themThangAnToan(goc, 1) → " + dinhDang(themThangAnToan(goc, 1));
+};
+    </script>
+
+<hr>
+<h2 id="sec5"> 5. JS Date Methods </h2>
+    <div class="kn"><ol>
+        <li><b>Định nghĩa:</b> các method còn lại của Date và công cụ đi kèm: <code>Date.now()</code> (ms hiện tại), <code>Date.parse()</code>, <code>Date.UTC()</code>, <code>toISOString()</code>, <code>toJSON()</code>, <code>getTime() / valueOf()</code>; trừ hai Date cho ra mili-giây; <code>Intl.DateTimeFormat</code> và <code>Intl.RelativeTimeFormat</code> ("2 ngày trước").</li>
+        <li><b>Khi nào dùng:</b> <code>Date.now()</code> cho timestamp; trừ hai Date để tính khoảng cách; sắp xếp mảng ngày; <code>toISOString()</code> để lưu / gửi; <code>Intl.RelativeTimeFormat</code> để hiện "hôm qua", "3 ngày nữa".</li>
+        <li><b>Khi nào KHÔNG dùng:</b> không đo hiệu năng bằng <code>Date.now()</code> (dùng <code>performance.now()</code>). Với phép tính lịch phức tạp (múi giờ, lịch âm), nên dùng thư viện (date-fns, Luxon) hoặc Temporal API. Không so sánh Date bằng <code>==</code> / <code>===</code>.</li>
+        <li><b>Tránh xung đột khi web lớn:</b> nhiều nơi tự tính ngày theo cách riêng sẽ cho kết quả lệch nhau, hãy gom vào một module chung. Truyền timestamp hoặc chuỗi ISO giữa các module thay vì truyền object Date (tránh bị sửa). <code>JSON.stringify</code> biến Date thành chuỗi ISO, nhưng <code>JSON.parse</code> không biến nó trở lại thành Date.</li>
+    </ol></div>
+
+    <h3> - Ví dụ 5.1: Khoảng cách giữa hai ngày </h3>
+    <pre data-src="s13"></pre>
+    <div class="vd">
+        Từ: <input id="i13a" type="date" value="2026-10-26"> Đến: <input id="i13b" type="date" value="2026-12-25">
+        <button id="b13">Tính</button>
+        <p id="o13" class="out"></p>
+    </div>
+    <script id="s13">
+byId("b13").onclick = function () {
+    const doiSangNgay = chuoi => {
+        const [nam, thang, ngay] = chuoi.split("-").map(Number);
+        return new Date(nam, thang - 1, ngay);
+    };
+    const tu = doiSangNgay(byId("i13a").value);
+    const den = doiSangNgay(byId("i13b").value);
+    const ms = den - tu;                                  // trừ 2 Date ra mili-giây
+    const soNgay = Math.round(ms / 86400000);             // round để tránh lệch do đổi giờ mùa hè
+    const tuongDoi = new Intl.RelativeTimeFormat("vi", { numeric: "auto" });
+    byId("o13").textContent =
+        "Chênh lệch: " + soNgay + " ngày (" + (ms / 3600000).toLocaleString("vi-VN") + " giờ)\n" +
+        "Ngày 'Đến' so với ngày 'Từ': " + tuongDoi.format(soNgay, "day");
+};
+    </script>
+
+    <h3> - Ví dụ 5.2: Sắp xếp mảng ngày bằng phép trừ, và <code>Date.now()</code> </h3>
+    <pre data-src="s14"></pre>
+    <div class="vd">
+        Các ngày (ISO, cách nhau dấu ;): <input id="i14" class="wide" value="2026-10-26; 2025-01-15; 2026-03-08">
+        <button id="b14">Sắp xếp</button>
+        <p id="o14" class="out"></p>
+    </div>
+    <script id="s14">
+byId("b14").onclick = function () {
+    const dsNgay = byId("i14").value.split(";")
+        .map(chuoi => new Date(chuoi.trim()))
+        .filter(ngay => !isNaN(ngay));                    // bỏ ngày không hợp lệ
+    const sapXep = [...dsNgay].sort((a, b) => a - b);     // a - b ra mili-giây
+    byId("o14").textContent =
+        "Tăng dần: " + sapXep.map(ngay => ngay.toISOString().slice(0, 10)).join("  <  ") +
+        "\nDate.now() = " + Date.now() + "  (ms của thời điểm hiện tại)";
+};
+    </script>
+
+    <h3> - Ví dụ 5.3: Date đi qua JSON sẽ biến thành chuỗi </h3>
+    <pre data-src="s15"></pre>
+    <div class="vd">
+        <button id="b15">Chạy</button>
+        <p id="o15" class="out"></p>
+    </div>
+    <script id="s15">
+byId("b15").onclick = function () {
+    const goc = { ten: "Đơn hàng", ngay: new Date(2026, 9, 26, 8, 30) };
+    const chuoi = JSON.stringify(goc);
+    const sauParse = JSON.parse(chuoi);
+    const khoiPhuc = new Date(sauParse.ngay);
+    byId("o15").textContent =
+        "JSON.stringify → " + chuoi + "\n" +
+        "typeof ngay sau JSON.parse → " + typeof sauParse.ngay + "  (không còn là Date!)\n" +
+        "typeof sauParse.ngay.getFullYear → " + typeof sauParse.ngay.getFullYear + "\n" +
+        "Sau new Date(sauParse.ngay) → năm " + khoiPhuc.getFullYear();
+};
+    </script>
+
+<script>
+// Đổ code từ <script id="..."> vào <pre data-src="..."> tương ứng
+document.querySelectorAll("pre[data-src]").forEach(function (pre) {
+    const source = document.getElementById(pre.dataset.src);
+
+    if (!source) {
+        console.warn(`Cannot find source element: ${pre.dataset.src}`);
+        return;
+    }
+
+    pre.textContent = source.textContent.trim();
+});
+</script>
+</body>
+</html>

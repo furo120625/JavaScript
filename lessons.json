@@ -1,0 +1,34 @@
+[
+    {
+        "title": "Arrays",
+        "path": "lessons/Arrays/"
+    },
+    {
+        "title": "Classes",
+        "path": "lessons/Classes/"
+    },
+    {
+        "title": "Dates",
+        "path": "lessons/Dates/"
+    },
+    {
+        "title": "Functions",
+        "path": "lessons/Functions/"
+    },
+    {
+        "title": "Objects",
+        "path": "lessons/Objects/"
+    },
+    {
+        "title": "Scope",
+        "path": "lessons/Scope/"
+    },
+    {
+        "title": "Sets",
+        "path": "lessons/Sets/"
+    },
+    {
+        "title": "Timer",
+        "path": "lessons/Timer/"
+    }
+]

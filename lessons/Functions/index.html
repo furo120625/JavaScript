@@ -1,0 +1,479 @@
+<!DOCTYPE html>
+<html lang="vi" style="font-family: Arial, Helvetica, sans-serif;">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="stylesheet" href="../../css/style.css">
+<title>JS Functions </title>
+<style>
+    .out {
+    white-space: pre-line;
+}
+</style>
+<script>
+const byId = id => document.getElementById(id);
+</script>
+</head>
+<body class="lesson-page">
+<main>
+    <h1> JavaScript Functions </h1>
+    <p> <strong> Mỗi ví dụ bên dưới là một khối riêng: code hiển thị phía trên, khung nét đứt là phần chạy thật. <code>byId(id)</code> chỉ là cách viết ngắn của <code>document.getElementById(id)</code>. </strong> </p>
+    <h2> 1. Function Intro </h2>
+        <h3> - Ví dụ 1.1: Bấm nút để đổi màu chữ (mỗi lần một màu) </h3>
+        <pre data-src="s1"></pre>
+        <div class="vd">
+            <p id="o1">Đoạn chữ này sẽ đổi màu.</p>
+            <button id="b1">Đổi màu</button>
+        </div>
+        <script id="s1">
+const dsMau = ["blue", "green","red"];
+let viTri = 0;
+function doiMau() {
+    byId("o1").style.color = dsMau[viTri % dsMau.length];
+    viTri++;
+}
+byId("b1").onclick = doiMau;
+        </script>
+
+        <h3> - Ví dụ 1.2: Chào theo tên được nhập </h3>
+        <pre data-src="s2"></pre>
+        <div class="vd">
+            Tên: <input id="i2" class="wide" value="Phong">
+            <button id="b2">Chào</button>
+            <p id="o2" class="out"></p>
+        </div>
+        <script id="s2">
+function chaoBan(ten) {
+    return "Xin chào, " + ten + "!";
+}
+byId("b2").onclick = function () {
+    byId("o2").textContent = chaoBan(byId("i2").value);
+};
+        </script>
+
+        <h3> - Ví dụ 1.3: Ẩn / hiện một đoạn văn </h3>
+        <pre data-src="s3"></pre>
+        <div class="vd">
+            <button id="b3">Ẩn / Hiện</button>
+            <p id="o3"> Đoạn văn này có thể biến mất </p>
+        </div>
+        <script id="s3">
+function anHien() {
+    const e = byId("o3");
+    e.style.display = e.style.display === "none" ? "block" : "none";
+}
+byId("b3").onclick = anHien;
+        </script>
+
+    <h2> 2. Function Invocation </h2>
+        <h3> - Ví dụ 2.1: Một hàm gọi nhiều hàm khác </h3>
+        <pre data-src="s4"></pre>
+        <div class="vd">
+            <button id="b4">Chạy tất cả</button>
+            <p id="o4" class="out"></p>
+        </div>
+        <script id="s4">
+function buoc1() { return "Mở cửa"; }
+function buoc2() { return "Bước vào"; }
+function chayTatCa() {
+    byId("o4").textContent = buoc1() + " → " + buoc2() + " → Đóng cửa";
+}
+byId("b4").onclick = chayTatCa;
+        </script>
+        <h3> - Ví dụ 2.2: Hàm được gọi bởi sự kiện chuột (rê chuột, bấm vào khung) </h3>
+        <pre data-src="s5"></pre>
+        <div class="vd">
+            <div id="o5" style="border:1px solid #000; padding:20px; text-align:center;">Rê chuột / bấm vào khung này</div>
+        </div>
+        <script id="s5">
+function ghiSuKien(tenSuKien) {
+    byId("o5").textContent = "Vừa xảy ra: " + tenSuKien;
+}
+const khung = byId("o5");
+khung.onmouseover = function () { ghiSuKien("mouseover"); };
+khung.onmouseout  = function () { ghiSuKien("mouseout"); };
+khung.onclick     = function () { ghiSuKien("click"); };
+        </script>
+
+        <h3> - Ví dụ 2.3: Hàm được gọi tự động sau 2 giây (setTimeout) </h3>
+        <pre data-src="s6"></pre>
+        <div class="vd">
+            <button id="b6">Bắt đầu</button>
+            <p id="o6" class="out"></p>
+        </div>
+        <script id="s6">
+function thongBaoTre() {
+    byId("o6").textContent = "Đã chạy sau 2 giây!";
+}
+byId("b6").onclick = function () {
+    byId("o6").textContent = "Đang chờ...";
+    setTimeout(thongBaoTre, 2000); 
+};
+        </script>
+
+        <h3> - Ví dụ 2.4: Gọi hàm <code>layGio()</code> và tham chiếu hàm <code>layGio</code> khác nhau thế nào? </h3>
+        <pre data-src="s7"></pre>
+        <div class="vd">
+            <button id="b7a">layGio()</button>
+            <button id="b7b">layGio</button>
+            <p id="o7" class="out"></p>
+        </div>
+        <script id="s7">
+function layGio() { return new Date().toLocaleTimeString(); }
+
+byId("b7a").onclick = function () { byId("o7").textContent = layGio(); };  // kết quả
+byId("b7b").onclick = function () { byId("o7").textContent = layGio; };    // chính hàm
+        </script>
+
+    <h2> 3. Function Parameters </h2>
+        <h3> - Ví dụ 3.1: Hai parameter - nhân hai số nhập vào </h3>
+        <pre data-src="s8"></pre>
+        <div class="vd">
+            <input id="i8a" type="number" value="6"> ×
+            <input id="i8b" type="number" value="7">
+            <button id="b8">Tính</button>
+            <p id="o8" class="out"></p>
+        </div>
+        <script id="s8">
+function nhanHai(a, b) { return a * b; }
+
+byId("b8").onclick = function () {
+    const a = Number(byId("i8a").value);
+    const b = Number(byId("i8b").value);
+    byId("o8").textContent = a + " × " + b + " = " + nhanHai(a, b);
+};
+        </script>
+
+        <h3> - Ví dụ 3.2: Giá trị mặc định - để trống ô tên thử xem </h3>
+        <pre data-src="s9"></pre>
+        <div class="vd">
+            Tên: <input id="i9" class="wide" placeholder="(để trống)">
+            <button id="b9">Chào</button>
+            <p id="o9" class="out"></p>
+        </div>
+        <script id="s9">
+function chaoMoi(ten = "bạn", loi = "Xin chào") {
+    return loi + ", " + ten + "!";
+}
+byId("b9").onclick = function () {
+    const ten = byId("i9").value || undefined;   // ô trống → undefined → dùng mặc định
+    byId("o9").textContent = chaoMoi(ten);
+};
+        </script>
+
+        <h3> - Ví dụ 3.3: Rest parameter - cộng bao nhiêu số cũng được </h3>
+        <pre data-src="s10"></pre>
+        <div class="vd">
+            Các số (cách nhau dấu phẩy): <input id="i10" class="wide" value="1, 2, 3, 4, 5">
+            <button id="b10">Cộng</button>
+            <p id="o10" class="out"></p>
+        </div>
+        <script id="s10">
+function tongNhieuSo(...cacSo) {
+    let tong = 0;
+    for (const n of cacSo) tong += n;
+    return tong;
+}
+byId("b10").onclick = function () {
+    const mang = byId("i10").value.split(",").map(Number);
+    byId("o10").textContent = "Tổng = " + tongNhieuSo(...mang);   // spread: rải mảng thành argument
+};
+        </script>
+
+        <h3> - Ví dụ 3.4: Parameter là object (destructuring) </h3>
+        <pre data-src="s11"></pre>
+        <div class="vd">
+            Tên: <input id="i11a" value="Phong"> Tuổi: <input id="i11b" type="number" value="20">
+            <button id="b11">Hiển thị</button>
+            <p id="o11" class="out"></p>
+        </div>
+        <script id="s11">
+function inThongTin({ ten, tuoi }) {
+    return ten + " (" + tuoi + " tuổi)";
+}
+byId("b11").onclick = function () {
+    const nguoi = { ten: byId("i11a").value, tuoi: Number(byId("i11b").value) };
+    byId("o11").textContent = inThongTin(nguoi);
+};
+        </script>
+
+    <h2> 4. Function Returns </h2>
+        <h3> - Ví dụ 4.1: Return một giá trị tính toán (°C → °F) </h3>
+        <pre data-src="s12"></pre>
+        <div class="vd">
+            <input id="i12" type="number" value="37"> °C
+            <button id="b12">Đổi</button>
+            <p id="o12" class="out"></p>
+        </div>
+        <script id="s12">
+function doiCsangF(c) { return c * 9 / 5 + 32; }
+
+byId("b12").onclick = function () {
+    const c = Number(byId("i12").value);
+    byId("o12").textContent = c + "°C = " + doiCsangF(c) + "°F";
+};
+        </script>
+
+        <h3> - Ví dụ 4.2: Return sớm - kiểm tra tuổi </h3>
+        <pre data-src="s13"></pre>
+        <div class="vd">
+            Tuổi: <input id="i13" type="number" value="16">
+            <button id="b13">Kiểm tra</button>
+            <p id="o13" class="out"></p>
+        </div>
+        <script id="s13">
+function kiemTraVao(tuoi) {
+    if (isNaN(tuoi)) return "Hãy nhập số!";
+    if (tuoi < 18) return "Chưa đủ 18 tuổi";
+    return "Được vào";   // chỉ chạy khi không dính return nào ở trên
+}
+byId("b13").onclick = function () {
+    byId("o13").textContent = kiemTraVao(Number(byId("i13").value));
+};
+        </script>
+
+        <h3> - Ví dụ 4.3: Trả về nhiều giá trị bằng object (min và max) </h3>
+        <pre data-src="s14"></pre>
+        <div class="vd">
+            Các số: <input id="i14" class="wide" value="40, 100, 1, 5, 25, 10">
+            <button id="b14">Tìm</button>
+            <p id="o14" class="out"></p>
+        </div>
+        <script id="s14">
+function minMax(mang) {
+    return { min: Math.min(...mang), max: Math.max(...mang) };
+}
+byId("b14").onclick = function () {
+    const kq = minMax(byId("i14").value.split(",").map(Number));
+    byId("o14").textContent = "Min = " + kq.min + ", Max = " + kq.max;
+};
+        </script>
+
+        <h3> - Ví dụ 4.4: Không có return → undefined; code sau return không chạy </h3>
+        <pre data-src="s15"></pre>
+        <div class="vd">
+            <button id="b15">Thử</button>
+            <p id="o15" class="out"></p>
+        </div>
+        <script id="s15">
+function khongTraVe() { let a = 1 + 1; }
+function traVeSom() { return "A"; return "B"; }   // "B" không bao giờ chạy
+
+byId("b15").onclick = function () {
+    byId("o15").textContent =
+        "khongTraVe() = " + khongTraVe() + "\ntraVeSom() = " + traVeSom();
+};
+        </script>
+
+    <h2> 5. Function Arguments </h2>
+        <h3> - Ví dụ 5.1: Đối tượng <code>arguments</code> - hàm không khai báo parameter vẫn đọc được </h3>
+        <pre data-src="s16"></pre>
+        <div class="vd">
+            Các số: <input id="i16" class="wide" value="12, 7, 99, 45">
+            <button id="b16">Tìm lớn nhất</button>
+            <p id="o16" class="out"></p>
+        </div>
+        <script id="s16">
+function timLonNhat() {
+    let max = -Infinity;
+    for (let i = 0; i < arguments.length; i++) {
+        if (arguments[i] > max) max = arguments[i];
+    }
+    return "Nhận " + arguments.length + " argument, lớn nhất = " + max;
+}
+byId("b16").onclick = function () {
+    byId("o16").textContent = timLonNhat(...byId("i16").value.split(",").map(Number));
+};
+        </script>
+
+        <h3> - Ví dụ 5.2: Truyền giá trị (số) khác truyền tham chiếu (object) </h3>
+        <pre data-src="s17"></pre>
+        <div class="vd">
+            <button id="b17">Chạy thử</button>
+            <p id="o17" class="out"></p>
+        </div>
+        <script id="s17">
+function doiSo(n) { n = 100; }
+function doiObject(o) { o.mau = "đỏ"; }
+
+byId("b17").onclick = function () {
+    let so = 5;
+    const xe = { mau: "trắng" };
+    doiSo(so);
+    doiObject(xe);
+    byId("o17").textContent =
+        "so = " + so + "  (không đổi: hàm chỉ nhận bản sao)\n" +
+        "xe.mau = " + xe.mau + "  (đã đổi: hàm sửa đúng object gốc)";
+};
+        </script>
+
+        <h3> - Ví dụ 5.3: Thiếu, thừa hoặc sai kiểu argument </h3>
+        <pre data-src="s18"></pre>
+        <div class="vd">
+            <button id="b18">Thử</button>
+            <p id="o18" class="out"></p>
+        </div>
+        <script id="s18">
+function tinhNhan(a, b) { return a * b; }
+
+byId("b18").onclick = function () {
+    byId("o18").textContent =
+        "tinhNhan(4) = " + tinhNhan(4) + "  (thiếu → b là undefined)\n" +
+        "tinhNhan(4, 3, 99) = " + tinhNhan(4, 3, 99) + "  (thừa → bị bỏ qua)\n" +
+        'tinhNhan("abc", 2) = ' + tinhNhan("abc", 2) + "  (sai kiểu → NaN)";
+};
+        </script>
+
+        <h3> - Ví dụ 5.4: Thứ tự argument rất quan trọng </h3>
+        <pre data-src="s19"></pre>
+        <div class="vd">
+            x = <input id="i19a" type="number" value="10"> y = <input id="i19b" type="number" value="4">
+            <button id="b19">Chia</button>
+            <p id="o19" class="out"></p>
+        </div>
+        <script id="s19">
+function chiaHai(soBiChia, soChia) { return soBiChia / soChia; }
+
+byId("b19").onclick = function () {
+    const x = Number(byId("i19a").value);
+    const y = Number(byId("i19b").value);
+    byId("o19").textContent =
+        "chiaHai(x, y) = " + chiaHai(x, y) + "\nchiaHai(y, x) = " + chiaHai(y, x);
+};
+        </script>
+
+    <h2> 6. Function Expressions </h2>
+        <h3> - Ví dụ 6.1: Function lưu trong biến - bình phương một số </h3>
+        <pre data-src="s20"></pre>
+        <div class="vd">
+            n = <input id="i20" type="number" value="9">
+            <button id="b20">Bình phương</button>
+            <p id="o20" class="out"></p>
+        </div>
+        <script id="s20">
+const binhPhuongSo = function (n) { return n * n; };
+
+byId("b20").onclick = function () {
+    const n = Number(byId("i20").value);
+    byId("o20").textContent = n + "² = " + binhPhuongSo(n);
+};
+        </script>
+
+        <h3> - Ví dụ 6.2: Hoisting - declaration gọi trước được, expression thì không </h3>
+        <pre data-src="s21"></pre>
+        <div class="vd">
+            <button id="b21">Thử gọi trước khi khai báo</button>
+            <p id="o21" class="out"></p>
+        </div>
+        <script id="s21">
+byId("b21").onclick = function () {
+    let kq = "";
+    try { kq += hamA() + "\n"; }
+    catch (e) { kq += "hamA lỗi: " + e.message + "\n"; }
+    function hamA() { return "hamA (declaration): gọi trước khi khai báo vẫn OK"; }
+
+    try { kq += hamB() + "\n"; }
+    catch (e) { kq += "hamB (expression) lỗi: " + e.message + "\n"; }
+    const hamB = function () { return "OK"; };
+
+    byId("o21").textContent = kq;
+};
+        </script>
+
+        <h3> - Ví dụ 6.3: Lưu nhiều function trong một object - chọn phép tính </h3>
+        <pre data-src="s22"></pre>
+        <div class="vd">
+            <input id="i22a" type="number" value="12">
+            <select id="sel22">
+                <option value="cong">+</option>
+                <option value="tru">−</option>
+                <option value="nhan">×</option>
+                <option value="chia">÷</option>
+            </select>
+            <input id="i22b" type="number" value="4">
+            <button id="b22">=</button>
+            <p id="o22" class="out"></p>
+        </div>
+        <script id="s22">
+const bangPhepTinh = {
+    cong: function (a, b) { return a + b; },
+    tru:  function (a, b) { return a - b; },
+    nhan: function (a, b) { return a * b; },
+    chia: function (a, b) { return a / b; }
+};
+byId("b22").onclick = function () {
+    const a = Number(byId("i22a").value);
+    const b = Number(byId("i22b").value);
+    const loai = byId("sel22").value;
+    byId("o22").textContent = "Kết quả = " + bangPhepTinh[loai](a, b);
+};
+        </script>
+
+    <h2> 7. Function Arrow </h2>
+        <h3> - Ví dụ 7.1: Ba cách viết, cùng một kết quả </h3>
+        <pre data-src="s23"></pre>
+        <div class="vd">
+            n = <input id="i23" type="number" value="21">
+            <button id="b23">Nhân đôi</button>
+            <p id="o23" class="out"></p>
+        </div>
+        <script id="s23">
+const kieu1 = function (n) { return n * 2; };   
+const kieu2 = (n) => { return n * 2; };       
+const kieu3 = n => n * 2;                     
+
+byId("b23").onclick = function () {
+    const n = Number(byId("i23").value);
+    byId("o23").textContent = "Ba kiểu đều ra: " + kieu1(n) + ", " + kieu2(n) + ", " + kieu3(n);
+};
+        </script>
+
+        <h3> - Ví dụ 7.2: Arrow làm callback - lọc số chẵn rồi bình phương </h3>
+        <pre data-src="s24"></pre>
+        <div class="vd">
+            Các số: <input id="i24" class="wide" value="1, 2, 3, 4, 5, 6">
+            <button id="b24">Xử lý</button>
+            <p id="o24" class="out"></p>
+        </div>
+        <script id="s24">
+byId("b24").onclick = function () {
+    const mang = byId("i24").value.split(",").map(Number);
+    byId("o24").textContent = "Bình phương số chẵn: " +
+        mang.filter(n => n % 2 === 0).map(n => n ** 2).join(", ");
+};
+        </script>
+
+        <h3> - Ví dụ 7.3: <code>this</code> - function thường và arrow khác nhau </h3>
+        <pre data-src="s25"></pre>
+        <div class="vd">
+            <button id="b25">So sánh</button>
+            <p id="o25" class="out"></p>
+        </div>
+        <script id="s25">
+const mayA = {
+    ten: "Máy A",
+    thuong: function () { return this.ten; },
+    mui: () => { return this.ten; }  
+};
+byId("b25").onclick = function () {
+    byId("o25").textContent =
+        "function thường → " + mayA.thuong() + "\narrow → " + mayA.mui();
+};
+        </script>
+
+<script>
+document.querySelectorAll("pre[data-src]").forEach(function (pre) {
+    const source = document.getElementById(pre.dataset.src);
+
+    if (!source) {
+        console.warn(`Cannot find source element: ${pre.dataset.src}`);
+        return;
+    }
+
+    pre.textContent = source.textContent.trim();
+});
+</script>
+
+</main>
+</body>
+</html>
