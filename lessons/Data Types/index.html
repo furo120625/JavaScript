@@ -556,6 +556,14 @@ console.log(Object.keys(person));
     <p id="lesson-output-s15" class="out" aria-live="polite">Nhấn nút để chạy ví dụ.</p>
 </div>
     <script  id="s15">
+const id = Symbol("id");
+const person = {
+    firstName: "Phong",
+    lastName: "Dinh"
+};
+
+person[id] = 123;
+
 const symbolKeys = Object.getOwnPropertySymbols(person);
 
 console.log(symbolKeys);
