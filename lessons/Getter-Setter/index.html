@@ -38,6 +38,10 @@
     </div>
 
     <pre data-src="s1"></pre>
+<div class="vd">
+    <button type="button" id="lesson-button-s1" data-run-source="s1" data-run-output="lesson-output-s1">Chạy Ví dụ s1</button>
+    <p id="lesson-output-s1" class="out" aria-live="polite">Nhấn nút để chạy ví dụ.</p>
+</div>
     <script id="s1">
 class Person {
     constructor(name) {
@@ -71,6 +75,10 @@ console.log(person.displayName);      // Hai Phong
    
     <h3>Ví dụ 2.1: Tạo Setter cho width và height</h3>
     <pre data-src="s2"></pre>
+<div class="vd">
+    <button type="button" id="lesson-button-s2" data-run-source="s2" data-run-output="lesson-output-s2">Chạy Ví dụ 2.1: Tạo Setter cho width và height</button>
+    <p id="lesson-output-s2" class="out" aria-live="polite">Nhấn nút để chạy ví dụ.</p>
+</div>
     <script id="s2">
 class Rectangle {
     constructor(width, height) {
@@ -124,6 +132,10 @@ class Rectangle {
     <p>Ở phần trước, ta mới có thể ghi dữ liệu thông qua Setter. Để đọc được giá trị đã lưu trong <code>_width</code> và <code>_height</code>, ta cần Getter.</p>
 
     <pre data-src="s3"></pre>
+<div class="vd">
+    <button type="button" id="lesson-button-s3" data-run-source="s3" data-run-output="lesson-output-s3">Chạy Thử nghiệm Setter</button>
+    <p id="lesson-output-s3" class="out" aria-live="polite">Nhấn nút để chạy ví dụ.</p>
+</div>
     <script id="s3">
 class RectangleWithGetters {
     constructor(width, height) {
@@ -230,6 +242,10 @@ console.log(rectangleWithArea.area); // 12
 
     <h3>Ví dụ 4.2: Thêm logic định dạng dữ liệu trong Getter</h3>
     <pre data-src="s5"></pre>
+<div class="vd">
+    <button type="button" id="lesson-button-s5" data-run-source="s5" data-run-output="lesson-output-s5">Chạy Ví dụ 4.2: Thêm logic định dạng dữ liệu trong Getter</button>
+    <p id="lesson-output-s5" class="out" aria-live="polite">Nhấn nút để chạy ví dụ.</p>
+</div>
     <script id="s5">
 class FormattedRectangle {
     constructor(width, height) {
@@ -398,5 +414,55 @@ console.log(formattedRectangle.area);    // "12.0 cm²"
                 " | Area: " + rectangle.area.toFixed(1) + " cm²";
         });
     </script>
+
+<script>
+(function () {
+    function formatValue(value) {
+        if (typeof value === "string") return value;
+        if (typeof value === "undefined") return "undefined";
+        if (typeof value === "bigint") return value.toString() + "n";
+        if (typeof value === "symbol") return value.toString();
+        if (value instanceof Error) return value.name + ": " + value.message;
+        try {
+            const json = JSON.stringify(value, null, 2);
+            return json === undefined ? String(value) : json;
+        } catch {
+            return String(value);
+        }
+    }
+
+    document.querySelectorAll("[data-run-source]").forEach(function (button) {
+        button.addEventListener("click", function () {
+            const source = document.getElementById(button.dataset.runSource);
+            const output = document.getElementById(button.dataset.runOutput);
+            if (!source || !output) return;
+
+            const lines = [];
+            const capturedConsole = {
+                log: (...values) => lines.push(values.map(formatValue).join(" ")),
+                info: (...values) => lines.push(values.map(formatValue).join(" ")),
+                warn: (...values) => lines.push("Warning: " + values.map(formatValue).join(" ")),
+                error: (...values) => lines.push("Error: " + values.map(formatValue).join(" ")),
+                table: value => lines.push(formatValue(value)),
+                dir: value => lines.push(formatValue(value))
+            };
+
+            try {
+                const result = new Function("console", source.textContent)(capturedConsole);
+                if (result && typeof result.then === "function") {
+                    result.then(() => {
+                        output.textContent = lines.join("\\n") || "Ví dụ đã chạy. Không có dữ liệu được in ra.";
+                    }).catch(error => output.textContent = "Runtime error: " + error.message);
+                    return;
+                }
+                output.textContent = lines.join("\\n") || "Ví dụ đã chạy. Không có dữ liệu được in ra.";
+            } catch (error) {
+                output.textContent = "Runtime error: " + error.message;
+            }
+        });
+    });
+})();
+</script>
+
 </body>
 </html>
