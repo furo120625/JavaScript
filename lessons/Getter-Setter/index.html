@@ -5,7 +5,13 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Getter and Setter | JavaScript Learning Hub</title>
     <link rel="stylesheet" href="../../css/style.css">
+    <style>
+        .out {
+        white-space: pre-line;
+        }
+    </style>
 </head>
+
 <body class="lesson-page">
 
     <p><a href="../../index.html">← Back to lessons</a></p>
@@ -100,11 +106,11 @@ class Rectangle {
         </ol>
     </div>
 
-    <p><b>Vì sao dùng dấu gạch dưới?</b> Trong ví dụ này, <code>_width</code> và <code>_height</code> là tên quy ước để phân biệt dữ liệu lưu trữ bên trong với các thuộc tính có Setter. Dấu gạch dưới <b>không</b> tự tạo ra private field trong JavaScript.</p>
+    <p>Trong ví dụ này, <code>_width</code> và <code>_height</code> là tên quy ước để phân biệt dữ liệu lưu trữ bên trong với các thuộc tính có Setter. Dấu gạch dưới <b>không</b> tự tạo ra private field trong JavaScript.</p>
 
     <h3>Thử nghiệm Setter</h3>
     <div class="vd">
-        <p>Nhập chiều rộng và chiều cao. Bạn có thể thử số dương, số âm hoặc chữ <code>Pizza</code>.</p>
+        <p>Nhập chiều rộng và chiều cao.</p>
         <label for="width-input">Width:</label>
         <input id="width-input" type="text" value="300">
         <label for="height-input">Height:</label>
