@@ -37,11 +37,30 @@
 
     <h3>Ví dụ 1.1: Tạo một constructor function cho Car</h3>
     <pre data-src="code1"></pre>
+<div class="vd">
+<button type="button" id="lesson-button-code1">Chạy Ví dụ 1.1: Tạo một constructor function cho Car</button>
+<p id="lesson-output-code1" class="out" aria-live="polite">Nhấn nút để chạy ví dụ.</p>
+</div>
     <div class="vd">
         <button id="run1">Tạo một chiếc xe</button>
         <p id="out1" class="out result">Nhấn nút để xem object được tạo.</p>
     </div>
-    <script type="text/plain" id="code1">
+    <script id="code1">(function () {
+ const output = document.getElementById("lesson-output-code1");
+ const formatOutput = value => {
+ if (typeof value === "string") return value;
+ if (typeof value === "undefined") return "undefined";
+ if (typeof value === "bigint") return value + "n";
+ if (typeof value === "symbol") return value.toString();
+ if (value === null) return "null";
+ if (value instanceof Date) return value.toString();
+ if (typeof value === "object") { try { return JSON.stringify(value, (_, item) => typeof item === "bigint" ? item + "n" : item, 2); } catch { return String(value); } }
+ return String(value);
+};
+ const runExample = function () {
+  output.textContent = "";
+  const writeOutput = (...values) => { output.textContent += values.map(formatOutput).join(" ") + "\n"; };
+
 function Car(make, model, year, color) {
     this.make = make;
     this.model = model;
@@ -51,11 +70,15 @@ function Car(make, model, year, color) {
 
 const car1 = new Car("Ford", "Mustang", 2024, "red");
 
-console.log(car1.make);
-console.log(car1.model);
-console.log(car1.year);
-console.log(car1.color);
-    </script>
+writeOutput(car1.make);
+writeOutput(car1.model);
+writeOutput(car1.year);
+writeOutput(car1.color);
+    
+ };
+ 
+ document.getElementById("lesson-button-code1").addEventListener("click", runExample);
+})();</script>
     <script>
         document.getElementById("run1").addEventListener("click", function () {
             function CarDemo(make, model, year, color) {
@@ -82,7 +105,7 @@ console.log(car1.color);
     </p>
     <pre data-src="code2"></pre>
 <div class="vd">
-    <button type="button" id="lesson-button-code2" data-run-source="code2" data-run-output="lesson-output-code2">Chạy Ví dụ 1.2: Tham số và thuộc tính không bắt buộc trùng tên</button>
+    <button type="button" id="lesson-button-code2">Chạy Ví dụ 1.2: Tham số và thuộc tính không bắt buộc trùng tên</button>
     <p id="lesson-output-code2" class="out" aria-live="polite">Nhấn nút để chạy ví dụ.</p>
 </div>
     <script type="text/plain" id="code2">
@@ -120,6 +143,10 @@ function Car(makeName, modelName, manufactureYear, paintColor) {
 
     <h3>Ví dụ 2.1: So sánh hai object được tạo bằng cùng một constructor</h3>
     <pre data-src="code3"></pre>
+<div class="vd">
+<button type="button" id="lesson-button-code3">Chạy Ví dụ 2.1: So sánh hai object được tạo bằng cùng một constructor</button>
+<p id="lesson-output-code3" class="out" aria-live="polite">Nhấn nút để chạy ví dụ.</p>
+</div>
     <div class="vd">
         <label for="make3">Hãng xe:</label>
         <input id="make3" value="Chevrolet">
@@ -132,7 +159,22 @@ function Car(makeName, modelName, manufactureYear, paintColor) {
         <button id="run3">Tạo car2</button>
         <p id="out3" class="out result"></p>
     </div>
-    <script type="text/plain" id="code3">
+    <script id="code3">(function () {
+ const output = document.getElementById("lesson-output-code3");
+ const formatOutput = value => {
+ if (typeof value === "string") return value;
+ if (typeof value === "undefined") return "undefined";
+ if (typeof value === "bigint") return value + "n";
+ if (typeof value === "symbol") return value.toString();
+ if (value === null) return "null";
+ if (value instanceof Date) return value.toString();
+ if (typeof value === "object") { try { return JSON.stringify(value, (_, item) => typeof item === "bigint" ? item + "n" : item, 2); } catch { return String(value); } }
+ return String(value);
+};
+ const runExample = function () {
+  output.textContent = "";
+  const writeOutput = (...values) => { output.textContent += values.map(formatOutput).join(" ") + "\n"; };
+
 function Car(make, model, year, color) {
     this.make = make;
     this.model = model;
@@ -143,9 +185,13 @@ function Car(make, model, year, color) {
 const car1 = new Car("Ford", "Mustang", 2024, "red");
 const car2 = new Car("Chevrolet", "Camaro", 2025, "blue");
 
-console.log(car1);
-console.log(car2);
-    </script>
+writeOutput(car1);
+writeOutput(car2);
+    
+ };
+ 
+ document.getElementById("lesson-button-code3").addEventListener("click", runExample);
+})();</script>
     <script>
         function CarExample3(make, model, year, color) {
             this.make = make;
@@ -184,11 +230,30 @@ console.log(car2);
 
     <h3>Ví dụ 3.1: Tạo ba chiếc xe</h3>
     <pre data-src="code4"></pre>
+<div class="vd">
+<button type="button" id="lesson-button-code4">Chạy Ví dụ 3.1: Tạo ba chiếc xe</button>
+<p id="lesson-output-code4" class="out" aria-live="polite">Nhấn nút để chạy ví dụ.</p>
+</div>
     <div class="vd">
         <button id="run4">Tạo danh sách ba xe</button>
         <p id="out4" class="out result"></p>
     </div>
-    <script type="text/plain" id="code4">
+    <script id="code4">(function () {
+ const output = document.getElementById("lesson-output-code4");
+ const formatOutput = value => {
+ if (typeof value === "string") return value;
+ if (typeof value === "undefined") return "undefined";
+ if (typeof value === "bigint") return value + "n";
+ if (typeof value === "symbol") return value.toString();
+ if (value === null) return "null";
+ if (value instanceof Date) return value.toString();
+ if (typeof value === "object") { try { return JSON.stringify(value, (_, item) => typeof item === "bigint" ? item + "n" : item, 2); } catch { return String(value); } }
+ return String(value);
+};
+ const runExample = function () {
+  output.textContent = "";
+  const writeOutput = (...values) => { output.textContent += values.map(formatOutput).join(" ") + "\n"; };
+
 function Car(make, model, year, color) {
     this.make = make;
     this.model = model;
@@ -200,10 +265,14 @@ const car1 = new Car("Ford", "Mustang", 2024, "red");
 const car2 = new Car("Chevrolet", "Camaro", 2025, "blue");
 const car3 = new Car("Dodge", "Charger", 2026, "silver");
 
-console.log(car1);
-console.log(car2);
-console.log(car3);
-    </script>
+writeOutput(car1);
+writeOutput(car2);
+writeOutput(car3);
+    
+ };
+ 
+ document.getElementById("lesson-button-code4").addEventListener("click", runExample);
+})();</script>
     <script>
         document.getElementById("run4").addEventListener("click", function () {
             function CarExample4(make, model, year, color) {
@@ -237,10 +306,25 @@ console.log(car3);
     </p>
     <pre data-src="code5"></pre>
 <div class="vd">
-    <button type="button" id="lesson-button-code5" data-run-source="code5" data-run-output="lesson-output-code5">Chạy Ví dụ 3.2: Đọc thuộc tính của từng object</button>
+    <button type="button" id="lesson-button-code5">Chạy Ví dụ 3.2: Đọc thuộc tính của từng object</button>
     <p id="lesson-output-code5" class="out" aria-live="polite">Nhấn nút để chạy ví dụ.</p>
 </div>
-    <script type="text/plain" id="code5">
+    <script id="code5">(function () {
+ const output = document.getElementById("lesson-output-code5");
+ const formatOutput = value => {
+ if (typeof value === "string") return value;
+ if (typeof value === "undefined") return "undefined";
+ if (typeof value === "bigint") return value + "n";
+ if (typeof value === "symbol") return value.toString();
+ if (value === null) return "null";
+ if (value instanceof Date) return value.toString();
+ if (typeof value === "object") { try { return JSON.stringify(value, (_, item) => typeof item === "bigint" ? item + "n" : item, 2); } catch { return String(value); } }
+ return String(value);
+};
+ const runExample = function () {
+  output.textContent = "";
+  const writeOutput = (...values) => { output.textContent += values.map(formatOutput).join(" ") + "\n"; };
+
 function Car(make, model, year, color) {
     this.make = make;
     this.model = model;
@@ -254,10 +338,14 @@ const car3 = new Car("Dodge", "Charger", 2026, "silver");
 
 car1.color = "black";
 
-console.log(car1.color); // black
-console.log(car2.color); // blue
-console.log(car3.color); // silver
-    </script>
+writeOutput(car1.color); // black
+writeOutput(car2.color); // blue
+writeOutput(car3.color); // silver
+    
+ };
+ 
+ document.getElementById("lesson-button-code5").addEventListener("click", runExample);
+})();</script>
 
     <hr>
 
@@ -269,6 +357,10 @@ console.log(car3.color); // silver
 
     <h3>Ví dụ 4.1: Method <code>drive()</code></h3>
     <pre data-src="code6"></pre>
+<div class="vd">
+<button type="button" id="lesson-button-code6">Chạy Ví dụ 4.1: Method drive()</button>
+<p id="lesson-output-code6" class="out" aria-live="polite">Nhấn nút để chạy ví dụ.</p>
+</div>
     <div class="vd">
         <label for="carSelect6">Chọn xe:</label>
         <select id="carSelect6">
@@ -279,7 +371,22 @@ console.log(car3.color); // silver
         <button id="run6">Drive</button>
         <p id="out6" class="out result"></p>
     </div>
-    <script type="text/plain" id="code6">
+    <script id="code6">(function () {
+ const output = document.getElementById("lesson-output-code6");
+ const formatOutput = value => {
+ if (typeof value === "string") return value;
+ if (typeof value === "undefined") return "undefined";
+ if (typeof value === "bigint") return value + "n";
+ if (typeof value === "symbol") return value.toString();
+ if (value === null) return "null";
+ if (value instanceof Date) return value.toString();
+ if (typeof value === "object") { try { return JSON.stringify(value, (_, item) => typeof item === "bigint" ? item + "n" : item, 2); } catch { return String(value); } }
+ return String(value);
+};
+ const runExample = function () {
+  output.textContent = "";
+  const writeOutput = (...values) => { output.textContent += values.map(formatOutput).join(" ") + "\n"; };
+
 function Car(make, model, year, color) {
     this.make = make;
     this.model = model;
@@ -287,7 +394,7 @@ function Car(make, model, year, color) {
     this.color = color;
 
     this.drive = function () {
-        console.log(`You drive the ${this.model}`);
+        writeOutput(`You drive the ${this.model}`);
     };
 }
 
@@ -298,7 +405,11 @@ const car3 = new Car("Dodge", "Charger", 2026, "silver");
 car1.drive();
 car2.drive();
 car3.drive();
-    </script>
+    
+ };
+ 
+ document.getElementById("lesson-button-code6").addEventListener("click", runExample);
+})();</script>
     <script>
         function CarExample6(make, model, year, color) {
             this.make = make;
@@ -412,54 +523,7 @@ const person2 = new PersonClass("An");
         });
     </script>
 
-<script>
-(function () {
-    function formatValue(value) {
-        if (typeof value === "string") return value;
-        if (typeof value === "undefined") return "undefined";
-        if (typeof value === "bigint") return value.toString() + "n";
-        if (typeof value === "symbol") return value.toString();
-        if (value instanceof Error) return value.name + ": " + value.message;
-        try {
-            const json = JSON.stringify(value, null, 2);
-            return json === undefined ? String(value) : json;
-        } catch {
-            return String(value);
-        }
-    }
 
-    document.querySelectorAll("[data-run-source]").forEach(function (button) {
-        button.addEventListener("click", function () {
-            const source = document.getElementById(button.dataset.runSource);
-            const output = document.getElementById(button.dataset.runOutput);
-            if (!source || !output) return;
-
-            const lines = [];
-            const capturedConsole = {
-                log: (...values) => lines.push(values.map(formatValue).join(" ")),
-                info: (...values) => lines.push(values.map(formatValue).join(" ")),
-                warn: (...values) => lines.push("Warning: " + values.map(formatValue).join(" ")),
-                error: (...values) => lines.push("Error: " + values.map(formatValue).join(" ")),
-                table: value => lines.push(formatValue(value)),
-                dir: value => lines.push(formatValue(value))
-            };
-
-            try {
-                const result = new Function("console", source.textContent)(capturedConsole);
-                if (result && typeof result.then === "function") {
-                    result.then(() => {
-                        output.textContent = lines.join("\n") || "Ví dụ đã chạy. Không có dữ liệu được in ra.";
-                    }).catch(error => output.textContent = "Runtime error: " + error.message);
-                    return;
-                }
-                output.textContent = lines.join("\n") || "Ví dụ đã chạy. Không có dữ liệu được in ra.";
-            } catch (error) {
-                output.textContent = "Runtime error: " + error.message;
-            }
-        });
-    });
-})();
-</script>
 
 </body>
 </html>
