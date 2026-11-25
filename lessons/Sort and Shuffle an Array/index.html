@@ -1,0 +1,775 @@
+
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sorting & Shuffle an Array | JavaScript Learning Hub</title>
+    <link rel="stylesheet" href="../../css/style.css">
+</head>
+
+<body class="lesson-page">
+
+    <p><a href="../../index.html">← Back to lessons</a></p>
+
+    <h1>Array Sorting & Shuffling</h1>
+
+    <p>
+        Trong JavaScript, Array cung cấp các phương thức giúp sắp xếp
+        và thay đổi thứ tự các phần tử. Bài học này tập trung vào hai
+        thao tác: Sorting và Shuffle an Array.
+    </p>
+
+    <p>
+        <a href="#sorting">1. Sorting</a> |
+        <a href="#shuffle">2. Shuffle an Array</a>
+    </p>
+
+    <hr>
+
+    <h2 id="sorting">1. Sorting</h2>
+
+    <p>
+        Sorting là quá trình sắp xếp các phần tử trong Array theo một
+        thứ tự nhất định, chẳng hạn như tăng dần, giảm dần hoặc theo
+        thứ tự bảng chữ cái.
+    </p>
+
+    <h3>1.1. sort()</h3>
+
+    <p>
+        Phương thức <code>sort()</code> được sử dụng để sắp xếp các
+        phần tử của Array. Mặc định, JavaScript chuyển các phần tử
+        thành String rồi so sánh chúng theo thứ tự giá trị Unicode.
+    </p>
+
+    <pre data-src="s1"></pre>
+    <div class="vd">
+        <button id="b1">Sort and Print</button>
+        <p id="o1" class="out"></p>
+    </div>
+    <script id="s1">
+const fruits = ["Banana", "Orange", "Apple", "Mango"];
+fruits.sort();
+document.getElementById("b1").onclick = function () {
+fruits.sort();
+document.getElementById("o1").innerHTML = fruits.join(", ");
+};
+    </script>
+
+    <div class="kn">
+        <b>Lưu ý:</b>
+        <ul>
+            <li>
+                <code>sort()</code> thay đổi trực tiếp Array ban đầu
+                (mutates the original array).
+            </li>
+            <li>
+                Mặc định, các phần tử được so sánh dưới dạng String,
+                không phải Number.
+            </li>
+            <li>
+                Vì vậy, không nên dùng <code>sort()</code> mặc định
+                để sắp xếp các số theo thứ tự số học.
+            </li>
+        </ul>
+    </div>
+
+    <h3>1.2. Sorting Numbers</h3>
+
+    <p>
+        Khi sắp xếp Number, ta truyền một hàm so sánh (compare function)
+        vào <code>sort()</code>.
+    </p>
+
+    <p>
+        Cú pháp:
+    </p>
+
+    <pre data-src="s2"></pre>
+    <script  id="s2">
+array.sort(function(a, b) {
+    return a - b;
+});
+    </script>
+
+    <p>
+        Hàm so sánh nhận hai phần tử <code>a</code> và <code>b</code>,
+        sau đó trả về một giá trị để xác định thứ tự của chúng.
+    </p>
+
+    <table>
+        <thead>
+            <tr>
+                <th>Kết quả</th>
+                <th>Ý nghĩa</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>Giá trị nhỏ hơn 0</td>
+                <td>Đặt a trước b.</td>
+            </tr>
+            <tr>
+                <td>Giá trị lớn hơn 0</td>
+                <td>Đặt b trước a.</td>
+            </tr>
+            <tr>
+                <td>Giá trị bằng 0</td>
+                <td>Giữ nguyên thứ tự tương đối của a và b.</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <h3>1.3. Ascending Order (Tăng dần)</h3>
+
+    <p>
+        Để sắp xếp các số từ nhỏ đến lớn, sử dụng biểu thức
+        <code>a - b</code>.
+    </p>
+
+    <pre data-src="s3"></pre>
+    <div class="vd">
+        <button id="b3">Sort and Print</button>
+        <p id="o3" class="out"></p>
+    </div>
+    <script  id="s3">
+const numbers3 = [40, 10, 100, 5, 25];
+document.getElementById("b3").onclick = function () {
+    numbers3.sort(function(a, b) {
+        return a - b;
+    });
+    document.getElementById("o3").innerHTML = numbers3.join(", ");
+}
+// [5, 10, 25, 40, 100]
+    </script>
+
+    <h3>1.4. Descending Order (Giảm dần)</h3>
+    <p>
+        Để sắp xếp các số từ lớn đến nhỏ, sử dụng biểu thức
+        <code>b - a</code>.
+    </p>
+
+    <pre data-src="s5"></pre>
+    <div class="vd">
+        <button id="b5">Sort and Print</button>
+        <p id="o5" class="out"></p>
+    </div>
+    <script  id="s5">
+    const numbers5 = [40, 10, 100, 5, 25];
+    document.getElementById("b5").onclick = function () {
+    numbers5.sort(function(a, b) {
+        return b - a;
+    });
+    document.getElementById("o5").innerHTML = numbers5.join(", ");
+}
+    </script>
+
+    <div class="kn">
+        <b>Ghi nhớ:</b>
+        <ul>
+            <li><code>a - b</code>: tăng dần.</li>
+            <li><code>b - a</code>: giảm dần.</li>
+        </ul>
+    </div>
+
+    <h3>1.5. Sorting Strings</h3>
+
+    <p>
+        Đối với String, có thể sử dụng <code>sort()</code> để sắp xếp
+        theo thứ tự từ điển.
+    </p>
+
+    <pre data-src="s6"></pre>
+    <div class="vd">
+        <button id="b6">Sort and Print</button>
+        <p id="o6" class="out"></p>
+    </div>
+    <script  id="s6">
+const names6 = ["Phong", "An", "Minh", "Bao"];
+document.getElementById("b6").onclick = function () {
+    names6.sort();
+    document.getElementById("o6").innerHTML = names6.join(", ");
+}
+// ["An", "Bao", "Minh", "Phong"]
+    </script>
+
+    <p>
+        Nếu muốn so sánh String linh hoạt hơn, đặc biệt khi có chữ hoa,
+        chữ thường hoặc ký tự có dấu, có thể sử dụng
+        <code>localeCompare()</code>.
+    </p>
+
+    <pre data-src="s7"></pre>
+    <div class="vd">
+        <button id="b7">Sort and Print</button>
+        <p id="o7" class="out"></p>
+    </div>
+    <script  id="s7">
+const names7 = ["Phong", "an", "Minh", "bao"];
+document.getElementById("b7").onclick = function(){
+    names7.sort((a, b) => a.localeCompare(b));
+document.getElementById("o7").innerHTML = names7.join(", ");
+}
+
+    </script>
+
+    <p>
+        Có thể chỉ định locale và các tùy chọn so sánh:
+    </p>
+
+    <pre data-src="s8"></pre>
+    <div class="vd">
+        <button id="b8">Sort and Print</button>
+        <p id="o8" class="out"></p>
+    </div>
+    <script  id="s8">
+const names8 = ["Phong", "an", "Minh", "bao"];
+document.getElementById("b8").onclick = function() {
+names8.sort((a, b) =>
+    a.localeCompare(b, "vi", {
+        sensitivity: "base"
+    })
+);
+document.getElementById("o8").innerHTML = names8.join(", ");
+}
+
+console.log(names);
+    </script>
+
+    <h3>1.6. Sorting Objects</h3>
+
+    <p>
+        Khi Array chứa các Object, ta có thể sắp xếp chúng dựa trên
+        một thuộc tính cụ thể.
+    </p>
+
+    <pre data-src="s9"></pre>
+    <script  id="s9">
+const students = [
+    { name: "Phong", age: 19 },
+    { name: "Minh", age: 21 },
+    { name: "An", age: 18 },
+    { name: "Bao", age: 20 }
+];
+
+// Sort by age: ascending
+students.sort((a, b) => a.age - b.age);
+
+console.log(students);
+    </script>
+
+    <p>
+        Nếu muốn sắp xếp theo tên, sử dụng
+        <code>localeCompare()</code>:
+    </p>
+
+    <pre data-src="s10"></pre>
+    <script  id="s10">
+const students = [
+    { name: "Phong", age: 19 },
+    { name: "Minh", age: 21 },
+    { name: "An", age: 18 },
+    { name: "Bao", age: 20 }
+];
+
+students.sort((a, b) =>
+    a.name.localeCompare(b.name)
+);
+
+console.log(students);
+    </script>
+
+    <h3>1.7. toSorted()</h3>
+
+    <p>
+        <code>toSorted()</code> hoạt động tương tự <code>sort()</code>,
+        nhưng trả về một Array mới đã được sắp xếp và không thay đổi
+        Array ban đầu.
+    </p>
+
+    <pre data-src="s11"></pre>
+    <script  id="s11">
+const numbers = [40, 10, 100, 5, 25];
+
+const sortedNumbers = numbers.toSorted((a, b) => a - b);
+
+console.log(sortedNumbers);
+// [5, 10, 25, 40, 100]
+
+console.log(numbers);
+// [40, 10, 100, 5, 25]
+    </script>
+
+    <div class="kn">
+        <b>So sánh sort() và toSorted():</b>
+        <table>
+            <thead>
+                <tr>
+                    <th>Method</th>
+                    <th>Thay đổi Array gốc?</th>
+                    <th>Trả về</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>sort()</td>
+                    <td>Có</td>
+                    <td>Array đã sắp xếp</td>
+                </tr>
+                <tr>
+                    <td>toSorted()</td>
+                    <td>Không</td>
+                    <td>Array mới đã sắp xếp</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <h3>1.8. Interactive Example: Sorting</h3>
+
+    <div class="vd">
+        <p>
+            Nhập một danh sách số, phân cách bằng dấu phẩy.
+            Chọn thứ tự sắp xếp để xem kết quả.
+        </p>
+
+        <label for="sort-input">Numbers:</label>
+        <input
+            id="sort-input"
+            value="40, 10, 100, 5, 25"
+        >
+
+        <label for="sort-order">Order:</label>
+        <select id="sort-order">
+            <option value="asc">Ascending</option>
+            <option value="desc">Descending</option>
+        </select>
+
+        <button id="sort-button">Sort Array</button>
+
+        <p id="sort-output" class="out" aria-live="polite"></p>
+    </div>
+
+    <hr>
+
+    <h2 id="shuffle">2. Shuffle an Array</h2>
+
+    <p>
+        Shuffle an Array là thao tác xáo trộn thứ tự các phần tử
+        trong Array một cách ngẫu nhiên.
+    </p>
+
+    <p>
+        Ví dụ, một Array ban đầu:
+    </p>
+
+    <pre data-src="s12"></pre>
+    <script  id="s12">
+const numbers = [1, 2, 3, 4, 5];
+    </script>
+
+    <p>
+        Sau khi Shuffle, Array có thể trở thành:
+    </p>
+
+    <pre data-src="s13"></pre>
+    <script  id="s13">
+[3, 1, 5, 2, 4]
+    </script>
+
+    <p>
+        Mỗi lần Shuffle có thể tạo ra một thứ tự khác nhau.
+    </p>
+
+    <h3>2.1. Math.random()</h3>
+
+    <p>
+        <code>Math.random()</code> trả về một số giả ngẫu nhiên
+        trong khoảng từ 0 (bao gồm) đến 1 (không bao gồm).
+    </p>
+
+    <pre data-src="s14"></pre>
+    <script  id="s14">
+console.log(Math.random());
+
+// Ví dụ kết quả:
+// 0.123456...
+// 0.789012...
+// 0.456789...
+    </script>
+
+    <p>
+        Có thể kết hợp <code>Math.random()</code> với
+        <code>Math.floor()</code> để tạo một số nguyên ngẫu nhiên.
+    </p>
+
+    <pre data-src="s15"></pre>
+    <script  id="s15">
+// Random integer from 0 to 9
+const randomNumber = Math.floor(Math.random() * 10);
+
+console.log(randomNumber);
+    </script>
+
+    <h3>2.2. Fisher-Yates Shuffle Algorithm</h3>
+
+    <p>
+        Fisher-Yates là thuật toán phổ biến để xáo trộn các phần tử
+        trong một Array. Thuật toán duyệt Array từ cuối về đầu và
+        hoán đổi mỗi phần tử với một phần tử được chọn ngẫu nhiên
+        trong phạm vi chưa được xử lý.
+    </p>
+
+    <p>
+        Các bước thực hiện:
+    </p>
+
+    <ol>
+        <li>Bắt đầu từ phần tử cuối cùng của Array.</li>
+        <li>
+            Chọn ngẫu nhiên một index từ 0 đến index hiện tại.
+        </li>
+        <li>
+            Hoán đổi phần tử tại index hiện tại với phần tử
+            tại index ngẫu nhiên.
+        </li>
+        <li>
+            Di chuyển về phần tử đứng trước và tiếp tục quá trình.
+        </li>
+        <li>
+            Dừng lại khi đã xử lý đến phần tử đầu tiên.
+        </li>
+    </ol>
+
+    <h3>2.3. Implement Fisher-Yates</h3>
+
+    <pre data-src="s16"></pre>
+    <script  id="s16">
+const numbers = [1, 2, 3, 4, 5];
+
+for (let i = numbers.length - 1; i > 0; i--) {
+    const randomIndex = Math.floor(Math.random() * (i + 1));
+
+    // Swap elements
+    [numbers[i], numbers[randomIndex]] =
+        [numbers[randomIndex], numbers[i]];
+}
+
+console.log(numbers);
+    </script>
+
+    <div class="kn">
+        <b>Phân tích thuật toán:</b>
+        <ul>
+            <li>
+                <code>numbers.length - 1</code>: bắt đầu từ index cuối cùng.
+            </li>
+            <li>
+                <code>i > 0</code>: tiếp tục cho đến khi xử lý phần tử đầu.
+            </li>
+            <li>
+                <code>Math.random() * (i + 1)</code>: tạo số trong khoảng
+                từ 0 đến nhỏ hơn i + 1.
+            </li>
+            <li>
+                <code>Math.floor()</code>: làm tròn xuống để nhận index
+                nguyên từ 0 đến i.
+            </li>
+            <li>
+                Destructuring Assignment được dùng để hoán đổi hai phần tử
+                mà không cần biến tạm.
+            </li>
+        </ul>
+    </div>
+
+    <h3>2.4. Shuffle an Array using a Function</h3>
+
+    <p>
+        Có thể đóng gói thuật toán Fisher-Yates thành một Function
+        để tái sử dụng.
+    </p>
+
+    <pre data-src="s17"></pre>
+    <script  id="s17">
+function shuffleArray(array) {
+    const shuffled = [...array];
+
+    for (let i = shuffled.length - 1; i > 0; i--) {
+        const randomIndex = Math.floor(Math.random() * (i + 1));
+
+        [shuffled[i], shuffled[randomIndex]] =
+            [shuffled[randomIndex], shuffled[i]];
+    }
+
+    return shuffled;
+}
+
+const numbers = [1, 2, 3, 4, 5];
+
+const result = shuffleArray(numbers);
+
+console.log("Original:", numbers);
+console.log("Shuffled:", result);
+    </script>
+
+    <div class="kn">
+        <b>Tại sao sử dụng <code>[...array]</code>?</b>
+        <p>
+            Spread Operator tạo một Array mới chứa các phần tử của
+            Array ban đầu. Nhờ vậy, thuật toán chỉ thay đổi bản copy,
+            không làm thay đổi Array gốc.
+        </p>
+        <p>
+            Đây là một Shallow Copy. Nếu Array chứa Object hoặc Array
+            lồng nhau, các phần tử tham chiếu vẫn có thể trỏ đến cùng
+            một Object ban đầu.
+        </p>
+    </div>
+
+    <h3>2.5. A Common but Incorrect Shuffle</h3>
+
+    <p>
+        Một cách thường thấy là sử dụng <code>sort()</code> với một
+        hàm so sánh ngẫu nhiên:
+    </p>
+
+    <pre data-src="s18"></pre>
+    <script  id="s18">
+const numbers = [1, 2, 3, 4, 5];
+
+numbers.sort(() => Math.random() - 0.5);
+
+console.log(numbers);
+    </script>
+
+    <div class="kn">
+        <b>Vì sao không nên sử dụng cách này?</b>
+        <ul>
+            <li>
+                Hàm so sánh không tạo ra một thứ tự nhất quán giữa
+                các phần tử.
+            </li>
+            <li>
+                Thuật toán sắp xếp không được thiết kế để thực hiện
+                việc xáo trộn ngẫu nhiên.
+            </li>
+            <li>
+                Các hoán vị không có xác suất xuất hiện đồng đều.
+            </li>
+            <li>
+                Kết quả có thể khác nhau tùy cách triển khai thuật toán
+                sắp xếp của JavaScript engine.
+            </li>
+        </ul>
+        <p>
+            Vì vậy, nên sử dụng Fisher-Yates khi cần Shuffle một Array
+            đúng cách.
+        </p>
+    </div>
+
+    <h3>2.6. Interactive Example: Shuffle an Array</h3>
+
+    <div class="vd">
+        <p>
+            Nhập các phần tử, phân cách bằng dấu phẩy, sau đó nhấn
+            Shuffle để xáo trộn Array.
+        </p>
+
+        <label for="shuffle-input">Array:</label>
+        <input
+            id="shuffle-input"
+            value="Apple, Banana, Orange, Mango, Grape"
+        >
+
+        <button id="shuffle-button">Shuffle Array</button>
+
+        <p id="shuffle-output" class="out" aria-live="polite">
+            Kết quả sẽ xuất hiện tại đây.
+        </p>
+    </div>
+
+    <h3>2.7. Time Complexity</h3>
+
+    <table>
+        <thead>
+            <tr>
+                <th>Algorithm</th>
+                <th>Time Complexity</th>
+                <th>Space Complexity</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>Fisher-Yates</td>
+                <td>O(n)</td>
+                <td>O(1) nếu xử lý trực tiếp trên Array</td>
+            </tr>
+            <tr>
+                <td>Fisher-Yates với bản copy</td>
+                <td>O(n)</td>
+                <td>O(n)</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <p>
+        Trong đó, n là số lượng phần tử của Array.
+    </p>
+
+    <hr>
+
+    <h2>Summary</h2>
+
+    <table>
+        <thead>
+            <tr>
+                <th>Method / Concept</th>
+                <th>Công dụng</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>sort()</td>
+                <td>Sắp xếp Array và thay đổi Array gốc.</td>
+            </tr>
+            <tr>
+                <td>toSorted()</td>
+                <td>Sắp xếp và trả về Array mới.</td>
+            </tr>
+            <tr>
+                <td>Compare Function</td>
+                <td>Quy định cách so sánh hai phần tử.</td>
+            </tr>
+            <tr>
+                <td>a - b</td>
+                <td>Sắp xếp Number tăng dần.</td>
+            </tr>
+            <tr>
+                <td>b - a</td>
+                <td>Sắp xếp Number giảm dần.</td>
+            </tr>
+            <tr>
+                <td>localeCompare()</td>
+                <td>So sánh String theo quy tắc locale.</td>
+            </tr>
+            <tr>
+                <td>Math.random()</td>
+                <td>Tạo số giả ngẫu nhiên từ 0 đến nhỏ hơn 1.</td>
+            </tr>
+            <tr>
+                <td>Fisher-Yates</td>
+                <td>Xáo trộn Array với các hoán vị đồng xác suất.</td>
+            </tr>
+            <tr>
+                <td>Spread Operator</td>
+                <td>Tạo bản copy nông của Array.</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <div class="kn">
+        <b>Key Takeaways:</b>
+        <ul>
+            <li>
+                Mặc định <code>sort()</code> sắp xếp theo String,
+                không phải thứ tự số học.
+            </li>
+            <li>
+                Dùng <code>(a, b) => a - b</code> để sắp xếp số tăng dần.
+            </li>
+            <li>
+                Dùng <code>(a, b) => b - a</code> để sắp xếp số giảm dần.
+            </li>
+            <li>
+                <code>sort()</code> thay đổi Array ban đầu,
+                còn <code>toSorted()</code> không thay đổi Array gốc.
+            </li>
+            <li>
+                Fisher-Yates là thuật toán phù hợp để Shuffle Array.
+            </li>
+            <li>
+                Dùng Spread Operator nếu muốn Shuffle một bản copy
+                thay vì Array gốc.
+            </li>
+        </ul>
+    </div>
+
+    <script>
+        // Display source code without executing the examples.
+        document.querySelectorAll("pre[data-src]").forEach(function (pre) {
+            const source = document.getElementById(pre.dataset.src);
+
+            if (source) {
+                pre.textContent = source.textContent.trim();
+            }
+        });
+
+        // 1. Sorting
+        document.getElementById("sort-button").addEventListener("click", function () {
+            const input = document.getElementById("sort-input").value;
+            const order = document.getElementById("sort-order").value;
+            const output = document.getElementById("sort-output");
+
+            const numbers = input.split(",").map(value => value.trim());
+
+            if (
+                numbers.length === 0 ||
+                numbers.some(value => value === "" || !Number.isFinite(Number(value)))
+            ) {
+                output.textContent = "Vui lòng nhập danh sách số hợp lệ.";
+                return;
+            }
+
+            const sortedNumbers = numbers.map(Number);
+
+            if (order === "asc") {
+                sortedNumbers.sort((a, b) => a - b);
+            } else {
+                sortedNumbers.sort((a, b) => b - a);
+            }
+
+            output.textContent =
+                "Original: [" + numbers.join(", ") + "]" +
+                "\nSorted: [" + sortedNumbers.join(", ") + "]" +
+                "\nOrder: " + order;
+        });
+
+        // 2. Shuffle an Array
+        function shuffleArray(array) {
+            const shuffled = [...array];
+
+            for (let i = shuffled.length - 1; i > 0; i--) {
+                const randomIndex = Math.floor(Math.random() * (i + 1));
+
+                [shuffled[i], shuffled[randomIndex]] =
+                    [shuffled[randomIndex], shuffled[i]];
+            }
+
+            return shuffled;
+        }
+
+        document.getElementById("shuffle-button").addEventListener("click", function () {
+            const input = document.getElementById("shuffle-input").value;
+            const output = document.getElementById("shuffle-output");
+
+            const original = input
+                .split(",")
+                .map(value => value.trim())
+                .filter(value => value !== "");
+
+            if (original.length < 2) {
+                output.textContent = "Vui lòng nhập ít nhất hai phần tử.";
+                return;
+            }
+
+            const shuffled = shuffleArray(original);
+
+            output.textContent =
+                "Original: [" + original.join(", ") + "]" +
+                "\nShuffled: [" + shuffled.join(", ") + "]";
+        });
+    </script>
+
+</body>
+</html>

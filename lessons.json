@@ -1,19 +1,11 @@
 [
     {
-        "title": "Arrays",
-        "path": "lessons/Arrays/"
-    },
-    {
-        "title": "Classes",
-        "path": "lessons/Classes/"
-    },
-    {
-        "title": "Dates",
-        "path": "lessons/Dates/"
-    },
-    {
         "title": "Functions",
         "path": "lessons/Functions/"
+    },
+    {
+        "title": "Timer",
+        "path": "lessons/Timer/"
     },
     {
         "title": "Objects",
@@ -24,12 +16,24 @@
         "path": "lessons/Scope/"
     },
     {
-        "title": "Sets",
-        "path": "lessons/Sets/"
+        "title": "Dates",
+        "path": "lessons/Dates/"
     },
     {
-        "title": "Timer",
-        "path": "lessons/Timer/"
+        "title": "Arrays",
+        "path": "lessons/Arrays/"
+    },
+    {
+        "title": "Data Types",
+        "path": "lessons/Data Types/"
+    },
+    {
+        "title": "Classes",
+        "path": "lessons/Classes/"
+    },
+    {
+        "title": "Sets",
+        "path": "lessons/Sets/"
     },
     {
         "title": "Constructor",
@@ -50,5 +54,9 @@
     {
         "title":"Destructoring",
         "path": "lessons/Destructoring/"
+    },
+    {
+        "title": "Sorting & Shuffle an Array",
+        "path": "lessons/Sort and Shuffle an Array/"
     }
 ]

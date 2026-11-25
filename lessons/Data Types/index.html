@@ -1,0 +1,1756 @@
+
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>JavaScript Data Types | JavaScript Learning Hub</title>
+    <link rel="stylesheet" href="../../css/style.css">
+    <style>
+        .out {
+            white-space: pre-line;
+        }
+    </style>
+</head>
+
+<body class="lesson-page">
+
+    <p><a href="../../index.html">← Back to lessons</a></p>
+
+    <h1>JavaScript Data Types</h1>
+    <p>
+        Data Types (kiểu dữ liệu) xác định loại giá trị mà một biến có thể
+        lưu trữ và những thao tác có thể thực hiện trên giá trị đó.
+        JavaScript có 7 kiểu dữ liệu nguyên thủy (Primitive) và một nhóm
+        kiểu dữ liệu Object.
+    </p>
+
+    <p>
+        <a href="#sec1">1. Data Types</a> |
+        <a href="#sec2">2. Primitive Data</a> |
+        <a href="#sec3">3. Object Types</a> |
+        <a href="#sec4">4. Symbols</a> |
+        <a href="#sec5">5. typeof</a> |
+        <a href="#sec6">6. undefined</a> |
+        <a href="#sec7">7. NaN</a> |
+        <a href="#sec8">8. toString()</a> |
+        <a href="#sec9">9. toLocaleString()</a> |
+        <a href="#sec10">10. Type Coercion</a> |
+        <a href="#sec11">11. Type Conversion</a> |
+        <a href="#sec12">12. Destructuring</a>
+    </p>
+
+    <hr>
+    <h2 id="sec1">1. JavaScript Data Types</h2>
+
+    <div class="kn">
+        <ol>
+            <li>
+                <b>Data Type:</b> kiểu dữ liệu xác định loại giá trị được
+                lưu trữ trong biến.
+            </li>
+            <li>
+                <b>Primitive Types:</b> gồm 7 kiểu dữ liệu nguyên thủy:
+                String, Number, BigInt, Boolean, Undefined, Null và Symbol.
+            </li>
+            <li>
+                <b>Object Type:</b> nhóm kiểu dữ liệu phức hợp, có thể
+                chứa nhiều giá trị và thuộc tính khác nhau.
+            </li>
+            <li>
+                <b>Dynamic Typing:</b> JavaScript cho phép một biến nhận
+                các kiểu dữ liệu khác nhau trong quá trình thực thi.
+            </li>
+        </ol>
+    </div>
+
+    <h3>Ví dụ 1.1: Các kiểu dữ liệu trong JavaScript</h3>
+
+    <pre data-src="s1"></pre>
+    <script  id="s1">
+// Number
+let length = 16;
+let weight = 7.5;
+
+// BigInt
+let largeNumber = 1234567890123456789012345n;
+
+// String
+let color = "Yellow";
+let lastName = "Johnson";
+
+// Boolean
+let isStudent = true;
+let isWorking = false;
+
+// Undefined
+let unknown;
+
+// Null
+let emptyValue = null;
+
+// Symbol
+let id = Symbol("id");
+
+// Object
+let person = {
+    firstName: "John",
+    lastName: "Doe"
+};
+
+// Array Object
+let cars = ["Saab", "Volvo", "BMW"];
+
+// Date Object
+let date = new Date("2022-03-25");
+    </script>
+
+    <h3>Ví dụ 1.2: JavaScript sử dụng Dynamic Typing</h3>
+
+    <p>
+        Một biến có thể thay đổi kiểu dữ liệu trong quá trình thực thi.
+        Điều này không có nghĩa là giá trị cũ bị chuyển đổi tại chỗ,
+        mà biến được gán một giá trị mới thuộc kiểu dữ liệu khác.
+    </p>
+
+    <pre data-src="s2"></pre>
+    <script  id="s2">
+let value;
+
+value = 10;
+console.log(value); // 10 (Number)
+
+value = "Hello";
+console.log(value); // Hello (String)
+
+value = true;
+console.log(value); // true (Boolean)
+    </script>
+
+    <h3>Ví dụ 1.3: Thứ tự thực hiện phép cộng</h3>
+
+    <p>
+        JavaScript thực hiện các biểu thức từ trái sang phải.
+        Khi toán tử <code>+</code> gặp một String, phép cộng có thể trở
+        thành phép nối chuỗi.
+    </p>
+
+    <pre data-src="s3"></pre>
+    <script  id="s3">
+let result1 = 16 + "Volvo";
+let result2 = 16 + 4 + "Volvo";
+let result3 = "Volvo" + 16 + 4;
+
+console.log(result1); // "16Volvo"
+console.log(result2); // "20Volvo"
+console.log(result3); // "Volvo164"
+    </script>
+
+    <div class="kn">
+        <b>Phân tích:</b>
+        <ul>
+            <li>
+                <code>16 + "Volvo"</code>: Number được chuyển thành String
+                rồi nối với "Volvo".
+            </li>
+            <li>
+                <code>16 + 4 + "Volvo"</code>: phép cộng đầu tiên thực hiện
+                với hai Number, sau đó mới nối chuỗi.
+            </li>
+            <li>
+                <code>"Volvo" + 16 + 4</code>: từ trái sang phải, các giá
+                trị tiếp theo đều được nối thành String.
+            </li>
+        </ul>
+    </div>
+
+    <div class="vd">
+        <p>Thử thay đổi hai toán hạng và quan sát kết quả của toán tử +.</p>
+
+        <label for="type-value-a">Giá trị A:</label>
+        <input id="type-value-a" value="16">
+
+        <label for="type-value-b">Giá trị B:</label>
+        <input id="type-value-b" value="Volvo">
+
+        <button id="type-add">Thực hiện phép cộng</button>
+
+        <p id="type-add-output" class="out" aria-live="polite">
+            Kết quả sẽ xuất hiện tại đây.
+        </p>
+    </div>
+
+    <hr>
+    <h2 id="sec2">2. JavaScript Primitive Data</h2>
+
+    <p>
+        Primitive Data là các kiểu dữ liệu nguyên thủy. Mỗi giá trị
+        primitive là một giá trị đơn và không chứa các thuộc tính hoặc
+        phương thức riêng như Object.
+    </p>
+
+    <div class="kn">
+        <b>7 Primitive Data Types:</b>
+        <ol>
+            <li><b>String:</b> chuỗi ký tự.</li>
+            <li><b>Number:</b> số nguyên và số thực.</li>
+            <li><b>BigInt:</b> số nguyên có độ lớn tùy ý.</li>
+            <li><b>Boolean:</b> true hoặc false.</li>
+            <li><b>Undefined:</b> giá trị chưa được xác định.</li>
+            <li><b>Null:</b> biểu thị sự vắng mặt có chủ đích của giá trị.</li>
+            <li><b>Symbol:</b> định danh duy nhất.</li>
+        </ol>
+    </div>
+
+    <h3>Ví dụ 2.1: String</h3>
+
+    <p>
+        String được sử dụng để lưu trữ văn bản. Có thể khai báo bằng
+        dấu nháy đơn hoặc dấu nháy kép.
+    </p>
+
+    <pre data-src="s4"></pre>
+    <script  id="s4">
+let firstName = "Phong";
+let lastName = 'Dinh';
+
+let sentence = "It's a beautiful day";
+let quote = 'He said "Hello"';
+
+console.log(firstName);
+console.log(lastName);
+console.log(sentence);
+console.log(quote);
+    </script>
+
+    <h3>Ví dụ 2.2: Number</h3>
+
+    <p>
+        JavaScript sử dụng kiểu Number cho cả số nguyên và số thực.
+        Kiểu này cũng bao gồm các giá trị đặc biệt như Infinity,
+        -Infinity và NaN.
+    </p>
+
+    <pre data-src="s5"></pre>
+    <script  id="s5">
+let integer = 100;
+let decimal = 3.14;
+
+let positiveInfinity = Infinity;
+let negativeInfinity = -Infinity;
+
+console.log(integer);
+console.log(decimal);
+console.log(positiveInfinity);
+console.log(negativeInfinity);
+    </script>
+
+    <h3>Ví dụ 2.3: BigInt</h3>
+
+    <p>
+        BigInt được sử dụng khi cần biểu diễn số nguyên lớn hơn giới hạn
+        an toàn của Number.
+    </p>
+
+    <pre data-src="s6"></pre>
+    <script  id="s6">
+let normalNumber = 9007199254740991;
+
+let bigNumber = 9007199254740993n;
+
+console.log(normalNumber);
+console.log(bigNumber);
+
+console.log(typeof bigNumber); // "bigint"
+    </script>
+
+    <div class="kn">
+        <b>Lưu ý:</b>
+        <ul>
+            <li>
+                Có thể tạo BigInt bằng cách thêm hậu tố <code>n</code>
+                vào một số nguyên.
+            </li>
+            <li>
+                Có thể sử dụng hàm <code>BigInt()</code> để chuyển một
+                giá trị phù hợp thành BigInt.
+            </li>
+            <li>
+                Không thể thực hiện phép toán trực tiếp giữa Number và
+                BigInt nếu không chuyển đổi kiểu phù hợp.
+            </li>
+        </ul>
+    </div>
+
+    <h3>Ví dụ 2.4: Boolean</h3>
+
+    <p>
+        Boolean chỉ có hai giá trị: <code>true</code> và
+        <code>false</code>. Thường được sử dụng trong các biểu thức
+        điều kiện.
+    </p>
+
+    <pre data-src="s7"></pre>
+    <script  id="s7">
+let isLoggedIn = true;
+let isAdmin = false;
+
+let age = 19;
+let canVote = age >= 18;
+
+console.log(isLoggedIn);
+console.log(isAdmin);
+console.log(canVote); // true
+    </script>
+
+    <h3>Ví dụ 2.5: Undefined và Null</h3>
+
+    <pre data-src="s8"></pre>
+    <script  id="s8">
+let firstValue;
+let secondValue = null;
+
+console.log(firstValue);  // undefined
+console.log(secondValue); // null
+    </script>
+
+    <p>
+        Hai giá trị này đều có thể biểu thị việc không có dữ liệu,
+        nhưng ý nghĩa khác nhau. <code>undefined</code> thường xuất hiện
+        khi giá trị chưa được gán, còn <code>null</code> thường được
+        lập trình viên chủ động sử dụng để biểu thị không có giá trị.
+    </p>
+
+    <hr>
+    <h2 id="sec3">3. JavaScript Object Types</h2>
+
+    <p>
+        Object là kiểu dữ liệu phức hợp, có thể lưu trữ nhiều giá trị
+        khác nhau dưới dạng các cặp <code>key: value</code>.
+    </p>
+
+    <h3>Ví dụ 3.1: Object</h3>
+
+    <pre data-src="s9"></pre>
+    <script  id="s9">
+const person = {
+    firstName: "Phong",
+    lastName: "Dinh",
+    age: 19,
+    isStudent: true
+};
+
+console.log(person.firstName);
+console.log(person.lastName);
+console.log(person.age);
+    </script>
+
+    <h3>Ví dụ 3.2: Array Object</h3>
+
+    <p>
+        Array là một dạng Object đặc biệt dùng để lưu trữ danh sách
+        các phần tử theo thứ tự. Mỗi phần tử được truy cập bằng index,
+        bắt đầu từ 0.
+    </p>
+
+    <pre data-src="s10"></pre>
+    <script  id="s10">
+const cars = ["Saab", "Volvo", "BMW"];
+
+console.log(cars[0]); // Saab
+console.log(cars[1]); // Volvo
+console.log(cars[2]); // BMW
+
+console.log(typeof cars); // object
+    </script>
+
+    <h3>Ví dụ 3.3: Date Object</h3>
+
+    <pre data-src="s11"></pre>
+    <script  id="s11">
+const date = new Date("2022-03-25");
+
+console.log(date);
+console.log(date.getFullYear()); // 2022
+    </script>
+
+    <h3>3.4. Các Built-in Object Types</h3>
+
+    <table>
+        <thead>
+            <tr>
+                <th>Object Type</th>
+                <th>Công dụng</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr><td>Object</td><td>Lưu trữ các cặp key-value.</td></tr>
+            <tr><td>Array</td><td>Lưu danh sách giá trị theo index.</td></tr>
+            <tr><td>Map</td><td>Lưu các cặp key-value, key có thể thuộc nhiều kiểu dữ liệu.</td></tr>
+            <tr><td>Set</td><td>Lưu các giá trị không trùng lặp.</td></tr>
+            <tr><td>WeakMap</td><td>Map sử dụng weak references đối với key là Object.</td></tr>
+            <tr><td>WeakSet</td><td>Set sử dụng weak references đối với các Object.</td></tr>
+            <tr><td>Math</td><td>Cung cấp hằng số và các hàm toán học.</td></tr>
+            <tr><td>Date</td><td>Xử lý ngày và thời gian.</td></tr>
+            <tr><td>RegExp</td><td>Làm việc với biểu thức chính quy.</td></tr>
+            <tr><td>Error</td><td>Biểu diễn lỗi trong quá trình thực thi.</td></tr>
+            <tr><td>JSON</td><td>Phân tích và chuyển đổi dữ liệu JSON.</td></tr>
+            <tr><td>Promise</td><td>Biểu diễn kết quả của một thao tác bất đồng bộ.</td></tr>
+            <tr><td>Typed Arrays</td><td>Lưu trữ dữ liệu số với kích thước và kiểu xác định.</td></tr>
+        </tbody>
+    </table>
+
+    <div class="kn">
+        <b>Phân biệt:</b>
+        <ul>
+            <li>
+                Array, Date, Map, Set và Function đều thuộc nhóm Object.
+            </li>
+            <li>
+                Object có thể chứa nhiều kiểu dữ liệu khác nhau.
+            </li>
+            <li>
+                Primitive và Object có cách lưu trữ, so sánh và xử lý
+                khác nhau.
+            </li>
+        </ul>
+    </div>
+
+    <hr>
+    <h2 id="sec4">4. JavaScript Symbols</h2>
+
+    <p>
+        Symbol là một kiểu dữ liệu nguyên thủy dùng để tạo ra những
+        định danh duy nhất. Mỗi lần gọi <code>Symbol()</code>,
+        JavaScript tạo ra một Symbol mới.
+    </p>
+
+    <h3>Ví dụ 4.1: Tạo Symbol</h3>
+
+    <pre data-src="s12"></pre>
+    <script  id="s12">
+const id1 = Symbol();
+const id2 = Symbol();
+
+console.log(id1 === id2); // false
+console.log(typeof id1);  // symbol
+    </script>
+
+    <h3>Ví dụ 4.2: Symbol Description</h3>
+
+    <p>
+        Có thể truyền một chuỗi mô tả vào Symbol để code dễ đọc và
+        dễ debug hơn.
+    </p>
+
+    <pre data-src="s13"></pre>
+    <script  id="s13">
+const id1 = Symbol("id");
+const id2 = Symbol("id");
+
+console.log(id1 === id2); // false
+
+console.log(id1.description); // id
+console.log(id2.description); // id
+    </script>
+
+    <div class="kn">
+        <b>Lưu ý:</b>
+        <ul>
+            <li>
+                Description chỉ là thông tin mô tả, không quyết định
+                tính duy nhất của Symbol.
+            </li>
+            <li>
+                Hai Symbol có cùng description vẫn là hai giá trị khác nhau.
+            </li>
+            <li>
+                Không nên nhầm Symbol với String. Symbol là một kiểu
+                primitive riêng biệt.
+            </li>
+        </ul>
+    </div>
+
+    <h3>Ví dụ 4.3: Sử dụng Symbol làm Object Key</h3>
+
+    <pre data-src="s14"></pre>
+    <script  id="s14">
+const id = Symbol("id");
+
+const person = {
+    firstName: "Phong",
+    lastName: "Dinh"
+};
+
+person[id] = 123;
+
+console.log(person.firstName); // Phong
+console.log(person[id]);       // 123
+
+console.log(Object.keys(person));
+// ["firstName", "lastName"]
+    </script>
+
+    <p>
+        Thuộc tính có Symbol làm key không xuất hiện trong
+        <code>Object.keys()</code>. Có thể sử dụng
+        <code>Object.getOwnPropertySymbols()</code> để lấy các Symbol
+        key của Object.
+    </p>
+
+    <pre data-src="s15"></pre>
+    <script  id="s15">
+const symbolKeys = Object.getOwnPropertySymbols(person);
+
+console.log(symbolKeys);
+console.log(person[symbolKeys[0]]);
+    </script>
+
+    <hr>
+    <h2 id="sec5">5. JavaScript typeof</h2>
+
+    <p>
+        <code>typeof</code> là một toán tử dùng để xác định kiểu dữ liệu
+        của một giá trị hoặc biểu thức.
+    </p>
+
+    <h3>Ví dụ 5.1: typeof với Primitive Types</h3>
+
+    <pre data-src="s16"></pre>
+    <script  id="s16">
+console.log(typeof "Phong");    // string
+console.log(typeof 19);         // number
+console.log(typeof 3.14);       // number
+console.log(typeof true);       // boolean
+console.log(typeof 123n);       // bigint
+console.log(typeof Symbol());   // symbol
+console.log(typeof undefined);  // undefined
+    </script>
+
+    <h3>Ví dụ 5.2: typeof với Object Types</h3>
+
+    <pre data-src="s17"></pre>
+    <script  id="s17">
+console.log(typeof {});             // object
+console.log(typeof []);             // object
+console.log(typeof new Date());     // object
+console.log(typeof new Map());      // object
+console.log(typeof function() {});  // function
+    </script>
+
+    <h3>Ví dụ 5.3: Trường hợp đặc biệt của typeof null</h3>
+
+    <pre data-src="s18"></pre>
+    <script  id="s18">
+let value = null;
+
+console.log(typeof value); // object
+    </script>
+
+    <div class="kn">
+        <b>Điểm cần nhớ:</b>
+        <ul>
+            <li>
+                <code>typeof null</code> trả về <code>"object"</code>.
+            </li>
+            <li>
+                Đây là một đặc điểm lịch sử của JavaScript.
+            </li>
+            <li>
+                Null vẫn là Primitive Type, không phải Object.
+            </li>
+            <li>
+                Muốn kiểm tra một giá trị có phải Array hay không,
+                sử dụng <code>Array.isArray()</code>.
+            </li>
+        </ul>
+    </div>
+
+    <h3>Ví dụ 5.4: Kiểm tra Array</h3>
+
+    <pre data-src="s19"></pre>
+    <script  id="s19">
+const numbers = [1, 2, 3];
+const person = { name: "Phong" };
+
+console.log(typeof numbers);           // object
+console.log(Array.isArray(numbers));   // true
+console.log(Array.isArray(person));    // false
+    </script>
+
+    <div class="vd">
+        <p>Nhập một giá trị để kiểm tra kiểu dữ liệu.</p>
+
+        <label for="typeof-input">Giá trị:</label>
+        <input id="typeof-input" value="Hello">
+
+        <button id="typeof-button">Kiểm tra typeof</button>
+
+        <p id="typeof-output" class="out" aria-live="polite"></p>
+    </div>
+
+    <hr>
+    <h2 id="sec6">6. JavaScript undefined</h2>
+
+    <p>
+        <code>undefined</code> là giá trị được sử dụng khi một biến đã
+        được khai báo nhưng chưa được gán giá trị.
+    </p>
+
+    <h3>Ví dụ 6.1: Khai báo biến nhưng chưa gán giá trị</h3>
+
+    <pre data-src="s20"></pre>
+    <script  id="s20">
+let carName;
+
+console.log(carName);        // undefined
+console.log(typeof carName); // undefined
+    </script>
+
+    <h3>Ví dụ 6.2: Thuộc tính không tồn tại</h3>
+
+    <pre data-src="s21"></pre>
+    <script  id="s21">
+const person = {
+    firstName: "Phong"
+};
+
+console.log(person.firstName); // Phong
+console.log(person.age);       // undefined
+    </script>
+
+    <h3>Ví dụ 6.3: Function không trả về giá trị</h3>
+
+    <pre data-src="s22"></pre>
+    <script  id="s22">
+function sayHello() {
+    console.log("Hello!");
+}
+
+const result = sayHello();
+
+console.log(result); // undefined
+    </script>
+
+    <h3>Ví dụ 6.4: undefined và Empty String</h3>
+
+    <pre data-src="s23"></pre>
+    <script  id="s23">
+let value1;
+let value2 = "";
+
+console.log(value1);        // undefined
+console.log(value2);        // ""
+console.log(typeof value1); // undefined
+console.log(typeof value2); // string
+    </script>
+
+    <div class="kn">
+        <b>Phân biệt:</b>
+        <ul>
+            <li>
+                <code>undefined</code>: biến chưa có giá trị được gán.
+            </li>
+            <li>
+                <code>""</code>: String rỗng, vẫn là một giá trị hợp lệ.
+            </li>
+            <li>
+                <code>null</code>: giá trị không có được gán một cách
+                chủ động.
+            </li>
+            <li>
+                Không nên nhầm ba trường hợp này với nhau.
+            </li>
+        </ul>
+    </div>
+
+    <hr>
+    <h2 id="sec7">7. JavaScript NaN</h2>
+
+    <p>
+        NaN là viết tắt của <b>Not-a-Number</b>. Đây là giá trị đặc biệt
+        thuộc kiểu Number, thường xuất hiện khi một phép toán không thể
+        tạo ra kết quả số hợp lệ.
+    </p>
+
+    <h3>Ví dụ 7.1: Phép toán không hợp lệ</h3>
+
+    <pre data-src="s24"></pre>
+    <script  id="s24">
+let result = 100 / "Apple";
+
+console.log(result);        // NaN
+console.log(typeof result); // number
+    </script>
+
+    <h3>Ví dụ 7.2: Numeric String và Non-numeric String</h3>
+
+    <pre data-src="s25"></pre>
+    <script  id="s25">
+let result1 = 100 / "10";
+let result2 = 100 / "Apple";
+
+console.log(result1); // 10
+console.log(result2); // NaN
+    </script>
+
+    <h3>Ví dụ 7.3: NaN không bằng chính nó</h3>
+
+    <pre data-src="s26"></pre>
+    <script  id="s26">
+let value = NaN;
+
+console.log(value === value); // false
+console.log(value == value);  // false
+    </script>
+
+    <h3>Ví dụ 7.4: Kiểm tra NaN bằng isNaN()</h3>
+
+    <pre data-src="s27"></pre>
+    <script  id="s27">
+let value = Number("Hello");
+
+console.log(isNaN(value)); // true
+console.log(isNaN(100));   // false
+    </script>
+
+    <div class="kn">
+        <b>Lưu ý:</b>
+        <ul>
+            <li>NaN vẫn có kiểu dữ liệu là Number.</li>
+            <li>
+                NaN là giá trị duy nhất không bằng chính nó khi so sánh.
+            </li>
+            <li>
+                Các phép toán số học sử dụng NaN thường tiếp tục trả về NaN.
+            </li>
+            <li>
+                Có thể dùng <code>Number.isNaN()</code> để kiểm tra chính
+                xác một giá trị có phải NaN hay không.
+            </li>
+            <li>
+                <code>isNaN()</code> có thể tự chuyển đổi kiểu dữ liệu
+                trước khi kiểm tra, còn <code>Number.isNaN()</code> thì không.
+            </li>
+        </ul>
+    </div>
+
+    <h3>Ví dụ 7.5: isNaN() và Number.isNaN()</h3>
+
+    <pre data-src="s28"></pre>
+    <script  id="s28">
+console.log(isNaN("Hello"));         // true
+console.log(Number.isNaN("Hello"));  // false
+
+console.log(isNaN(NaN));             // true
+console.log(Number.isNaN(NaN));      // true
+    </script>
+
+    <div class="vd">
+        <p>Nhập một giá trị để kiểm tra NaN.</p>
+
+        <label for="nan-input">Giá trị:</label>
+        <input id="nan-input" value="Hello">
+
+        <button id="nan-button">Kiểm tra</button>
+
+        <p id="nan-output" class="out" aria-live="polite"></p>
+    </div>
+
+    <hr>
+    <h2 id="sec8">8. JavaScript toString()</h2>
+
+    <p>
+        <code>toString()</code> là phương thức chuyển một giá trị thành
+        String. Nhiều kiểu dữ liệu trong JavaScript cung cấp phương thức này.
+    </p>
+
+    <h3>Ví dụ 8.1: Number toString()</h3>
+
+    <pre data-src="s29"></pre>
+    <script  id="s29">
+let number = 123;
+
+let text = number.toString();
+
+console.log(text);        // "123"
+console.log(typeof text); // string
+    </script>
+
+    <h3>Ví dụ 8.2: Chuyển Number sang hệ nhị phân</h3>
+
+    <p>
+        Phương thức <code>toString()</code> của Number có thể nhận
+        tham số radix để chuyển số sang hệ cơ số khác.
+    </p>
+
+    <pre data-src="s30"></pre>
+    <script  id="s30">
+let number = 123;
+
+console.log(number.toString(2));  // 1111011
+console.log(number.toString(8));  // 173
+console.log(number.toString(10)); // 123
+console.log(number.toString(16)); // 7b
+    </script>
+
+    <h3>Ví dụ 8.3: Array toString()</h3>
+
+    <p>
+        Khi sử dụng trên Array, <code>toString()</code> trả về chuỗi
+        chứa các phần tử, phân cách bằng dấu phẩy.
+    </p>
+
+    <pre data-src="s31"></pre>
+    <script  id="s31">
+const fruits = ["Banana", "Orange", "Apple", "Mango"];
+
+let text = fruits.toString();
+
+console.log(text);
+// Banana,Orange,Apple,Mango
+    </script>
+
+    <h3>Ví dụ 8.4: Date toString()</h3>
+
+    <pre data-src="s32"></pre>
+    <script  id="s32">
+const date = new Date("2022-03-25");
+
+console.log(date.toString());
+    </script>
+
+    <h3>Ví dụ 8.5: Object toString()</h3>
+
+    <p>
+        Mặc định, khi gọi <code>toString()</code> trên một Object thông
+        thường, kết quả thường là <code>"[object Object]"</code>.
+    </p>
+
+    <pre data-src="s33"></pre>
+    <script  id="s33">
+const person = {
+    firstName: "Phong",
+    lastName: "Dinh"
+};
+
+console.log(person.toString());
+// [object Object]
+    </script>
+
+    <h3>Ví dụ 8.6: Override toString()</h3>
+
+    <p>
+        Ta có thể ghi đè phương thức <code>toString()</code> để định
+        nghĩa cách Object được chuyển thành String.
+    </p>
+
+    <pre data-src="s34"></pre>
+    <script  id="s34">
+const person = {
+    firstName: "Phong",
+    lastName: "Dinh",
+
+    toString() {
+        return this.firstName + " " + this.lastName;
+    }
+};
+
+console.log(person.toString()); // Phong Dinh
+    </script>
+
+    <div class="kn">
+        <b>Ghi nhớ:</b>
+        <ul>
+            <li>
+                <code>toString()</code> trả về String, không làm thay đổi
+                kiểu dữ liệu gốc.
+            </li>
+            <li>
+                Với Number, có thể truyền radix từ 2 đến 36.
+            </li>
+            <li>
+                Với Array, các phần tử được nối thành chuỗi phân cách
+                bởi dấu phẩy.
+            </li>
+            <li>
+                Với Object, có thể override để tạo kết quả có ý nghĩa hơn.
+            </li>
+        </ul>
+    </div>
+
+    <hr>
+    <h2 id="sec9">9. JavaScript toLocaleString()</h2>
+
+    <p>
+        <code>toLocaleString()</code> chuyển giá trị thành String theo
+        quy tắc định dạng của ngôn ngữ hoặc khu vực được chỉ định.
+        Phương thức này đặc biệt hữu ích khi định dạng số, tiền tệ,
+        phần trăm và ngày tháng.
+    </p>
+
+    <h3>Ví dụ 9.1: Number toLocaleString()</h3>
+
+    <pre data-src="s35"></pre>
+    <script  id="s35">
+let number = 1234567.89;
+
+console.log(number.toLocaleString());
+// Kết quả phụ thuộc locale mặc định.
+    </script>
+
+    <h3>Ví dụ 9.2: Sử dụng Locale</h3>
+
+    <p>
+        Có thể truyền mã ngôn ngữ và khu vực để lựa chọn quy tắc định dạng.
+    </p>
+
+    <pre data-src="s36"></pre>
+    <script  id="s36">
+let number = 1234567.89;
+
+console.log(number.toLocaleString("en-US"));
+console.log(number.toLocaleString("de-DE"));
+console.log(number.toLocaleString("vi-VN"));
+    </script>
+
+    <h3>Ví dụ 9.3: Định dạng tiền tệ</h3>
+
+    <pre data-src="s37"></pre>
+    <script  id="s37">
+let price = 1299.95;
+
+let dollars = price.toLocaleString("en-US", {
+    style: "currency",
+    currency: "USD"
+});
+
+let euros = price.toLocaleString("de-DE", {
+    style: "currency",
+    currency: "EUR"
+});
+
+let dong = price.toLocaleString("vi-VN", {
+    style: "currency",
+    currency: "VND"
+});
+
+console.log(dollars);
+console.log(euros);
+console.log(dong);
+    </script>
+
+    <h3>Ví dụ 9.4: Định dạng phần trăm</h3>
+
+    <pre data-src="s38"></pre>
+    <script  id="s38">
+let rate = 0.85;
+
+let result = rate.toLocaleString("en-US", {
+    style: "percent"
+});
+
+console.log(result); // 85%
+    </script>
+
+    <h3>Ví dụ 9.5: Định dạng ngày tháng</h3>
+
+    <pre data-src="s39"></pre>
+    <script  id="s39">
+const date = new Date("2022-03-25");
+
+console.log(date.toLocaleString("en-US"));
+console.log(date.toLocaleString("vi-VN"));
+console.log(date.toLocaleDateString("vi-VN"));
+    </script>
+
+    <h3>Ví dụ 9.6: Array toLocaleString()</h3>
+
+    <pre data-src="s40"></pre>
+    <script  id="s40">
+const numbers = [1000, 2000, 3000];
+
+console.log(numbers.toLocaleString("vi-VN"));
+    </script>
+
+    <div class="vd">
+        <p>Thử định dạng một số theo các locale khác nhau.</p>
+
+        <label for="locale-number">Number:</label>
+        <input id="locale-number" type="number" value="1234567.89">
+
+        <label for="locale-select">Locale:</label>
+        <select id="locale-select">
+            <option value="vi-VN">Vietnamese (vi-VN)</option>
+            <option value="en-US">English (en-US)</option>
+            <option value="de-DE">German (de-DE)</option>
+        </select>
+
+        <button id="locale-button">Format</button>
+
+        <p id="locale-output" class="out" aria-live="polite"></p>
+    </div>
+
+    <div class="kn">
+        <b>Phân biệt toString() và toLocaleString():</b>
+        <ul>
+            <li>
+                <code>toString()</code> chuyển giá trị thành String theo
+                cách biểu diễn thông thường.
+            </li>
+            <li>
+                <code>toLocaleString()</code> sử dụng quy tắc định dạng
+                theo locale.
+            </li>
+            <li>
+                <code>toLocaleString()</code> phù hợp với dữ liệu cần
+                hiển thị cho người dùng ở các khu vực khác nhau.
+            </li>
+        </ul>
+    </div>
+
+    <hr>
+    <h2 id="sec10">10. JavaScript Type Coercion</h2>
+
+    <p>
+        Type Coercion là quá trình JavaScript tự động chuyển đổi kiểu
+        dữ liệu khi thực hiện một biểu thức hoặc phép toán.
+    </p>
+
+    <div class="kn">
+        <ol>
+            <li>
+                <b>Implicit Conversion:</b> chuyển đổi kiểu tự động do
+                JavaScript thực hiện.
+            </li>
+            <li>
+                <b>String Coercion:</b> thường xảy ra khi sử dụng toán tử
+                <code>+</code> với String.
+            </li>
+            <li>
+                <b>Numeric Coercion:</b> thường xảy ra với các phép toán
+                số học như <code>-</code>, <code>*</code>, <code>/</code>.
+            </li>
+            <li>
+                <b>Boolean Coercion:</b> chuyển giá trị thành Boolean
+                trong các ngữ cảnh điều kiện.
+            </li>
+            <li>
+                <b>Equality Coercion:</b> toán tử <code>==</code> có thể
+                chuyển đổi kiểu trước khi so sánh.
+            </li>
+        </ol>
+    </div>
+
+    <h3>Ví dụ 10.1: String Coercion</h3>
+
+    <pre data-src="s41"></pre>
+    <script  id="s41">
+let result1 = "5" + 2;
+let result2 = 5 + "2";
+let result3 = "Hello " + 10;
+
+console.log(result1); // "52"
+console.log(result2); // "52"
+console.log(result3); // "Hello 10"
+    </script>
+
+    <h3>Ví dụ 10.2: Numeric Coercion</h3>
+
+    <p>
+        Các toán tử số học như trừ, nhân và chia thường chuyển String
+        chứa số thành Number trước khi tính toán.
+    </p>
+
+    <pre data-src="s42"></pre>
+    <script  id="s42">
+let result1 = "5" - 2;
+let result2 = "5" * 2;
+let result3 = "10" / "2";
+
+console.log(result1); // 3
+console.log(result2); // 10
+console.log(result3); // 5
+    </script>
+
+    <h3>Ví dụ 10.3: Boolean Coercion</h3>
+
+    <p>
+        JavaScript chuyển giá trị thành Boolean khi sử dụng trong
+        những ngữ cảnh cần điều kiện.
+    </p>
+
+    <pre data-src="s43"></pre>
+    <script  id="s43">
+console.log(Boolean(0));         // false
+console.log(Boolean(""));        // false
+console.log(Boolean(null));      // false
+console.log(Boolean(undefined)); // false
+console.log(Boolean(NaN));       // false
+
+console.log(Boolean(1));         // true
+console.log(Boolean("Hello"));   // true
+console.log(Boolean([]));        // true
+console.log(Boolean({}));        // true
+    </script>
+
+    <div class="kn">
+        <b>Falsy Values:</b>
+        <ul>
+            <li><code>false</code></li>
+            <li><code>0</code> và <code>-0</code></li>
+            <li><code>0n</code></li>
+            <li><code>""</code></li>
+            <li><code>null</code></li>
+            <li><code>undefined</code></li>
+            <li><code>NaN</code></li>
+        </ul>
+        <b>Truthy Values:</b> Những giá trị còn lại, bao gồm cả
+        <code>[]</code> và <code>{}</code>.
+    </div>
+
+    <h3>Ví dụ 10.4: Loose Equality (==)</h3>
+
+    <p>
+        Toán tử <code>==</code> có thể thực hiện chuyển đổi kiểu trước
+        khi so sánh hai giá trị.
+    </p>
+
+    <pre data-src="s44"></pre>
+    <script  id="s44">
+console.log(5 == "5");   // true
+console.log(0 == false); // true
+console.log(1 == true);  // true
+
+console.log(5 === "5");  // false
+console.log(0 === false); // false
+    </script>
+
+    <div class="kn">
+        <b>Best Practices:</b>
+        <ul>
+            <li>
+                Ưu tiên <code>===</code> thay vì <code>==</code> khi
+                không muốn JavaScript tự chuyển đổi kiểu.
+            </li>
+            <li>
+                Không dựa vào Type Coercion nếu biểu thức có thể gây
+                nhầm lẫn.
+            </li>
+            <li>
+                Kiểm tra dữ liệu đầu vào trước khi thực hiện phép toán.
+            </li>
+            <li>
+                Chú ý NaN khi chuyển đổi String thành Number.
+            </li>
+        </ul>
+    </div>
+
+    <h3>Ví dụ 10.5: So sánh kết quả Coercion</h3>
+
+    <div class="vd">
+        <p>Quan sát kết quả khi sử dụng các toán tử khác nhau.</p>
+
+        <label for="coercion-input">Giá trị String:</label>
+        <input id="coercion-input" value="5">
+
+        <button id="coercion-button">Thực hiện</button>
+
+        <p id="coercion-output" class="out" aria-live="polite"></p>
+    </div>
+
+    <hr>
+    <h2 id="sec11">11. JavaScript Type Conversion</h2>
+
+    <p>
+        Type Conversion là quá trình chuyển đổi một giá trị từ kiểu dữ
+        liệu này sang kiểu dữ liệu khác. Khác với Type Coercion, ta có
+        thể chủ động yêu cầu JavaScript thực hiện chuyển đổi.
+    </p>
+
+    <div class="kn">
+        <b>Phân loại:</b>
+        <ul>
+            <li>
+                <b>Explicit Conversion:</b> lập trình viên chủ động
+                chuyển đổi bằng các hàm như <code>Number()</code>,
+                <code>String()</code> và <code>Boolean()</code>.
+            </li>
+            <li>
+                <b>Implicit Conversion:</b> JavaScript tự động chuyển
+                đổi trong quá trình thực thi. Đây chính là Type Coercion.
+            </li>
+        </ul>
+    </div>
+
+    <h3>Ví dụ 11.1: String sang Number bằng Number()</h3>
+
+    <pre data-src="s45"></pre>
+    <script  id="s45">
+console.log(Number("3.14")); // 3.14
+console.log(Number("100"));  // 100
+console.log(Number(""));     // 0
+console.log(Number(" "));    // 0
+
+console.log(Number("John")); // NaN
+console.log(Number("99 88")); // NaN
+    </script>
+
+    <h3>Ví dụ 11.2: String sang Number bằng parseInt() và parseFloat()</h3>
+
+    <pre data-src="s46"></pre>
+    <script  id="s46">
+console.log(parseInt("100"));       // 100
+console.log(parseInt("100.75"));    // 100
+
+console.log(parseFloat("100.75"));  // 100.75
+
+console.log(parseInt("25px"));      // 25
+console.log(parseFloat("3.14abc")); // 3.14
+    </script>
+
+    <div class="kn">
+        <b>Phân biệt:</b>
+        <ul>
+            <li>
+                <code>Number()</code> cố gắng chuyển đổi toàn bộ giá trị.
+            </li>
+            <li>
+                <code>parseInt()</code> phân tích phần số nguyên từ đầu chuỗi.
+            </li>
+            <li>
+                <code>parseFloat()</code> phân tích phần số thực từ đầu chuỗi.
+            </li>
+            <li>
+                Nếu không thể phân tích được giá trị phù hợp, kết quả
+                có thể là NaN.
+            </li>
+        </ul>
+    </div>
+
+    <h3>Ví dụ 11.3: Unary Plus (+)</h3>
+
+    <p>
+        Toán tử Unary Plus có thể được sử dụng để chuyển một giá trị
+        sang Number.
+    </p>
+
+    <pre data-src="s47"></pre>
+    <script  id="s47">
+let value1 = "5";
+let value2 = "Hello";
+
+console.log(+value1); // 5
+console.log(+value2); // NaN
+    </script>
+
+    <h3>Ví dụ 11.4: Number sang String</h3>
+
+    <pre data-src="s48"></pre>
+    <script  id="s48">
+let number = 123;
+
+let result1 = String(number);
+let result2 = number.toString();
+
+console.log(result1);        // "123"
+console.log(result2);        // "123"
+
+console.log(typeof result1); // string
+console.log(typeof result2); // string
+    </script>
+
+    <h3>Ví dụ 11.5: Boolean sang Number</h3>
+
+    <pre data-src="s49"></pre>
+    <script  id="s49">
+console.log(Number(true));  // 1
+console.log(Number(false)); // 0
+    </script>
+
+    <h3>Ví dụ 11.6: Number sang Boolean</h3>
+
+    <pre data-src="s50"></pre>
+    <script  id="s50">
+console.log(Boolean(0));  // false
+console.log(Boolean(1));  // true
+console.log(Boolean(100)); // true
+console.log(Boolean(-1));  // true
+    </script>
+
+    <h3>Ví dụ 11.7: Bảng Type Conversion</h3>
+
+    <table>
+        <thead>
+            <tr>
+                <th>Giá trị ban đầu</th>
+                <th>Number()</th>
+                <th>String()</th>
+                <th>Boolean()</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr><td>false</td><td>0</td><td>"false"</td><td>false</td></tr>
+            <tr><td>true</td><td>1</td><td>"true"</td><td>true</td></tr>
+            <tr><td>0</td><td>0</td><td>"0"</td><td>false</td></tr>
+            <tr><td>1</td><td>1</td><td>"1"</td><td>true</td></tr>
+            <tr><td>"0"</td><td>0</td><td>"0"</td><td>true</td></tr>
+            <tr><td>"000"</td><td>0</td><td>"000"</td><td>true</td></tr>
+            <tr><td>""</td><td>0</td><td>""</td><td>false</td></tr>
+            <tr><td>"20"</td><td>20</td><td>"20"</td><td>true</td></tr>
+            <tr><td>"twenty"</td><td>NaN</td><td>"twenty"</td><td>true</td></tr>
+            <tr><td>NaN</td><td>NaN</td><td>"NaN"</td><td>false</td></tr>
+            <tr><td>null</td><td>0</td><td>"null"</td><td>false</td></tr>
+            <tr><td>undefined</td><td>NaN</td><td>"undefined"</td><td>false</td></tr>
+            <tr><td>[]</td><td>0</td><td>""</td><td>true</td></tr>
+            <tr><td>[20]</td><td>20</td><td>"20"</td><td>true</td></tr>
+            <tr><td>[10, 20]</td><td>NaN</td><td>"10,20"</td><td>true</td></tr>
+            <tr><td>{}</td><td>NaN</td><td>"[object Object]"</td><td>true</td></tr>
+        </tbody>
+    </table>
+
+    <h3>Ví dụ 11.8: Date Conversion</h3>
+
+    <pre data-src="s51"></pre>
+    <script  id="s51">
+const date = new Date("2022-03-25");
+
+// Date sang Number: timestamp
+const timestamp = Number(date);
+
+// Date sang String
+const text = String(date);
+
+console.log(timestamp);
+console.log(text);
+    </script>
+
+    <h3>Ví dụ 11.9: Number sang Date</h3>
+
+    <pre data-src="s52"></pre>
+    <script  id="s52">
+const timestamp = 1648166400000;
+
+const date = new Date(timestamp);
+
+console.log(date);
+    </script>
+
+    <div class="vd">
+        <p>Thử chuyển đổi String sang Number.</p>
+
+        <label for="convert-input">Input:</label>
+        <input id="convert-input" value="123.45">
+
+        <label for="convert-method">Method:</label>
+        <select id="convert-method">
+            <option value="Number">Number()</option>
+            <option value="parseInt">parseInt()</option>
+            <option value="parseFloat">parseFloat()</option>
+            <option value="Unary">Unary +</option>
+        </select>
+
+        <button id="convert-button">Convert</button>
+
+        <p id="convert-output" class="out" aria-live="polite"></p>
+    </div>
+
+    <hr>
+    <h2 id="sec12">12. JavaScript Destructuring</h2>
+
+    <p>
+        Destructuring là cú pháp cho phép trích xuất dữ liệu từ Array,
+        Object hoặc các Iterable và gán chúng vào những biến riêng biệt.
+    </p>
+
+    <div class="kn">
+        <ol>
+            <li>
+                <b>Object Destructuring:</b> lấy dữ liệu dựa trên tên
+                thuộc tính (key).
+            </li>
+            <li>
+                <b>Array Destructuring:</b> lấy dữ liệu dựa trên vị trí
+                của phần tử (index).
+            </li>
+            <li>
+                <b>Default Values:</b> thiết lập giá trị mặc định nếu
+                giá trị được lấy ra là undefined.
+            </li>
+            <li>
+                <b>Renaming:</b> đặt tên biến mới khi phân rã Object.
+            </li>
+            <li>
+                <b>Nested Destructuring:</b> phân rã dữ liệu lồng nhau.
+            </li>
+        </ol>
+    </div>
+
+    <h3>Ví dụ 12.1: Object Destructuring</h3>
+
+    <pre data-src="s53"></pre>
+    <script  id="s53">
+const person = {
+    firstName: "Phong",
+    lastName: "Dinh",
+    age: 19
+};
+
+const { firstName, lastName, age } = person;
+
+console.log(firstName);
+console.log(lastName);
+console.log(age);
+    </script>
+
+    <div class="kn">
+        <b>Lưu ý:</b>
+        <ul>
+            <li>
+                Tên biến mặc định phải trùng với tên thuộc tính.
+            </li>
+            <li>
+                Thứ tự thuộc tính trong Object không ảnh hưởng đến
+                kết quả Destructuring.
+            </li>
+            <li>
+                Destructuring không làm thay đổi Object ban đầu.
+            </li>
+        </ul>
+    </div>
+
+    <h3>Ví dụ 12.2: Thứ tự thuộc tính không quan trọng</h3>
+
+    <pre data-src="s54"></pre>
+    <script  id="s54">
+const person = {
+    firstName: "Phong",
+    lastName: "Dinh",
+    age: 19
+};
+
+const { age, lastName, firstName } = person;
+
+console.log(age);
+console.log(lastName);
+console.log(firstName);
+    </script>
+
+    <h3>Ví dụ 12.3: Object Default Values</h3>
+
+    <pre data-src="s55"></pre>
+    <script  id="s55">
+const person = {
+    firstName: "Phong",
+    lastName: "Dinh"
+};
+
+const {
+    firstName,
+    lastName,
+    country = "Vietnam"
+} = person;
+
+console.log(firstName);
+console.log(lastName);
+console.log(country);
+    </script>
+
+    <h3>Ví dụ 12.4: Object Property Alias</h3>
+
+    <p>
+        Có thể đổi tên biến bằng cách sử dụng cú pháp
+        <code>property: variable</code>.
+    </p>
+
+    <pre data-src="s56"></pre>
+    <script  id="s56">
+const person = {
+    firstName: "Phong",
+    lastName: "Dinh"
+};
+
+const {
+    firstName: userFirstName,
+    lastName: userLastName
+} = person;
+
+console.log(userFirstName);
+console.log(userLastName);
+    </script>
+
+    <h3>Ví dụ 12.5: String Destructuring</h3>
+
+    <p>
+        String là một Iterable, vì vậy có thể phân rã các ký tự
+        của String bằng Array Destructuring.
+    </p>
+
+    <pre data-src="s57"></pre>
+    <script  id="s57">
+const name = "Phong";
+
+const [a, b, c, d, e] = name;
+
+console.log(a); // P
+console.log(b); // h
+console.log(c); // o
+console.log(d); // n
+console.log(e); // g
+    </script>
+
+    <h3>Ví dụ 12.6: Array Destructuring</h3>
+
+    <pre data-src="s58"></pre>
+    <script  id="s58">
+const fruits = ["Apple", "Orange", "Banana"];
+
+const [first, second, third] = fruits;
+
+console.log(first);
+console.log(second);
+console.log(third);
+    </script>
+
+    <h3>Ví dụ 12.7: Bỏ qua phần tử</h3>
+
+    <pre data-src="s59"></pre>
+    <script  id="s59">
+const numbers = [10, 20, 30, 40];
+
+const [first, , third] = numbers;
+
+console.log(first); // 10
+console.log(third); // 30
+    </script>
+
+    <h3>Ví dụ 12.8: Rest trong Array Destructuring</h3>
+
+    <pre data-src="s60"></pre>
+    <script  id="s60">
+const numbers = [10, 20, 30, 40, 50];
+
+const [first, second, ...remaining] = numbers;
+
+console.log(first);
+console.log(second);
+console.log(remaining);
+    </script>
+
+    <h3>Ví dụ 12.9: Nested Destructuring</h3>
+
+    <pre data-src="s61"></pre>
+    <script  id="s61">
+const user = {
+    name: "Phong",
+    address: {
+        city: "Ha Noi",
+        country: "Vietnam"
+    }
+};
+
+const {
+    name,
+    address: { city, country }
+} = user;
+
+console.log(name);
+console.log(city);
+console.log(country);
+    </script>
+
+    <h3>Ví dụ 12.10: Destructuring trong Function</h3>
+
+    <pre data-src="s62"></pre>
+    <script  id="s62">
+function displayPerson({ firstName, lastName, age }) {
+    console.log(firstName);
+    console.log(lastName);
+    console.log(age);
+}
+
+const person = {
+    firstName: "Phong",
+    lastName: "Dinh",
+    age: 19
+};
+
+displayPerson(person);
+    </script>
+
+    <div class="kn">
+        <b>Ghi nhớ:</b>
+        <ul>
+            <li>
+                Object Destructuring sử dụng dấu ngoặc nhọn
+                <code>{ }</code>.
+            </li>
+            <li>
+                Array Destructuring sử dụng dấu ngoặc vuông
+                <code>[ ]</code>.
+            </li>
+            <li>
+                Object dựa trên tên key, Array dựa trên thứ tự index.
+            </li>
+            <li>
+                Rest (<code>...</code>) thu thập các phần tử hoặc thuộc
+                tính còn lại.
+            </li>
+            <li>
+                Destructuring không tự tạo Deep Copy.
+            </li>
+        </ul>
+    </div>
+
+    <hr>
+    <h2>13. Tổng kết JavaScript Data Types</h2>
+
+    <table>
+        <thead>
+            <tr>
+                <th>Chủ đề</th>
+                <th>Kiến thức chính</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr><td>Data Types</td><td>7 Primitive Types và Object Type.</td></tr>
+            <tr><td>Primitive Data</td><td>String, Number, BigInt, Boolean, Undefined, Null, Symbol.</td></tr>
+            <tr><td>Object Types</td><td>Object, Array, Date, Map, Set và các Built-in Objects.</td></tr>
+            <tr><td>Symbols</td><td>Định danh duy nhất, có thể dùng làm Object Key.</td></tr>
+            <tr><td>typeof</td><td>Toán tử xác định kiểu dữ liệu.</td></tr>
+            <tr><td>undefined</td><td>Giá trị chưa được xác định.</td></tr>
+            <tr><td>NaN</td><td>Giá trị Number biểu thị kết quả số không hợp lệ.</td></tr>
+            <tr><td>toString()</td><td>Chuyển giá trị thành String.</td></tr>
+            <tr><td>toLocaleString()</td><td>Định dạng dữ liệu theo locale.</td></tr>
+            <tr><td>Type Coercion</td><td>Chuyển đổi kiểu tự động.</td></tr>
+            <tr><td>Type Conversion</td><td>Chủ động chuyển đổi kiểu dữ liệu.</td></tr>
+            <tr><td>Destructuring</td><td>Trích xuất dữ liệu từ Array, Object và Iterable.</td></tr>
+        </tbody>
+    </table>
+
+    <div class="kn">
+        <b>Những kiến thức quan trọng nhất:</b>
+        <ul>
+            <li>Phân biệt Primitive và Object.</li>
+            <li>Hiểu sự khác biệt giữa undefined và null.</li>
+            <li>Hiểu vì sao typeof null trả về object.</li>
+            <li>Hiểu vì sao typeof NaN trả về number.</li>
+            <li>Phân biệt toString() và toLocaleString().</li>
+            <li>Phân biệt Type Coercion và Type Conversion.</li>
+            <li>Thành thạo Array và Object Destructuring.</li>
+        </ul>
+    </div>
+
+    <script>
+        // Display source code without executing the examples.
+        document.querySelectorAll("pre[data-src]").forEach(function (pre) {
+            const source = document.getElementById(pre.dataset.src);
+
+            if (source) {
+                pre.textContent = source.textContent.trim();
+            }
+        });
+
+        // 1. Data Types: Addition
+        document.getElementById("type-add").addEventListener("click", function () {
+            const a = document.getElementById("type-value-a").value;
+            const b = document.getElementById("type-value-b").value;
+            const output = document.getElementById("type-add-output");
+
+            output.textContent =
+                "A + B = " + (a + b) +
+                "\nType of A: " + typeof a +
+                "\nType of B: " + typeof b +
+                "\nType of result: " + typeof (a + b) +
+                "\n\nLưu ý: value từ input luôn là String.";
+        });
+
+        // 2. typeof
+        document.getElementById("typeof-button").addEventListener("click", function () {
+            const value = document.getElementById("typeof-input").value;
+            const output = document.getElementById("typeof-output");
+
+            output.textContent =
+                "Value: " + value +
+                "\ntypeof: " + typeof value +
+                "\nNumber(value): " + Number(value) +
+                "\ntypeof Number(value): " + typeof Number(value);
+        });
+
+        // 3. NaN
+        document.getElementById("nan-button").addEventListener("click", function () {
+            const value = document.getElementById("nan-input").value;
+            const converted = Number(value);
+
+            document.getElementById("nan-output").textContent =
+                "Input: " + value +
+                "\nNumber(input): " + converted +
+                "\nisNaN(input): " + isNaN(value) +
+                "\nNumber.isNaN(input): " + Number.isNaN(value) +
+                "\nNumber.isNaN(Number(input)): " + Number.isNaN(converted);
+        });
+
+        // 4. toLocaleString
+        document.getElementById("locale-button").addEventListener("click", function () {
+            const value = Number(document.getElementById("locale-number").value);
+            const locale = document.getElementById("locale-select").value;
+            const output = document.getElementById("locale-output");
+
+            if (!Number.isFinite(value)) {
+                output.textContent = "Vui lòng nhập một số hợp lệ.";
+                return;
+            }
+
+            output.textContent =
+                "Locale: " + locale +
+                "\nResult: " + value.toLocaleString(locale);
+        });
+
+        // 5. Type Coercion
+        document.getElementById("coercion-button").addEventListener("click", function () {
+            const value = document.getElementById("coercion-input").value;
+            const output = document.getElementById("coercion-output");
+
+            output.textContent =
+                "Input: " + value +
+                "\ntypeof input: " + typeof value +
+                "\nInput + 2: " + (value + 2) +
+                "\nInput - 2: " + (value - 2) +
+                "\nInput * 2: " + (value * 2) +
+                "\nInput == 5: " + (value == 5) +
+                "\nInput === 5: " + (value === 5);
+        });
+
+        // 6. Type Conversion
+        document.getElementById("convert-button").addEventListener("click", function () {
+            const value = document.getElementById("convert-input").value;
+            const method = document.getElementById("convert-method").value;
+            const output = document.getElementById("convert-output");
+
+            let result;
+
+            switch (method) {
+                case "Number":
+                    result = Number(value);
+                    break;
+                case "parseInt":
+                    result = parseInt(value);
+                    break;
+                case "parseFloat":
+                    result = parseFloat(value);
+                    break;
+                case "Unary":
+                    result = +value;
+                    break;
+            }
+
+            output.textContent =
+                "Input: " + value +
+                "\nMethod: " + method +
+                "\nResult: " + result +
+                "\nResult type: " + typeof result;
+        });
+    </script>
+
+</body>
+</html>
