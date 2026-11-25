@@ -81,6 +81,10 @@ console.log(car1.color);
         nhận được vào thuộc tính của object. Tuy nhiên, đặt tên rõ nghĩa giúp code dễ đọc hơn.
     </p>
     <pre data-src="code2"></pre>
+<div class="vd">
+    <button type="button" id="lesson-button-code2" data-run-source="code2" data-run-output="lesson-output-code2">Chạy Ví dụ 1.2: Tham số và thuộc tính không bắt buộc trùng tên</button>
+    <p id="lesson-output-code2" class="out" aria-live="polite">Nhấn nút để chạy ví dụ.</p>
+</div>
     <script type="text/plain" id="code2">
 function Car(make, model, year, color) {
     this.make = make;
@@ -232,6 +236,10 @@ console.log(car3);
         làm thay đổi <code>car2</code> hoặc <code>car3</code>.
     </p>
     <pre data-src="code5"></pre>
+<div class="vd">
+    <button type="button" id="lesson-button-code5" data-run-source="code5" data-run-output="lesson-output-code5">Chạy Ví dụ 3.2: Đọc thuộc tính của từng object</button>
+    <p id="lesson-output-code5" class="out" aria-live="polite">Nhấn nút để chạy ví dụ.</p>
+</div>
     <script type="text/plain" id="code5">
 car1.color = "black";
 
@@ -392,5 +400,55 @@ const person2 = new PersonClass("An");
             }
         });
     </script>
+
+<script>
+(function () {
+    function formatValue(value) {
+        if (typeof value === "string") return value;
+        if (typeof value === "undefined") return "undefined";
+        if (typeof value === "bigint") return value.toString() + "n";
+        if (typeof value === "symbol") return value.toString();
+        if (value instanceof Error) return value.name + ": " + value.message;
+        try {
+            const json = JSON.stringify(value, null, 2);
+            return json === undefined ? String(value) : json;
+        } catch {
+            return String(value);
+        }
+    }
+
+    document.querySelectorAll("[data-run-source]").forEach(function (button) {
+        button.addEventListener("click", function () {
+            const source = document.getElementById(button.dataset.runSource);
+            const output = document.getElementById(button.dataset.runOutput);
+            if (!source || !output) return;
+
+            const lines = [];
+            const capturedConsole = {
+                log: (...values) => lines.push(values.map(formatValue).join(" ")),
+                info: (...values) => lines.push(values.map(formatValue).join(" ")),
+                warn: (...values) => lines.push("Warning: " + values.map(formatValue).join(" ")),
+                error: (...values) => lines.push("Error: " + values.map(formatValue).join(" ")),
+                table: value => lines.push(formatValue(value)),
+                dir: value => lines.push(formatValue(value))
+            };
+
+            try {
+                const result = new Function("console", source.textContent)(capturedConsole);
+                if (result && typeof result.then === "function") {
+                    result.then(() => {
+                        output.textContent = lines.join("\\n") || "Ví dụ đã chạy. Không có dữ liệu được in ra.";
+                    }).catch(error => output.textContent = "Runtime error: " + error.message);
+                    return;
+                }
+                output.textContent = lines.join("\\n") || "Ví dụ đã chạy. Không có dữ liệu được in ra.";
+            } catch (error) {
+                output.textContent = "Runtime error: " + error.message;
+            }
+        });
+    });
+})();
+</script>
+
 </body>
 </html>
