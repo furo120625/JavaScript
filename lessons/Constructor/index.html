@@ -1,0 +1,391 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>JavaScript Constructors</title>
+    <link rel="stylesheet" href="../../css/style.css">
+</head>
+
+<body class="lesson-page">
+    <a href="../../index.html">← Back to lessons</a>
+    <h1>JavaScript Constructors</h1>
+    <p><b>Mục lục:</b>
+        <a href="#sec1">Constructor function</a> |
+        <a href="#sec2">Từ khóa new</a> |
+        <a href="#sec3">Tạo nhiều object</a> |
+        <a href="#sec4">Method trong constructor</a> |
+        <a href="#sec5">Tổng kết</a>
+    </p>
+
+    <hr>
+
+    <h2 id="sec1">1. Constructor Function là gì?</h2>
+    <div class="kn">
+        <ol>
+            <li><b>Định nghĩa:</b> constructor function là một hàm được dùng như khuôn mẫu để khởi tạo nhiều object có cùng nhóm thuộc tính.</li>
+            <li><b>Cách viết:</b> thường đặt tên hàm theo PascalCase, ví dụ <code>Car</code>, <code>Person</code>, <code>Product</code>.</li>
+            <li><b>Vai trò của <code>this</code>:</b> khi constructor được gọi bằng <code>new</code>, <code>this</code> tham chiếu đến object mới đang được tạo.</li>
+            <li><b>Lưu ý:</b> constructor function thông thường không có cú pháp đặc biệt. Nó vẫn là một function, nhưng được sử dụng với <code>new</code>.</li>
+        </ol>
+    </div>
+
+    <h3>Ví dụ 1.1: Tạo một constructor function cho Car</h3>
+    <pre data-src="code1"></pre>
+    <div class="vd">
+        <button id="run1">Tạo một chiếc xe</button>
+        <p id="out1" class="out result">Nhấn nút để xem object được tạo.</p>
+    </div>
+    <script type="text/plain" id="code1">
+function Car(make, model, year, color) {
+    this.make = make;
+    this.model = model;
+    this.year = year;
+    this.color = color;
+}
+
+const car1 = new Car("Ford", "Mustang", 2024, "red");
+
+console.log(car1.make);
+console.log(car1.model);
+console.log(car1.year);
+console.log(car1.color);
+    </script>
+    <script>
+        document.getElementById("run1").addEventListener("click", function () {
+            function CarDemo(make, model, year, color) {
+                this.make = make;
+                this.model = model;
+                this.year = year;
+                this.color = color;
+            }
+
+            const car = new CarDemo("Ford", "Mustang", 2024, "red");
+            document.getElementById("out1").textContent =
+                "car.make = " + car.make +
+                "\ncar.model = " + car.model +
+                "\ncar.year = " + car.year +
+                "\ncar.color = " + car.color +
+                "\n\nObject vừa tạo:\n" + JSON.stringify(car, null, 2);
+        });
+    </script>
+
+    <h3>Ví dụ 1.2: Tham số và thuộc tính không bắt buộc trùng tên</h3>
+    <p>
+        Các tham số có thể được đặt tên khác nhau. Điều quan trọng là ta gán đúng giá trị
+        nhận được vào thuộc tính của object. Tuy nhiên, đặt tên rõ nghĩa giúp code dễ đọc hơn.
+    </p>
+    <pre data-src="code2"></pre>
+    <script type="text/plain" id="code2">
+function Car(make, model, year, color) {
+    this.make = make;
+    this.model = model;
+    this.year = year;
+    this.color = color;
+}
+
+// Tên tham số khác vẫn hoạt động, nhưng khó đọc hơn.
+function Car(makeName, modelName, manufactureYear, paintColor) {
+    this.make = makeName;
+    this.model = modelName;
+    this.year = manufactureYear;
+    this.color = paintColor;
+}
+    </script>
+
+    <hr>
+
+    <h2 id="sec2">2. Từ khóa <code>new</code> hoạt động như thế nào?</h2>
+    <p>Khi gọi một constructor function bằng <code>new</code>, JavaScript thực hiện các bước chính:</p>
+    <ol>
+        <li>Tạo một object mới.</li>
+        <li>Gắn prototype của constructor vào object mới.</li>
+        <li>Gọi constructor function với <code>this</code> trỏ đến object mới.</li>
+        <li>Trả về object đó (trừ trường hợp constructor chủ động trả về một object khác).</li>
+    </ol>
+
+    <div class="note">
+        Trong bài học này, hãy nhớ quy tắc thực hành: <b>gọi constructor function bằng <code>new</code></b>.
+        Nếu bỏ <code>new</code>, <code>this</code> không còn trỏ đến object mới như mong đợi.
+    </div>
+
+    <h3>Ví dụ 2.1: So sánh hai object được tạo bằng cùng một constructor</h3>
+    <pre data-src="code3"></pre>
+    <div class="vd">
+        <label for="make3">Hãng xe:</label>
+        <input id="make3" value="Chevrolet">
+        <label for="model3">Mẫu xe:</label>
+        <input id="model3" value="Camaro">
+        <label for="year3">Năm:</label>
+        <input id="year3" type="number" value="2025">
+        <label for="color3">Màu:</label>
+        <input id="color3" value="blue">
+        <button id="run3">Tạo car2</button>
+        <p id="out3" class="out result"></p>
+    </div>
+    <script type="text/plain" id="code3">
+function Car(make, model, year, color) {
+    this.make = make;
+    this.model = model;
+    this.year = year;
+    this.color = color;
+}
+
+const car1 = new Car("Ford", "Mustang", 2024, "red");
+const car2 = new Car("Chevrolet", "Camaro", 2025, "blue");
+
+console.log(car1);
+console.log(car2);
+    </script>
+    <script>
+        function CarExample3(make, model, year, color) {
+            this.make = make;
+            this.model = model;
+            this.year = year;
+            this.color = color;
+        }
+
+        const firstCar3 = new CarExample3("Ford", "Mustang", 2024, "red");
+
+        function showCar3() {
+            const secondCar3 = new CarExample3(
+                document.getElementById("make3").value,
+                document.getElementById("model3").value,
+                Number(document.getElementById("year3").value),
+                document.getElementById("color3").value
+            );
+
+            document.getElementById("out3").textContent =
+                "car1:\n" + JSON.stringify(firstCar3, null, 2) +
+                "\n\ncar2:\n" + JSON.stringify(secondCar3, null, 2) +
+                "\n\ncar1 === car2 → " + (firstCar3 === secondCar3);
+        }
+
+        document.getElementById("run3").addEventListener("click", showCar3);
+        showCar3();
+    </script>
+
+    <hr>
+
+    <h2 id="sec3">3. Tạo nhiều object từ một constructor</h2>
+    <p>
+        Điểm mạnh của constructor function là khả năng tái sử dụng. Ta chỉ cần định nghĩa
+        khuôn mẫu một lần, sau đó truyền các argument khác nhau để tạo ra nhiều object.
+    </p>
+
+    <h3>Ví dụ 3.1: Tạo ba chiếc xe</h3>
+    <pre data-src="code4"></pre>
+    <div class="vd">
+        <button id="run4">Tạo danh sách ba xe</button>
+        <p id="out4" class="out result"></p>
+    </div>
+    <script type="text/plain" id="code4">
+function Car(make, model, year, color) {
+    this.make = make;
+    this.model = model;
+    this.year = year;
+    this.color = color;
+}
+
+const car1 = new Car("Ford", "Mustang", 2024, "red");
+const car2 = new Car("Chevrolet", "Camaro", 2025, "blue");
+const car3 = new Car("Dodge", "Charger", 2026, "silver");
+
+console.log(car1);
+console.log(car2);
+console.log(car3);
+    </script>
+    <script>
+        document.getElementById("run4").addEventListener("click", function () {
+            function CarExample4(make, model, year, color) {
+                this.make = make;
+                this.model = model;
+                this.year = year;
+                this.color = color;
+            }
+
+            const cars = [
+                new CarExample4("Ford", "Mustang", 2024, "red"),
+                new CarExample4("Chevrolet", "Camaro", 2025, "blue"),
+                new CarExample4("Dodge", "Charger", 2026, "silver")
+            ];
+
+            document.getElementById("out4").textContent = cars
+                .map((car, index) =>
+                    "Car " + (index + 1) + ": " +
+                    car.make + " " + car.model +
+                    " | " + car.year +
+                    " | " + car.color
+                )
+                .join("\n");
+        });
+    </script>
+
+    <h3>Ví dụ 3.2: Đọc thuộc tính của từng object</h3>
+    <p>
+        Mỗi object có dữ liệu riêng. Thay đổi thuộc tính của <code>car1</code> không tự động
+        làm thay đổi <code>car2</code> hoặc <code>car3</code>.
+    </p>
+    <pre data-src="code5"></pre>
+    <script type="text/plain" id="code5">
+car1.color = "black";
+
+console.log(car1.color); // black
+console.log(car2.color); // blue
+console.log(car3.color); // silver
+    </script>
+
+    <hr>
+
+    <h2 id="sec4">4. Thêm method vào object được tạo bởi constructor</h2>
+    <p>
+        Constructor không chỉ khởi tạo properties. Ta còn có thể gán function vào
+        <code>this</code> để mỗi object có một method.
+    </p>
+
+    <h3>Ví dụ 4.1: Method <code>drive()</code></h3>
+    <pre data-src="code6"></pre>
+    <div class="vd">
+        <label for="carSelect6">Chọn xe:</label>
+        <select id="carSelect6">
+            <option value="0">Ford Mustang</option>
+            <option value="1">Chevrolet Camaro</option>
+            <option value="2">Dodge Charger</option>
+        </select>
+        <button id="run6">Drive</button>
+        <p id="out6" class="out result"></p>
+    </div>
+    <script type="text/plain" id="code6">
+function Car(make, model, year, color) {
+    this.make = make;
+    this.model = model;
+    this.year = year;
+    this.color = color;
+
+    this.drive = function () {
+        console.log(`You drive the ${this.model}`);
+    };
+}
+
+const car1 = new Car("Ford", "Mustang", 2024, "red");
+const car2 = new Car("Chevrolet", "Camaro", 2025, "blue");
+const car3 = new Car("Dodge", "Charger", 2026, "silver");
+
+car1.drive();
+car2.drive();
+car3.drive();
+    </script>
+    <script>
+        function CarExample6(make, model, year, color) {
+            this.make = make;
+            this.model = model;
+            this.year = year;
+            this.color = color;
+
+            this.drive = function () {
+                return "You drive the " + this.model;
+            };
+        }
+
+        const cars6 = [
+            new CarExample6("Ford", "Mustang", 2024, "red"),
+            new CarExample6("Chevrolet", "Camaro", 2025, "blue"),
+            new CarExample6("Dodge", "Charger", 2026, "silver")
+        ];
+
+        document.getElementById("run6").addEventListener("click", function () {
+            const selectedCar = cars6[Number(document.getElementById("carSelect6").value)];
+            document.getElementById("out6").textContent = selectedCar.drive();
+        });
+    </script>
+
+    <div class="note">
+        <b>Ghi chú:</b> ví dụ trên đặt <code>drive</code> bên trong constructor để minh họa
+        cách constructor tạo cả properties lẫn method. Khi tạo rất nhiều object, cách này
+        tạo một function <code>drive</code> riêng cho từng object. Sau này, có thể tìm hiểu
+        <code>prototype</code> hoặc <code>class</code> để chia sẻ method hiệu quả hơn.
+    </div>
+
+    <hr>
+
+    <h2 id="sec5">5. Tổng kết</h2>
+    <table>
+        <thead>
+            <tr>
+                <th>Thành phần</th>
+                <th>Ý nghĩa</th>
+                <th>Ví dụ</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>Constructor function</td>
+                <td>Hàm làm khuôn mẫu để tạo object</td>
+                <td><code>function Car(...) { ... }</code></td>
+            </tr>
+            <tr>
+                <td><code>new</code></td>
+                <td>Tạo object mới và gọi constructor với <code>this</code> trỏ đến object đó</td>
+                <td><code>new Car(...)</code></td>
+            </tr>
+            <tr>
+                <td><code>this</code></td>
+                <td>Tham chiếu đến object đang được khởi tạo</td>
+                <td><code>this.model = model</code></td>
+            </tr>
+            <tr>
+                <td>Parameters</td>
+                <td>Dữ liệu đầu vào của constructor</td>
+                <td><code>make, model, year, color</code></td>
+            </tr>
+            <tr>
+                <td>Method</td>
+                <td>Hành vi được gắn vào object</td>
+                <td><code>this.drive = function () { ... }</code></td>
+            </tr>
+        </tbody>
+    </table>
+
+    <h3>Những điểm cần nhớ</h3>
+    <ul>
+        <li>Constructor function thường được đặt tên theo PascalCase.</li>
+        <li>Dùng <code>new</code> để tạo object từ constructor function.</li>
+        <li><code>this.property = parameter</code> dùng để gán dữ liệu đầu vào vào object mới.</li>
+        <li>Một constructor có thể tạo ra nhiều object với dữ liệu khác nhau.</li>
+        <li>Method có thể được gắn vào object thông qua <code>this</code>.</li>
+    </ul>
+
+    <h3>Phân biệt nhanh: Constructor Function và Class</h3>
+    <p>
+        Video tiếp tục giới thiệu <code>class</code> sau phần constructor function.
+        Hai cách đều có thể được dùng để tạo nhiều object, nhưng cú pháp class hiện đại
+        có cấu trúc rõ ràng hơn. Phần <code>Classes</code> trong dự án của bạn đã là bài học
+        riêng, vì vậy trang này chỉ tập trung vào constructor function truyền thống.
+    </p>
+    <pre>
+/* Constructor function */
+function Person(name) {
+    this.name = name;
+}
+const person1 = new Person("An");
+
+/* Class */
+class PersonClass {
+    constructor(name) {
+        this.name = name;
+    }
+}
+const person2 = new PersonClass("An");
+    </pre>
+
+    <script>
+        document.querySelectorAll("pre[data-src]").forEach(function (pre) {
+            const source = document.getElementById(pre.dataset.src);
+
+            if (source) {
+                pre.textContent = source.textContent.trim();
+            }
+        });
+    </script>
+</body>
+</html>

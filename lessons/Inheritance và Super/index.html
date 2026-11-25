@@ -1,0 +1,378 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>JavaScript Inheritance</title>
+    <link rel="stylesheet" href="../../css/style.css">
+</head>
+
+<body class="lesson-page">
+<a href="../../index.html">← Back to lessons</a>
+<h1>JavaScript Inheritance and Super</h1>
+
+<p>
+    Mục lục:
+    <a href="#sec1">Inheritance</a> |
+    <a href="#sec2">Super</a> |
+    <a href="#sec3">Tổng kết</a>
+</p>
+
+<hr>
+
+<h2 id="sec1">1. Inheritance</h2>
+
+<div class="kn">
+    <ol>
+        <li>
+            <b>Định nghĩa:</b>
+            Inheritance (tính kế thừa) cho phép một class kế thừa
+            các thuộc tính và phương thức từ một class khác.
+            Điều này giúp tái sử dụng code và tránh viết lại những
+            phần đã tồn tại.
+        </li>
+        <li>
+            <b>Class cha (Parent Class):</b>
+            Class cung cấp thuộc tính và phương thức để class khác kế thừa.
+        </li>
+        <li>
+            <b>Class con (Child Class):</b>
+            Class kế thừa từ class cha. Có thể sử dụng những gì được kế thừa
+            và bổ sung thuộc tính, phương thức riêng.
+        </li>
+        <li>
+            <b>Cú pháp:</b>
+            Sử dụng từ khóa <code>extends</code> để thiết lập kế thừa.
+        </li>
+    </ol>
+</div>
+
+<h3>- Ví dụ 1.1: Class Inheritance</h3>
+
+<p>
+    Tạo class <code>Animal</code> làm class cha.
+    Các class <code>Rabbit</code>, <code>Fish</code> và
+    <code>Hawk</code> kế thừa từ <code>Animal</code>.
+</p>
+
+<pre data-src="s1"></pre>
+
+<div class="vd">
+    <button id="b1">Chạy chương trình</button>
+    <p id="o1"></p>
+</div>
+
+<script id="s1">
+class Animal {
+    alive = true;
+
+    eat() {
+        console.log(`${this.name} is eating`);
+    }
+
+    sleep() {
+        console.log(`${this.name} is sleeping`);
+    }
+}
+
+class Rabbit extends Animal {
+    name = "Rabbit";
+}
+
+class Fish extends Animal {
+    name = "Fish";
+}
+
+class Hawk extends Animal {
+    name = "Hawk";
+}
+
+const rabbit = new Rabbit();
+const fish = new Fish();
+const hawk = new Hawk();
+
+rabbit.eat();
+fish.sleep();
+hawk.eat();
+
+console.log(rabbit.alive);
+console.log(fish.alive);
+console.log(hawk.alive);
+</script>
+
+<script>
+document.getElementById("b1").onclick = function () {
+    const rabbit = new Rabbit();
+    const fish = new Fish();
+    const hawk = new Hawk();
+
+    const output = [
+        "Rabbit:",
+        "alive = " + rabbit.alive,
+        "eat() → " + rabbit.name + " is eating",
+        "",
+        "Fish:",
+        "alive = " + fish.alive,
+        "sleep() → " + fish.name + " is sleeping",
+        "",
+        "Hawk:",
+        "alive = " + hawk.alive,
+        "eat() → " + hawk.name + " is eating"
+    ];
+
+    document.getElementById("o1").textContent = output.join("\n");
+};
+</script>
+
+<h3>- Ví dụ 1.2: Các class con có thể sử dụng method của class cha</h3>
+
+<p>
+    Mặc dù <code>Rabbit</code>, <code>Fish</code> và
+    <code>Hawk</code> không tự định nghĩa method
+    <code>eat()</code> hoặc <code>sleep()</code>,
+    chúng vẫn có thể sử dụng những method này thông qua kế thừa.
+</p>
+
+<pre data-src="s2"></pre>
+
+<div class="vd">
+    <button id="b2">Kiểm tra kế thừa</button>
+    <p id="o2"></p>
+</div>
+
+<script id="s2">
+class AnimalParent {
+    eat() {
+        return "Animal is eating";
+    }
+}
+
+class RabbitChild extends AnimalParent {
+    run() {
+        return "Rabbit is running";
+    }
+}
+
+const rabbitChild = new RabbitChild();
+
+console.log(rabbitChild.eat());
+console.log(rabbitChild.run());
+console.log(rabbitChild instanceof AnimalParent);
+</script>
+
+<script>
+document.getElementById("b2").onclick = function () {
+    const rabbit = new RabbitChild();
+
+    document.getElementById("o2").textContent =
+        "rabbit.eat() → " + rabbit.eat() + "\n" +
+        "rabbit.run() → " + rabbit.run() + "\n" +
+        "rabbit instanceof AnimalParent → " +
+        (rabbit instanceof AnimalParent);
+};
+</script>
+
+<hr>
+
+<h2 id="sec2">2. Super Keyword</h2>
+
+<div class="kn">
+    <ol>
+        <li>
+            <b>Định nghĩa:</b>
+            <code>super</code> được sử dụng để truy cập constructor
+            hoặc các method của class cha từ class con.
+        </li>
+        <li>
+            <b><code>super()</code>:</b>
+            Gọi constructor của class cha để khởi tạo những thuộc tính
+            được kế thừa.
+        </li>
+        <li>
+            <b><code>super.method()</code>:</b>
+            Gọi method được định nghĩa trong class cha.
+        </li>
+        <li>
+            <b>Lưu ý:</b>
+            Khi class con có constructor riêng, phải gọi
+            <code>super()</code> trước khi sử dụng <code>this</code>.
+        </li>
+    </ol>
+</div>
+
+<h3>- Ví dụ 2.1: Sử dụng super() để gọi constructor của class cha</h3>
+
+<p>
+    Class <code>Animal</code> có constructor nhận vào
+    <code>name</code> và <code>age</code>.
+    Class con có thể sử dụng <code>super()</code> để gọi constructor này,
+    sau đó bổ sung thuộc tính riêng.
+</p>
+
+<pre data-src="s3"></pre>
+
+<div class="vd">
+    <label for="i3a">Tên:</label>
+    <input id="i3a" value="Rabbit">
+
+    <label for="i3b">Tuổi:</label>
+    <input id="i3b" type="number" value="2">
+
+    <label for="i3c">Tốc độ chạy:</label>
+    <input id="i3c" type="number" value="25">
+
+    <button id="b3">Tạo Rabbit</button>
+    <p id="o3"></p>
+</div>
+
+<script id="s3">
+class AnimalSuper {
+    constructor(name, age) {
+        this.name = name;
+        this.age = age;
+    }
+}
+
+class RabbitSuper extends AnimalSuper {
+    constructor(name, age, runSpeed) {
+        super(name, age);
+        this.runSpeed = runSpeed;
+    }
+}
+
+const rabbitSuper = new RabbitSuper("Rabbit", 2, 25);
+
+console.log(rabbitSuper.name);
+console.log(rabbitSuper.age);
+console.log(rabbitSuper.runSpeed);
+</script>
+
+<script>
+document.getElementById("b3").onclick = function () {
+    const name = document.getElementById("i3a").value;
+    const age = Number(document.getElementById("i3b").value);
+    const runSpeed = Number(document.getElementById("i3c").value);
+
+    const rabbit = new RabbitSuper(name, age, runSpeed);
+
+    document.getElementById("o3").textContent =
+        "Name: " + rabbit.name + "\n" +
+        "Age: " + rabbit.age + "\n" +
+        "Run speed: " + rabbit.runSpeed;
+};
+</script>
+
+<h3>- Ví dụ 2.2: Sử dụng super.method() để gọi method của class cha</h3>
+
+<p>
+    Ngoài việc gọi constructor, <code>super</code> còn có thể gọi
+    một method được định nghĩa trong class cha.
+</p>
+
+<pre data-src="s4"></pre>
+
+<div class="vd">
+    <label for="i4a">Tên:</label>
+    <input id="i4a" value="Rabbit">
+
+    <label for="i4b">Tốc độ:</label>
+    <input id="i4b" type="number" value="25">
+
+    <button id="b4">Di chuyển</button>
+    <p id="o4"></p>
+</div>
+
+<script id="s4">
+class AnimalMove {
+    constructor(name, age) {
+        this.name = name;
+        this.age = age;
+    }
+
+    move(speed) {
+        return `${this.name} moves at a speed of ${speed} mph`;
+    }
+}
+
+class RabbitMove extends AnimalMove {
+    constructor(name, age, runSpeed) {
+        super(name, age);
+        this.runSpeed = runSpeed;
+    }
+
+    run() {
+        return super.move(this.runSpeed);
+    }
+}
+
+const rabbitMove = new RabbitMove("Rabbit", 2, 25);
+
+console.log(rabbitMove.run());
+</script>
+
+<script>
+document.getElementById("b4").onclick = function () {
+    const name = document.getElementById("i4a").value;
+    const speed = Number(document.getElementById("i4b").value);
+
+    const rabbit = new RabbitMove(name, 2, speed);
+
+    document.getElementById("o4").textContent = rabbit.run();
+};
+</script>
+
+<hr>
+
+<h2 id="sec3">3. Tổng kết</h2>
+
+<table cellpadding="5" border="1" style="margin: auto;">
+    <tr>
+        <th>Từ khóa</th>
+        <th>Công dụng</th>
+        <th>Ví dụ</th>
+    </tr>
+    <tr>
+        <td><code>extends</code></td>
+        <td>
+            Cho phép class con kế thừa từ class cha.
+        </td>
+        <td><code>class Rabbit extends Animal</code></td>
+    </tr>
+    <tr>
+        <td><code>super()</code></td>
+        <td>
+            Gọi constructor của class cha.
+        </td>
+        <td><code>super(name, age)</code></td>
+    </tr>
+    <tr>
+        <td><code>super.method()</code></td>
+        <td>
+            Gọi method của class cha.
+        </td>
+        <td><code>super.move(speed)</code></td>
+    </tr>
+    <tr>
+        <td><code>instanceof</code></td>
+        <td>
+            Kiểm tra object có thuộc class hoặc kế thừa từ class đó không.
+        </td>
+        <td><code>rabbit instanceof Animal</code></td>
+    </tr>
+</table>
+
+<script>
+document.querySelectorAll("pre[data-src]").forEach(function (pre) {
+    const source = document.getElementById(pre.dataset.src);
+
+    if (!source) {
+        console.warn("Cannot find source:", pre.dataset.src);
+        return;
+    }
+
+    pre.textContent = source.textContent.trim();
+});
+</script>
+
+</body>
+</html>

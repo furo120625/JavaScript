@@ -1,0 +1,371 @@
+<!DOCTYPE html>
+<html lang="vi" style="font-family: Arial, Helvetica, sans-serif;">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="../../css/style.css">
+    <title>JavaScript Static Keyword</title>
+
+    <script id="helper">
+const byId = id => document.getElementById(id);
+    </script>
+</head>
+
+<body class="lesson-page">
+    <a href="../../index.html">← Back to lessons</a>
+    <h1>JavaScript Static Keyword</h1>
+    <p>
+        Hàm trợ giúp dùng chung cho các ví dụ:
+    </p>
+    <pre data-src="helper"></pre>
+
+    <hr>
+
+    <h2 id="sec1">1. Static là gì?</h2>
+
+    <div class="kn">
+        <ol>
+            <li>
+                <b>Định nghĩa:</b>
+                <code>static</code> là từ khóa dùng để khai báo property hoặc method thuộc về
+                <b>chính class</b>, thay vì thuộc về các object được tạo ra từ class đó.
+            </li>
+            <li>
+                <b>Truy cập:</b>
+                gọi static property / method thông qua tên class:
+                <code>TenClass.property</code> hoặc <code>TenClass.method()</code>.
+            </li>
+            <li>
+                <b>Không thuộc instance:</b>
+                object được tạo bằng <code>new</code> không có static property / method như
+                một thành viên riêng của nó.
+            </li>
+            <li>
+                <b>Ứng dụng:</b>
+                lưu dữ liệu dùng chung cho cả class hoặc tạo các hàm tiện ích không cần dữ liệu
+                riêng của từng object.
+            </li>
+        </ol>
+    </div>
+
+    <div class="note">
+        <b>Hãy phân biệt:</b>
+        <code>this.name</code> thường lưu dữ liệu riêng của từng object;
+        <code>static count</code> lưu dữ liệu thuộc về class.
+    </div>
+
+    <h3>Ví dụ ngắn: Property thường và static property</h3>
+    <pre data-src="s1"></pre>
+
+    <script id="s1" type="text/plain">
+class Example {
+    static className = "Example"; // thuộc về class
+
+    constructor(name) {
+        this.name = name;         // thuộc về từng object
+    }
+}
+
+const first = new Example("Object thứ nhất");
+const second = new Example("Object thứ hai");
+
+console.log(Example.className); // "Example"
+console.log(first.name);        // "Object thứ nhất"
+console.log(second.name);       // "Object thứ hai"
+
+console.log(first.className);   // undefined
+    </script>
+
+    <hr>
+
+    <h2 id="sec2">2. Ví dụ 1: MathUtil - Static properties và methods</h2>
+
+    <p>
+        Video tạo class <code>MathUtil</code> để gom các tiện ích toán học.
+        Giá trị <code>PI</code> là static property; các phép tính đường kính,
+        chu vi và diện tích là static methods.
+    </p>
+
+    <pre data-src="s2"></pre>
+
+    <div class="vd">
+        <label for="radius">Bán kính (radius):</label>
+        <input id="radius" type="number" min="0" step="any" value="10">
+        <button id="runMath">Tính toán</button>
+        <p id="mathOutput" class="out">Nhập bán kính rồi nhấn "Tính toán".</p>
+    </div>
+
+    <script id="s2" type="text/plain">
+class MathUtil {
+    static PI = 3.14159;
+
+    static getDiameter(radius) {
+        return radius * 2;
+    }
+
+    static getCircumference(radius) {
+        return 2 * this.PI * radius;
+    }
+
+    static getArea(radius) {
+        return this.PI * radius * radius;
+    }
+}
+
+console.log(MathUtil.PI);
+console.log(MathUtil.getDiameter(10));
+console.log(MathUtil.getCircumference(10));
+console.log(MathUtil.getArea(10));
+    </script>
+
+    <script>
+        class MathUtilDemo {
+            static PI = 3.14159;
+
+            static getDiameter(radius) {
+                return radius * 2;
+            }
+
+            static getCircumference(radius) {
+                return 2 * this.PI * radius;
+            }
+
+            static getArea(radius) {
+                return this.PI * radius * radius;
+            }
+        }
+
+        byId("runMath").onclick = function () {
+            const radius = Number(byId("radius").value);
+
+            if (!Number.isFinite(radius) || radius < 0) {
+                byId("mathOutput").textContent = "Vui lòng nhập bán kính hợp lệ (không âm).";
+                return;
+            }
+
+            byId("mathOutput").textContent =
+                "MathUtilDemo.PI = " + MathUtilDemo.PI + "\n" +
+                "Đường kính = " + MathUtilDemo.getDiameter(radius) + "\n" +
+                "Chu vi = " + MathUtilDemo.getCircumference(radius).toFixed(2) + "\n" +
+                "Diện tích = " + MathUtilDemo.getArea(radius).toFixed(2);
+        };
+    </script>
+
+    <div class="kn">
+        <ol>
+            <li>
+                <code>MathUtil.PI</code> truy cập trực tiếp static property mà không cần
+                tạo object bằng <code>new MathUtil()</code>.
+            </li>
+            <li>
+                <code>MathUtil.getDiameter(10)</code> gọi static method thông qua class.
+            </li>
+            <li>
+                Trong <code>getCircumference()</code> và <code>getArea()</code>,
+                <code>this.PI</code> tham chiếu đến static property của class trong ngữ cảnh static.
+            </li>
+        </ol>
+    </div>
+
+    <hr>
+
+    <h2 id="sec3">3. Ví dụ 2: User - Đếm số lượng object được tạo</h2>
+
+    <p>
+        Video tiếp tục tạo class <code>User</code>. Mỗi lần khởi tạo một user,
+        constructor tăng static property <code>userCount</code> lên 1.
+        Nhờ vậy class có thể theo dõi tổng số user đã được tạo.
+    </p>
+
+    <pre data-src="s3"></pre>
+
+    <div class="vd">
+        <label for="username">Username:</label>
+        <input id="username" value="Spongebob">
+        <button id="addUser">Tạo User</button>
+        <button id="showUsers">Hiển thị lời chào</button>
+        <p id="userOutput" class="out">Chưa có user nào được tạo.</p>
+    </div>
+
+    <script id="s3" type="text/plain">
+class User {
+    static userCount = 0;
+
+    constructor(username) {
+        this.username = username;
+        User.userCount++;
+    }
+
+    static getUserCount() {
+        console.log(`There are ${User.userCount} users online`);
+    }
+
+    sayHello() {
+        console.log(`Hello, my username is ${this.username}`);
+    }
+}
+
+const user1 = new User("Spongebob");
+const user2 = new User("Patrick");
+const user3 = new User("Sandy");
+
+user1.sayHello();
+user2.sayHello();
+user3.sayHello();
+
+User.getUserCount();
+    </script>
+
+    <script>
+        class UserDemo {
+            static userCount = 0;
+
+            constructor(username) {
+                this.username = username;
+                UserDemo.userCount++;
+            }
+
+            static getUserCount() {
+                return `There are ${UserDemo.userCount} users online`;
+            }
+
+            sayHello() {
+                return `Hello, my username is ${this.username}`;
+            }
+        }
+
+        const usersDemo = [];
+
+        function renderUsers() {
+            const output = usersDemo.map(user => user.sayHello()).join("\n");
+            byId("userOutput").textContent =
+                "Số user: " + UserDemo.userCount + "\n" +
+                UserDemo.getUserCount() + "\n\n" +
+                (output || "Chưa có user nào được tạo.") +
+                (usersDemo.length
+                    ? "\n\nusersDemo[0].userCount → " + usersDemo[0].userCount +
+                      " (undefined vì userCount thuộc về class)"
+                    : "");
+        }
+
+        byId("addUser").onclick = function () {
+            const username = byId("username").value.trim();
+
+            if (!username) {
+                byId("userOutput").textContent = "Username không được để trống.";
+                return;
+            }
+
+            usersDemo.push(new UserDemo(username));
+            renderUsers();
+        };
+
+        byId("showUsers").onclick = function () {
+            if (usersDemo.length === 0) {
+                byId("userOutput").textContent = "Hãy tạo ít nhất một user trước.";
+                return;
+            }
+
+            renderUsers();
+        };
+    </script>
+
+    <div class="kn">
+        <ol>
+            <li>
+                <code>static userCount = 0</code> tạo bộ đếm thuộc về class <code>User</code>.
+            </li>
+            <li>
+                Mỗi lần gọi <code>new User(...)</code>, constructor chạy và
+                <code>User.userCount++</code> tăng bộ đếm.
+            </li>
+            <li>
+                <code>user1.userCount</code> trả về <code>undefined</code> vì
+                <code>userCount</code> không phải property của instance.
+            </li>
+            <li>
+                <code>User.getUserCount()</code> gọi static method bằng tên class.
+                Method này cũng đọc bộ đếm thông qua <code>User.userCount</code>.
+            </li>
+            <li>
+                <code>sayHello()</code> là method thông thường vì nó cần đọc
+                <code>this.username</code> của từng user.
+            </li>
+        </ol>
+    </div>
+
+    <hr>
+
+    <h2 id="sec4">4. So sánh static và instance members</h2>
+
+    <table>
+        <thead>
+            <tr>
+                <th>Tiêu chí</th>
+                <th>Static member</th>
+                <th>Instance member</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>Thuộc về</td>
+                <td>Class</td>
+                <td>Từng object</td>
+            </tr>
+            <tr>
+                <td>Khai báo</td>
+                <td><code>static count = 0</code></td>
+                <td><code>this.name = name</code></td>
+            </tr>
+            <tr>
+                <td>Cách truy cập</td>
+                <td><code>User.count</code></td>
+                <td><code>user.name</code></td>
+            </tr>
+            <tr>
+                <td>Method gọi như thế nào?</td>
+                <td><code>User.getCount()</code></td>
+                <td><code>user.sayHello()</code></td>
+            </tr>
+            <tr>
+                <td>Ví dụ trong video</td>
+                <td><code>PI</code>, <code>userCount</code>, <code>getUserCount()</code></td>
+                <td><code>username</code>, <code>sayHello()</code></td>
+            </tr>
+        </tbody>
+    </table>
+
+    <h2 id="sec5">5. Tổng kết</h2>
+
+    <div class="kn">
+        <ol>
+            <li><code>static</code> khai báo property hoặc method thuộc về class.</li>
+            <li>Static property / method được truy cập thông qua tên class, không phải instance.</li>
+            <li>Không cần tạo object bằng <code>new</code> để sử dụng static member.</li>
+            <li>Static property phù hợp với dữ liệu chung như hằng số hoặc bộ đếm.</li>
+            <li>Static method phù hợp với tiện ích không cần trạng thái riêng của từng object.</li>
+            <li>Method cần dữ liệu của một object cụ thể nên thường là instance method và sử dụng <code>this</code>.</li>
+        </ol>
+    </div>
+
+    <p>
+        <b>Ý chính cần nhớ:</b>
+        Class sở hữu những gì được khai báo là <code>static</code>;
+        các object được tạo từ class không sở hữu những member đó.
+    </p>
+
+    <script>
+        // Hiển thị source code trong các thẻ pre tương ứng.
+        document.querySelectorAll("pre[data-src]").forEach(function (pre) {
+            const source = document.getElementById(pre.dataset.src);
+
+            if (!source) {
+                console.warn(`Cannot find source element: ${pre.dataset.src}`);
+                return;
+            }
+
+            pre.textContent = source.textContent.trim();
+        });
+    </script>
+</body>
+</html>

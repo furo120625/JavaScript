@@ -30,5 +30,17 @@
     {
         "title": "Timer",
         "path": "lessons/Timer/"
+    },
+    {
+        "title": "Constructor",
+        "path": "lessons/Constructor/"
+    },
+    {
+        "title": "Static keyword",
+        "path": "lessons/Static keyword"
+    },
+    {
+        "title": "Inheritance and Super",
+        "path": "lessons/Inheritance và Super/"
     }
 ]
