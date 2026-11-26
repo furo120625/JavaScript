@@ -20,6 +20,10 @@
         "path": "lessons/Dates/"
     },
     {
+        "title": "Closures",
+        "path": "lessons/Closures/"
+    },
+    {
         "title": "Arrays",
         "path": "lessons/Arrays/"
     },
@@ -48,11 +52,11 @@
         "path": "lessons/Inheritance và Super/"
     },
     {
-        "title":"Getter-Setter",
+        "title": "Getter-Setter",
         "path": "lessons/Getter-Setter/"
     },
     {
-        "title":"Destructoring",
+        "title": "Destructoring",
         "path": "lessons/Destructoring/"
     },
     {
