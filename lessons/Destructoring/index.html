@@ -58,30 +58,76 @@
     <h3>Ví dụ 1.1: Không sử dụng Destructuring</h3>
 
     <pre data-src="s1"></pre>
-    <script id="s1">
+<div class="vd">
+    <button type="button" id="lesson-button-s1">Chạy Ví dụ 1.1: Không sử dụng Destructuring</button>
+    <p id="lesson-output-s1" class="out" aria-live="polite">Nhấn nút để chạy ví dụ.</p>
+</div>
+    <script id="s1">(function () {
+ const output = document.getElementById("lesson-output-s1");
+ const formatOutput = value => {
+ if (typeof value === "string") return value;
+ if (typeof value === "undefined") return "undefined";
+ if (typeof value === "bigint") return value + "n";
+ if (typeof value === "symbol") return value.toString();
+ if (value === null) return "null";
+ if (value instanceof Date) return value.toString();
+ if (typeof value === "object") { try { return JSON.stringify(value, (_, item) => typeof item === "bigint" ? item + "n" : item, 2); } catch { return String(value); } }
+ return String(value);
+};
+ const runExample = function () {
+  output.textContent = "";
+  const writeOutput = (...values) => { output.textContent += values.map(formatOutput).join(" ") + "\n"; };
+
 const colors = ["red", "green", "blue"];
 
 const firstColor = colors[0];
 const secondColor = colors[1];
 const thirdColor = colors[2];
 
-console.log(firstColor);
-console.log(secondColor);
-console.log(thirdColor);
-    </script>
+writeOutput(firstColor);
+writeOutput(secondColor);
+writeOutput(thirdColor);
+    
+ };
+ 
+ document.getElementById("lesson-button-s1").addEventListener("click", runExample);
+})();</script>
 
     <h3>Ví dụ 1.2: Sử dụng Destructuring</h3>
 
     <pre data-src="s2"></pre>
-    <script id="s2">
+<div class="vd">
+    <button type="button" id="lesson-button-s2">Chạy Ví dụ 1.2: Sử dụng Destructuring</button>
+    <p id="lesson-output-s2" class="out" aria-live="polite">Nhấn nút để chạy ví dụ.</p>
+</div>
+    <script id="s2">(function () {
+ const output = document.getElementById("lesson-output-s2");
+ const formatOutput = value => {
+ if (typeof value === "string") return value;
+ if (typeof value === "undefined") return "undefined";
+ if (typeof value === "bigint") return value + "n";
+ if (typeof value === "symbol") return value.toString();
+ if (value === null) return "null";
+ if (value instanceof Date) return value.toString();
+ if (typeof value === "object") { try { return JSON.stringify(value, (_, item) => typeof item === "bigint" ? item + "n" : item, 2); } catch { return String(value); } }
+ return String(value);
+};
+ const runExample = function () {
+  output.textContent = "";
+  const writeOutput = (...values) => { output.textContent += values.map(formatOutput).join(" ") + "\n"; };
+
 const colorsWithDestructuring = ["red", "green", "blue"];
 
 const [first, second, third] = colorsWithDestructuring;
 
-console.log(first);
-console.log(second);
-console.log(third);
-    </script>
+writeOutput(first);
+writeOutput(second);
+writeOutput(third);
+    
+ };
+ 
+ document.getElementById("lesson-button-s2").addEventListener("click", runExample);
+})();</script>
 
     <div class="kn">
         <b>Nhận xét:</b>
@@ -105,15 +151,38 @@ console.log(third);
     <h3>Ví dụ 2.1: Lấy các phần tử theo thứ tự</h3>
 
     <pre data-src="s3"></pre>
-    <script id="s3">
+<div class="vd">
+    <button type="button" id="lesson-button-s3">Chạy Ví dụ 2.1: Lấy các phần tử theo thứ tự</button>
+    <p id="lesson-output-s3" class="out" aria-live="polite">Nhấn nút để chạy ví dụ.</p>
+</div>
+    <script id="s3">(function () {
+ const output = document.getElementById("lesson-output-s3");
+ const formatOutput = value => {
+ if (typeof value === "string") return value;
+ if (typeof value === "undefined") return "undefined";
+ if (typeof value === "bigint") return value + "n";
+ if (typeof value === "symbol") return value.toString();
+ if (value === null) return "null";
+ if (value instanceof Date) return value.toString();
+ if (typeof value === "object") { try { return JSON.stringify(value, (_, item) => typeof item === "bigint" ? item + "n" : item, 2); } catch { return String(value); } }
+ return String(value);
+};
+ const runExample = function () {
+  output.textContent = "";
+  const writeOutput = (...values) => { output.textContent += values.map(formatOutput).join(" ") + "\n"; };
+
 const fruits = ["Apple", "Orange", "Banana"];
 
 const [fruit1, fruit2, fruit3] = fruits;
 
-console.log(fruit1); // Apple
-console.log(fruit2); // Orange
-console.log(fruit3); // Banana
-    </script>
+writeOutput(fruit1); // Apple
+writeOutput(fruit2); // Orange
+writeOutput(fruit3); // Banana
+    
+ };
+ 
+ document.getElementById("lesson-button-s3").addEventListener("click", runExample);
+})();</script>
 
     <h3>Ví dụ 2.2: Bỏ qua phần tử không cần thiết</h3>
 
@@ -123,15 +192,38 @@ console.log(fruit3); // Banana
     </p>
 
     <pre data-src="s4"></pre>
-    <script id="s4">
+<div class="vd">
+    <button type="button" id="lesson-button-s4">Chạy Ví dụ 2.2: Bỏ qua phần tử không cần thiết</button>
+    <p id="lesson-output-s4" class="out" aria-live="polite">Nhấn nút để chạy ví dụ.</p>
+</div>
+    <script id="s4">(function () {
+ const output = document.getElementById("lesson-output-s4");
+ const formatOutput = value => {
+ if (typeof value === "string") return value;
+ if (typeof value === "undefined") return "undefined";
+ if (typeof value === "bigint") return value + "n";
+ if (typeof value === "symbol") return value.toString();
+ if (value === null) return "null";
+ if (value instanceof Date) return value.toString();
+ if (typeof value === "object") { try { return JSON.stringify(value, (_, item) => typeof item === "bigint" ? item + "n" : item, 2); } catch { return String(value); } }
+ return String(value);
+};
+ const runExample = function () {
+  output.textContent = "";
+  const writeOutput = (...values) => { output.textContent += values.map(formatOutput).join(" ") + "\n"; };
+
 const numbers = [10, 20, 30, 40, 50];
 
 const [firstNumber, , thirdNumber, , fifthNumber] = numbers;
 
-console.log(firstNumber);  // 10
-console.log(thirdNumber);  // 30
-console.log(fifthNumber);  // 50
-    </script>
+writeOutput(firstNumber);  // 10
+writeOutput(thirdNumber);  // 30
+writeOutput(fifthNumber);  // 50
+    
+ };
+ 
+ document.getElementById("lesson-button-s4").addEventListener("click", runExample);
+})();</script>
 
     <div class="kn">
         <b>Giải thích:</b>
@@ -153,15 +245,38 @@ console.log(fifthNumber);  // 50
     </p>
 
     <pre data-src="s5"></pre>
-    <script id="s5">
+<div class="vd">
+    <button type="button" id="lesson-button-s5">Chạy Ví dụ 2.3: Giá trị mặc định (Default Values)</button>
+    <p id="lesson-output-s5" class="out" aria-live="polite">Nhấn nút để chạy ví dụ.</p>
+</div>
+    <script id="s5">(function () {
+ const output = document.getElementById("lesson-output-s5");
+ const formatOutput = value => {
+ if (typeof value === "string") return value;
+ if (typeof value === "undefined") return "undefined";
+ if (typeof value === "bigint") return value + "n";
+ if (typeof value === "symbol") return value.toString();
+ if (value === null) return "null";
+ if (value instanceof Date) return value.toString();
+ if (typeof value === "object") { try { return JSON.stringify(value, (_, item) => typeof item === "bigint" ? item + "n" : item, 2); } catch { return String(value); } }
+ return String(value);
+};
+ const runExample = function () {
+  output.textContent = "";
+  const writeOutput = (...values) => { output.textContent += values.map(formatOutput).join(" ") + "\n"; };
+
 const animals = ["Dog", "Cat"];
 
 const [animal1, animal2, animal3 = "Unknown"] = animals;
 
-console.log(animal1); // Dog
-console.log(animal2); // Cat
-console.log(animal3); // Unknown
-    </script>
+writeOutput(animal1); // Dog
+writeOutput(animal2); // Cat
+writeOutput(animal3); // Unknown
+    
+ };
+ 
+ document.getElementById("lesson-button-s5").addEventListener("click", runExample);
+})();</script>
 
     <div class="kn">
         <b>Lưu ý:</b>
@@ -185,15 +300,38 @@ console.log(animal3); // Unknown
     </p>
 
     <pre data-src="s6"></pre>
-    <script id="s6">
+<div class="vd">
+    <button type="button" id="lesson-button-s6">Chạy Ví dụ 2.4: Rest trong Array Destructuring</button>
+    <p id="lesson-output-s6" class="out" aria-live="polite">Nhấn nút để chạy ví dụ.</p>
+</div>
+    <script id="s6">(function () {
+ const output = document.getElementById("lesson-output-s6");
+ const formatOutput = value => {
+ if (typeof value === "string") return value;
+ if (typeof value === "undefined") return "undefined";
+ if (typeof value === "bigint") return value + "n";
+ if (typeof value === "symbol") return value.toString();
+ if (value === null) return "null";
+ if (value instanceof Date) return value.toString();
+ if (typeof value === "object") { try { return JSON.stringify(value, (_, item) => typeof item === "bigint" ? item + "n" : item, 2); } catch { return String(value); } }
+ return String(value);
+};
+ const runExample = function () {
+  output.textContent = "";
+  const writeOutput = (...values) => { output.textContent += values.map(formatOutput).join(" ") + "\n"; };
+
 const scores = [85, 90, 75, 95, 80];
 
 const [highestScore, secondScore, ...remainingScores] = scores;
 
-console.log(highestScore);      // 85
-console.log(secondScore);       // 90
-console.log(remainingScores);   // [75, 95, 80]
-    </script>
+writeOutput(highestScore);      // 85
+writeOutput(secondScore);       // 90
+writeOutput(remainingScores);   // [75, 95, 80]
+    
+ };
+ 
+ document.getElementById("lesson-button-s6").addEventListener("click", runExample);
+})();</script>
 
     <div class="kn">
         <b>Ghi nhớ:</b>
@@ -217,15 +355,38 @@ console.log(remainingScores);   // [75, 95, 80]
     </p>
 
     <pre data-src="s7"></pre>
-    <script id="s7">
+<div class="vd">
+<button type="button" id="lesson-button-s7">Chạy Ví dụ 2.5: Hoán đổi giá trị hai biến</button>
+<p id="lesson-output-s7" class="out" aria-live="polite">Nhấn nút để chạy ví dụ.</p>
+</div>
+    <script id="s7">(function () {
+ const output = document.getElementById("lesson-output-s7");
+ const formatOutput = value => {
+ if (typeof value === "string") return value;
+ if (typeof value === "undefined") return "undefined";
+ if (typeof value === "bigint") return value + "n";
+ if (typeof value === "symbol") return value.toString();
+ if (value === null) return "null";
+ if (value instanceof Date) return value.toString();
+ if (typeof value === "object") { try { return JSON.stringify(value, (_, item) => typeof item === "bigint" ? item + "n" : item, 2); } catch { return String(value); } }
+ return String(value);
+};
+ const runExample = function () {
+  output.textContent = "";
+  const writeOutput = (...values) => { output.textContent += values.map(formatOutput).join(" ") + "\n"; };
+
 let a = 10;
 let b = 20;
 
 [a, b] = [b, a];
 
-console.log(a); // 20
-console.log(b); // 10
-    </script>
+writeOutput(a); // 20
+writeOutput(b); // 10
+    
+ };
+ 
+ document.getElementById("lesson-button-s7").addEventListener("click", runExample);
+})();</script>
 
     <div class="vd">
         <p>Thử hoán đổi giá trị hai biến:</p>
@@ -260,7 +421,26 @@ console.log(b); // 10
     <h3>Ví dụ 3.1: Lấy các thuộc tính từ Object</h3>
 
     <pre data-src="s8"></pre>
-    <script id="s8">
+<div class="vd">
+    <button type="button" id="lesson-button-s8">Chạy Ví dụ 3.1: Lấy các thuộc tính từ Object</button>
+    <p id="lesson-output-s8" class="out" aria-live="polite">Nhấn nút để chạy ví dụ.</p>
+</div>
+    <script id="s8">(function () {
+ const output = document.getElementById("lesson-output-s8");
+ const formatOutput = value => {
+ if (typeof value === "string") return value;
+ if (typeof value === "undefined") return "undefined";
+ if (typeof value === "bigint") return value + "n";
+ if (typeof value === "symbol") return value.toString();
+ if (value === null) return "null";
+ if (value instanceof Date) return value.toString();
+ if (typeof value === "object") { try { return JSON.stringify(value, (_, item) => typeof item === "bigint" ? item + "n" : item, 2); } catch { return String(value); } }
+ return String(value);
+};
+ const runExample = function () {
+  output.textContent = "";
+  const writeOutput = (...values) => { output.textContent += values.map(formatOutput).join(" ") + "\n"; };
+
 const person = {
     firstName: "Phong",
     lastName: "Dinh",
@@ -269,10 +449,14 @@ const person = {
 
 const { firstName, lastName, age } = person;
 
-console.log(firstName); // Phong
-console.log(lastName);  // Dinh
-console.log(age);       // 19
-    </script>
+writeOutput(firstName); // Phong
+writeOutput(lastName);  // Dinh
+writeOutput(age);       // 19
+    
+ };
+ 
+ document.getElementById("lesson-button-s8").addEventListener("click", runExample);
+})();</script>
 
     <div class="kn">
         <b>Giải thích:</b>
@@ -294,7 +478,26 @@ console.log(age);       // 19
     </p>
 
     <pre data-src="s9"></pre>
-    <script id="s9">
+<div class="vd">
+    <button type="button" id="lesson-button-s9">Chạy Ví dụ 3.2: Đổi tên biến (Renaming Variables)</button>
+    <p id="lesson-output-s9" class="out" aria-live="polite">Nhấn nút để chạy ví dụ.</p>
+</div>
+    <script id="s9">(function () {
+ const output = document.getElementById("lesson-output-s9");
+ const formatOutput = value => {
+ if (typeof value === "string") return value;
+ if (typeof value === "undefined") return "undefined";
+ if (typeof value === "bigint") return value + "n";
+ if (typeof value === "symbol") return value.toString();
+ if (value === null) return "null";
+ if (value instanceof Date) return value.toString();
+ if (typeof value === "object") { try { return JSON.stringify(value, (_, item) => typeof item === "bigint" ? item + "n" : item, 2); } catch { return String(value); } }
+ return String(value);
+};
+ const runExample = function () {
+  output.textContent = "";
+  const writeOutput = (...values) => { output.textContent += values.map(formatOutput).join(" ") + "\n"; };
+
 const student = {
     name: "An",
     score: 9.5
@@ -302,9 +505,13 @@ const student = {
 
 const { name: studentName, score: studentScore } = student;
 
-console.log(studentName);  // An
-console.log(studentScore); // 9.5
-    </script>
+writeOutput(studentName);  // An
+writeOutput(studentScore); // 9.5
+    
+ };
+ 
+ document.getElementById("lesson-button-s9").addEventListener("click", runExample);
+})();</script>
 
     <div class="kn">
         <b>Lưu ý:</b>
@@ -326,7 +533,26 @@ console.log(studentScore); // 9.5
     </p>
 
     <pre data-src="s10"></pre>
-    <script id="s10">
+<div class="vd">
+    <button type="button" id="lesson-button-s10">Chạy Ví dụ 3.3: Giá trị mặc định trong Object Destructuring</button>
+    <p id="lesson-output-s10" class="out" aria-live="polite">Nhấn nút để chạy ví dụ.</p>
+</div>
+    <script id="s10">(function () {
+ const output = document.getElementById("lesson-output-s10");
+ const formatOutput = value => {
+ if (typeof value === "string") return value;
+ if (typeof value === "undefined") return "undefined";
+ if (typeof value === "bigint") return value + "n";
+ if (typeof value === "symbol") return value.toString();
+ if (value === null) return "null";
+ if (value instanceof Date) return value.toString();
+ if (typeof value === "object") { try { return JSON.stringify(value, (_, item) => typeof item === "bigint" ? item + "n" : item, 2); } catch { return String(value); } }
+ return String(value);
+};
+ const runExample = function () {
+  output.textContent = "";
+  const writeOutput = (...values) => { output.textContent += values.map(formatOutput).join(" ") + "\n"; };
+
 const account = {
     username: "phong123",
     email: "phong@example.com"
@@ -338,10 +564,14 @@ const {
     role = "Guest"
 } = account;
 
-console.log(username); // phong123
-console.log(email);    // phong@example.com
-console.log(role);     // Guest
-    </script>
+writeOutput(username); // phong123
+writeOutput(email);    // phong@example.com
+writeOutput(role);     // Guest
+    
+ };
+ 
+ document.getElementById("lesson-button-s10").addEventListener("click", runExample);
+})();</script>
 
     <h3>Ví dụ 3.4: Rest trong Object Destructuring</h3>
 
@@ -351,7 +581,26 @@ console.log(role);     // Guest
     </p>
 
     <pre data-src="s11"></pre>
-    <script id="s11">
+<div class="vd">
+    <button type="button" id="lesson-button-s11">Chạy Ví dụ 3.4: Rest trong Object Destructuring</button>
+    <p id="lesson-output-s11" class="out" aria-live="polite">Nhấn nút để chạy ví dụ.</p>
+</div>
+    <script id="s11">(function () {
+ const output = document.getElementById("lesson-output-s11");
+ const formatOutput = value => {
+ if (typeof value === "string") return value;
+ if (typeof value === "undefined") return "undefined";
+ if (typeof value === "bigint") return value + "n";
+ if (typeof value === "symbol") return value.toString();
+ if (value === null) return "null";
+ if (value instanceof Date) return value.toString();
+ if (typeof value === "object") { try { return JSON.stringify(value, (_, item) => typeof item === "bigint" ? item + "n" : item, 2); } catch { return String(value); } }
+ return String(value);
+};
+ const runExample = function () {
+  output.textContent = "";
+  const writeOutput = (...values) => { output.textContent += values.map(formatOutput).join(" ") + "\n"; };
+
 const employee = {
     name: "Phong",
     age: 19,
@@ -361,10 +610,14 @@ const employee = {
 
 const { name, age, ...otherInformation } = employee;
 
-console.log(name);               // Phong
-console.log(age);                // 19
-console.log(otherInformation);   // { department: "IT", salary: 1500 }
-    </script>
+writeOutput(name);               // Phong
+writeOutput(age);                // 19
+writeOutput(otherInformation);   // { department: "IT", salary: 1500 }
+    
+ };
+ 
+ document.getElementById("lesson-button-s11").addEventListener("click", runExample);
+})();</script>
 
     <div class="kn">
         <b>Ghi nhớ:</b>
@@ -394,7 +647,26 @@ console.log(otherInformation);   // { department: "IT", salary: 1500 }
     <h3>Ví dụ 4.1: Nested Object Destructuring</h3>
 
     <pre data-src="s12"></pre>
-    <script id="s12">
+<div class="vd">
+    <button type="button" id="lesson-button-s12">Chạy Ví dụ 4.1: Nested Object Destructuring</button>
+    <p id="lesson-output-s12" class="out" aria-live="polite">Nhấn nút để chạy ví dụ.</p>
+</div>
+    <script id="s12">(function () {
+ const output = document.getElementById("lesson-output-s12");
+ const formatOutput = value => {
+ if (typeof value === "string") return value;
+ if (typeof value === "undefined") return "undefined";
+ if (typeof value === "bigint") return value + "n";
+ if (typeof value === "symbol") return value.toString();
+ if (value === null) return "null";
+ if (value instanceof Date) return value.toString();
+ if (typeof value === "object") { try { return JSON.stringify(value, (_, item) => typeof item === "bigint" ? item + "n" : item, 2); } catch { return String(value); } }
+ return String(value);
+};
+ const runExample = function () {
+  output.textContent = "";
+  const writeOutput = (...values) => { output.textContent += values.map(formatOutput).join(" ") + "\n"; };
+
 const user = {
     name: "Phong",
     address: {
@@ -408,10 +680,14 @@ const {
     address: { city, country }
 } = user;
 
-console.log(name);    // Phong
-console.log(city);    // Ha Noi
-console.log(country); // Vietnam
-    </script>
+writeOutput(name);    // Phong
+writeOutput(city);    // Ha Noi
+writeOutput(country); // Vietnam
+    
+ };
+ 
+ document.getElementById("lesson-button-s12").addEventListener("click", runExample);
+})();</script>
 
     <div class="kn">
         <b>Giải thích:</b>
@@ -431,7 +707,26 @@ console.log(country); // Vietnam
     <h3>Ví dụ 4.2: Nested Array Destructuring</h3>
 
     <pre data-src="s13"></pre>
-    <script id="s13">
+<div class="vd">
+    <button type="button" id="lesson-button-s13">Chạy Ví dụ 4.2: Nested Array Destructuring</button>
+    <p id="lesson-output-s13" class="out" aria-live="polite">Nhấn nút để chạy ví dụ.</p>
+</div>
+    <script id="s13">(function () {
+ const output = document.getElementById("lesson-output-s13");
+ const formatOutput = value => {
+ if (typeof value === "string") return value;
+ if (typeof value === "undefined") return "undefined";
+ if (typeof value === "bigint") return value + "n";
+ if (typeof value === "symbol") return value.toString();
+ if (value === null) return "null";
+ if (value instanceof Date) return value.toString();
+ if (typeof value === "object") { try { return JSON.stringify(value, (_, item) => typeof item === "bigint" ? item + "n" : item, 2); } catch { return String(value); } }
+ return String(value);
+};
+ const runExample = function () {
+  output.textContent = "";
+  const writeOutput = (...values) => { output.textContent += values.map(formatOutput).join(" ") + "\n"; };
+
 const matrix = [
     [1, 2],
     [3, 4],
@@ -444,15 +739,38 @@ const [
     [c1, c2]
 ] = matrix;
 
-console.log(a1, a2); // 1 2
-console.log(b1, b2); // 3 4
-console.log(c1, c2); // 5 6
-    </script>
+writeOutput(a1, a2); // 1 2
+writeOutput(b1, b2); // 3 4
+writeOutput(c1, c2); // 5 6
+    
+ };
+ 
+ document.getElementById("lesson-button-s13").addEventListener("click", runExample);
+})();</script>
 
     <h3>Ví dụ 4.3: Kết hợp Object và Array Destructuring</h3>
 
     <pre data-src="s14"></pre>
-    <script id="s14">
+<div class="vd">
+    <button type="button" id="lesson-button-s14">Chạy Ví dụ 4.3: Kết hợp Object và Array Destructuring</button>
+    <p id="lesson-output-s14" class="out" aria-live="polite">Nhấn nút để chạy ví dụ.</p>
+</div>
+    <script id="s14">(function () {
+ const output = document.getElementById("lesson-output-s14");
+ const formatOutput = value => {
+ if (typeof value === "string") return value;
+ if (typeof value === "undefined") return "undefined";
+ if (typeof value === "bigint") return value + "n";
+ if (typeof value === "symbol") return value.toString();
+ if (value === null) return "null";
+ if (value instanceof Date) return value.toString();
+ if (typeof value === "object") { try { return JSON.stringify(value, (_, item) => typeof item === "bigint" ? item + "n" : item, 2); } catch { return String(value); } }
+ return String(value);
+};
+ const runExample = function () {
+  output.textContent = "";
+  const writeOutput = (...values) => { output.textContent += values.map(formatOutput).join(" ") + "\n"; };
+
 const product = {
     name: "Laptop",
     price: 2000,
@@ -465,11 +783,15 @@ const {
     specifications: [ram, storage]
 } = product;
 
-console.log(productName); // Laptop
-console.log(price);       // 2000
-console.log(ram);         // 16GB RAM
-console.log(storage);     // 512GB SSD
-    </script>
+writeOutput(productName); // Laptop
+writeOutput(price);       // 2000
+writeOutput(ram);         // 16GB RAM
+writeOutput(storage);     // 512GB SSD
+    
+ };
+ 
+ document.getElementById("lesson-button-s14").addEventListener("click", runExample);
+})();</script>
 
     <hr>
     <h2 id="sec5">5. Destructuring trong Function</h2>
@@ -483,11 +805,30 @@ console.log(storage);     // 512GB SSD
     <h3>Ví dụ 5.1: Object Destructuring trong tham số</h3>
 
     <pre data-src="s15"></pre>
-    <script id="s15">
+<div class="vd">
+    <button type="button" id="lesson-button-s15">Chạy Ví dụ 5.1: Object Destructuring trong tham số</button>
+    <p id="lesson-output-s15" class="out" aria-live="polite">Nhấn nút để chạy ví dụ.</p>
+</div>
+    <script id="s15">(function () {
+ const output = document.getElementById("lesson-output-s15");
+ const formatOutput = value => {
+ if (typeof value === "string") return value;
+ if (typeof value === "undefined") return "undefined";
+ if (typeof value === "bigint") return value + "n";
+ if (typeof value === "symbol") return value.toString();
+ if (value === null) return "null";
+ if (value instanceof Date) return value.toString();
+ if (typeof value === "object") { try { return JSON.stringify(value, (_, item) => typeof item === "bigint" ? item + "n" : item, 2); } catch { return String(value); } }
+ return String(value);
+};
+ const runExample = function () {
+  output.textContent = "";
+  const writeOutput = (...values) => { output.textContent += values.map(formatOutput).join(" ") + "\n"; };
+
 function displayPerson({ name, age, city }) {
-    console.log("Name: " + name);
-    console.log("Age: " + age);
-    console.log("City: " + city);
+    writeOutput("Name: " + name);
+    writeOutput("Age: " + age);
+    writeOutput("City: " + city);
 }
 
 const personInfo = {
@@ -497,7 +838,11 @@ const personInfo = {
 };
 
 displayPerson(personInfo);
-    </script>
+    
+ };
+ 
+ document.getElementById("lesson-button-s15").addEventListener("click", runExample);
+})();</script>
 
     <div class="kn">
         <b>Giải thích:</b>
@@ -520,7 +865,26 @@ displayPerson(personInfo);
     <h3>Ví dụ 5.2: Destructuring với Function trả về Object</h3>
 
     <pre data-src="s16"></pre>
-    <script id="s16">
+<div class="vd">
+    <button type="button" id="lesson-button-s16">Chạy Ví dụ 5.2: Destructuring với Function trả về Object</button>
+    <p id="lesson-output-s16" class="out" aria-live="polite">Nhấn nút để chạy ví dụ.</p>
+</div>
+    <script id="s16">(function () {
+ const output = document.getElementById("lesson-output-s16");
+ const formatOutput = value => {
+ if (typeof value === "string") return value;
+ if (typeof value === "undefined") return "undefined";
+ if (typeof value === "bigint") return value + "n";
+ if (typeof value === "symbol") return value.toString();
+ if (value === null) return "null";
+ if (value instanceof Date) return value.toString();
+ if (typeof value === "object") { try { return JSON.stringify(value, (_, item) => typeof item === "bigint" ? item + "n" : item, 2); } catch { return String(value); } }
+ return String(value);
+};
+ const runExample = function () {
+  output.textContent = "";
+  const writeOutput = (...values) => { output.textContent += values.map(formatOutput).join(" ") + "\n"; };
+
 function getUser() {
     return {
         username: "phong123",
@@ -530,9 +894,13 @@ function getUser() {
 
 const { username, age } = getUser();
 
-console.log(username); // phong123
-console.log(age);      // 19
-    </script>
+writeOutput(username); // phong123
+writeOutput(age);      // 19
+    
+ };
+ 
+ document.getElementById("lesson-button-s16").addEventListener("click", runExample);
+})();</script>
 
     <hr>
     <h2 id="sec6">6. Tổng kết</h2>
@@ -644,6 +1012,9 @@ console.log(age);      // 19
                 "B = " + b;
         });
     </script>
+
+
+
 
 </body>
 </html>

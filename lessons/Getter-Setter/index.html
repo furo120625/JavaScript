@@ -38,7 +38,26 @@
     </div>
 
     <pre data-src="s1"></pre>
-    <script id="s1">
+<div class="vd">
+    <button type="button" id="lesson-button-s1">Chạy Ví dụ s1</button>
+    <p id="lesson-output-s1" class="out" aria-live="polite">Nhấn nút để chạy ví dụ.</p>
+</div>
+    <script id="s1">(function () {
+ const output = document.getElementById("lesson-output-s1");
+ const formatOutput = value => {
+ if (typeof value === "string") return value;
+ if (typeof value === "undefined") return "undefined";
+ if (typeof value === "bigint") return value + "n";
+ if (typeof value === "symbol") return value.toString();
+ if (value === null) return "null";
+ if (value instanceof Date) return value.toString();
+ if (typeof value === "object") { try { return JSON.stringify(value, (_, item) => typeof item === "bigint" ? item + "n" : item, 2); } catch { return String(value); } }
+ return String(value);
+};
+ const runExample = function () {
+  output.textContent = "";
+  const writeOutput = (...values) => { output.textContent += values.map(formatOutput).join(" ") + "\n"; };
+
 class Person {
     constructor(name) {
         this.name = name;
@@ -59,10 +78,14 @@ class Person {
 
 const person = new Person("Phong");
 
-console.log(person.displayName);      // Getter: đọc giá trị
+writeOutput(person.displayName);      // Getter: đọc giá trị
 person.displayName = "Hai Phong";     // Setter: cập nhật giá trị
-console.log(person.displayName);      // Hai Phong
-    </script>
+writeOutput(person.displayName);      // Hai Phong
+    
+ };
+ 
+ document.getElementById("lesson-button-s1").addEventListener("click", runExample);
+})();</script>
 
     <p><b>Lưu ý:</b> <code>person.displayName</code> là cách truy cập đúng. Không viết <code>person.displayName()</code>, vì Getter không phải method được gọi theo cách thông thường.</p>
 
@@ -71,7 +94,11 @@ console.log(person.displayName);      // Hai Phong
    
     <h3>Ví dụ 2.1: Tạo Setter cho width và height</h3>
     <pre data-src="s2"></pre>
-    <script id="s2">
+<div class="vd">
+    <button type="button" id="lesson-button-s2">Chạy Ví dụ 2.1: Tạo Setter cho width và height</button>
+    <p id="lesson-output-s2" class="out" aria-live="polite">Nhấn nút để chạy ví dụ.</p>
+</div>
+    <script id="s2" type="text/plain">
 class Rectangle {
     constructor(width, height) {
         this.width = width;
@@ -124,7 +151,26 @@ class Rectangle {
     <p>Ở phần trước, ta mới có thể ghi dữ liệu thông qua Setter. Để đọc được giá trị đã lưu trong <code>_width</code> và <code>_height</code>, ta cần Getter.</p>
 
     <pre data-src="s3"></pre>
-    <script id="s3">
+<div class="vd">
+    <button type="button" id="lesson-button-s3">Chạy Thử nghiệm Setter</button>
+    <p id="lesson-output-s3" class="out" aria-live="polite">Nhấn nút để chạy ví dụ.</p>
+</div>
+    <script id="s3">(function () {
+ const output = document.getElementById("lesson-output-s3");
+ const formatOutput = value => {
+ if (typeof value === "string") return value;
+ if (typeof value === "undefined") return "undefined";
+ if (typeof value === "bigint") return value + "n";
+ if (typeof value === "symbol") return value.toString();
+ if (value === null) return "null";
+ if (value instanceof Date) return value.toString();
+ if (typeof value === "object") { try { return JSON.stringify(value, (_, item) => typeof item === "bigint" ? item + "n" : item, 2); } catch { return String(value); } }
+ return String(value);
+};
+ const runExample = function () {
+  output.textContent = "";
+  const writeOutput = (...values) => { output.textContent += values.map(formatOutput).join(" ") + "\n"; };
+
 class RectangleWithGetters {
     constructor(width, height) {
         this.width = width;
@@ -157,9 +203,13 @@ class RectangleWithGetters {
 }
 
 const rectangleWithGetters = new RectangleWithGetters(3, 4);
-console.log(rectangleWithGetters.width);   // 3
-console.log(rectangleWithGetters.height);  // 4
-    </script>
+writeOutput(rectangleWithGetters.width);   // 3
+writeOutput(rectangleWithGetters.height);  // 4
+    
+ };
+ 
+ document.getElementById("lesson-button-s3").addEventListener("click", runExample);
+})();</script>
 
     <div class="kn">
         <ol>
@@ -178,7 +228,26 @@ console.log(rectangleWithGetters.height);  // 4
 
     <h3>Ví dụ 4.1: Tính diện tích hình chữ nhật</h3>
     <pre data-src="s4"></pre>
-    <script id="s4">
+<div class="vd">
+<button type="button" id="lesson-button-s4">Chạy Ví dụ 4.1: Tính diện tích hình chữ nhật</button>
+<p id="lesson-output-s4" class="out" aria-live="polite">Nhấn nút để chạy ví dụ.</p>
+</div>
+    <script id="s4">(function () {
+ const output = document.getElementById("lesson-output-s4");
+ const formatOutput = value => {
+ if (typeof value === "string") return value;
+ if (typeof value === "undefined") return "undefined";
+ if (typeof value === "bigint") return value + "n";
+ if (typeof value === "symbol") return value.toString();
+ if (value === null) return "null";
+ if (value instanceof Date) return value.toString();
+ if (typeof value === "object") { try { return JSON.stringify(value, (_, item) => typeof item === "bigint" ? item + "n" : item, 2); } catch { return String(value); } }
+ return String(value);
+};
+ const runExample = function () {
+  output.textContent = "";
+  const writeOutput = (...values) => { output.textContent += values.map(formatOutput).join(" ") + "\n"; };
+
 class RectangleWithArea {
     constructor(width, height) {
         this.width = width;
@@ -215,8 +284,12 @@ class RectangleWithArea {
 }
 
 const rectangleWithArea = new RectangleWithArea(3, 4);
-console.log(rectangleWithArea.area); // 12
-    </script>
+writeOutput(rectangleWithArea.area); // 12
+    
+ };
+ 
+ document.getElementById("lesson-button-s4").addEventListener("click", runExample);
+})();</script>
 
     <div class="vd">
         <p>Thử thay đổi kích thước để xem Getter <code>area</code> tự tính lại diện tích.</p>
@@ -230,7 +303,26 @@ console.log(rectangleWithArea.area); // 12
 
     <h3>Ví dụ 4.2: Thêm logic định dạng dữ liệu trong Getter</h3>
     <pre data-src="s5"></pre>
-    <script id="s5">
+<div class="vd">
+    <button type="button" id="lesson-button-s5">Chạy Ví dụ 4.2: Thêm logic định dạng dữ liệu trong Getter</button>
+    <p id="lesson-output-s5" class="out" aria-live="polite">Nhấn nút để chạy ví dụ.</p>
+</div>
+    <script id="s5">(function () {
+ const output = document.getElementById("lesson-output-s5");
+ const formatOutput = value => {
+ if (typeof value === "string") return value;
+ if (typeof value === "undefined") return "undefined";
+ if (typeof value === "bigint") return value + "n";
+ if (typeof value === "symbol") return value.toString();
+ if (value === null) return "null";
+ if (value instanceof Date) return value.toString();
+ if (typeof value === "object") { try { return JSON.stringify(value, (_, item) => typeof item === "bigint" ? item + "n" : item, 2); } catch { return String(value); } }
+ return String(value);
+};
+ const runExample = function () {
+  output.textContent = "";
+  const writeOutput = (...values) => { output.textContent += values.map(formatOutput).join(" ") + "\n"; };
+
 class FormattedRectangle {
     constructor(width, height) {
         this.width = width;
@@ -261,10 +353,14 @@ class FormattedRectangle {
 }
 
 const formattedRectangle = new FormattedRectangle(3, 4);
-console.log(formattedRectangle.width);   // "3.0 cm"
-console.log(formattedRectangle.height);  // "4.0 cm"
-console.log(formattedRectangle.area);    // "12.0 cm²"
-    </script>
+writeOutput(formattedRectangle.width);   // "3.0 cm"
+writeOutput(formattedRectangle.height);  // "4.0 cm"
+writeOutput(formattedRectangle.area);    // "12.0 cm²"
+    
+ };
+ 
+ document.getElementById("lesson-button-s5").addEventListener("click", runExample);
+})();</script>
 
     <p>Ở ví dụ này, Getter định dạng kết quả bằng <code>toFixed(1)</code>. Giá trị gốc vẫn được lưu trong <code>_width</code> và <code>_height</code>; Getter chỉ định dạng khi đọc dữ liệu.</p>
 
@@ -398,5 +494,8 @@ console.log(formattedRectangle.area);    // "12.0 cm²"
                 " | Area: " + rectangle.area.toFixed(1) + " cm²";
         });
     </script>
+
+
+
 </body>
 </html>
