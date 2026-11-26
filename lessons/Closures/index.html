@@ -1,0 +1,397 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Closures | JavaScript Learning Hub</title>
+    <link rel="stylesheet" href="../../css/style.css">
+    <style>
+        .out {
+            white-space: pre-line;
+        }
+
+        .vd button {
+            margin: 4px 4px 4px 0;
+        }
+
+        .note {
+            padding: 12px 16px;
+            border-left: 3px solid var(--color-gray-400);
+            background: var(--color-surface);
+        }
+    </style>
+</head>
+
+<body class="lesson-page">
+
+    <p><a href="../../index.html">← Back to lessons</a></p>
+    <h1>JavaScript Closures</h1>
+    <p>Closure là một cơ chế trong JavaScript cho phép một function tiếp tục truy cập các biến thuộc lexical scope bên ngoài nó, kể cả khi function bên ngoài đã kết thúc.</p>
+
+    <p>
+        <a href="#sec1">1. Khái niệm</a> |
+        <a href="#sec2">2. Nested functions</a> |
+        <a href="#sec3">3. Private variables</a> |
+        <a href="#sec4">4. State maintenance</a> |
+        <a href="#sec5">5. Tổng kết</a>
+    </p>
+
+    <hr>
+    <h2 id="sec1">1. Closure là gì?</h2>
+    <div class="kn">
+        <ol>
+            <li><b>Outer function:</b> function bên ngoài, nơi khai báo các biến thuộc scope mà function bên trong có thể truy cập.</li>
+            <li><b>Inner function:</b> function được định nghĩa bên trong outer function.</li>
+            <li><b>Closure:</b> inner function cùng với lexical environment mà nó ghi nhớ. Nhờ đó, function có thể tiếp tục truy cập các biến bên ngoài phạm vi trực tiếp của nó.</li>
+            <li><b>Ứng dụng:</b> tạo private variables và duy trì state giữa nhiều lần gọi function.</li>
+        </ol>
+    </div>
+
+    <p>JavaScript sử dụng lexical scoping. Điều này có nghĩa là quyền truy cập biến của một function được xác định dựa trên vị trí function được định nghĩa trong mã nguồn, không phải vị trí nó được gọi.</p>
+
+    <h3>Ví dụ 1.1: Inner function truy cập biến của outer function</h3>
+    <pre data-src="s1"></pre>
+    <div class="vd">
+        <button type="button" id="lesson-button-s1">Chạy Ví dụ 1.1</button>
+        <p id="lesson-output-s1" class="out" aria-live="polite">Nhấn nút để chạy ví dụ.</p>
+    </div>
+    <script id="s1" type="text/plain">
+const message = "Goodbye";
+
+function outer() {
+    const message = "Hello";
+
+    function inner() {
+        return message;
+    }
+
+    return inner();
+}
+
+writeOutput(outer()); // Hello
+    </script>
+
+    <div class="kn">
+        <ol>
+            <li>Ở global scope, biến <code>message</code> có giá trị <code>"Goodbye"</code>.</li>
+            <li>Bên trong <code>outer()</code>, một biến khác cũng tên <code>message</code> được khai báo với giá trị <code>"Hello"</code>.</li>
+            <li><code>inner()</code> được định nghĩa bên trong <code>outer()</code>, vì vậy nó có thể truy cập biến <code>message</code> của <code>outer()</code>.</li>
+            <li>Khi tìm biến <code>message</code>, JavaScript tìm từ scope gần nhất trước. Vì vậy kết quả là <code>"Hello"</code>, không phải <code>"Goodbye"</code>.</li>
+        </ol>
+    </div>
+
+    <p class="note"><b>Điểm cần nhớ:</b> Inner function không chỉ truy cập được biến global. Nó còn có thể truy cập các biến được khai báo trong những scope bao quanh nó.</p>
+
+    <hr>
+    <h2 id="sec2">2. Closure có thể tồn tại sau khi outer function kết thúc</h2>
+    <p>Điểm quan trọng của closure không chỉ là inner function truy cập biến bên ngoài. Khi outer function trả về inner function, function được trả về vẫn có thể sử dụng những biến mà nó đã tham chiếu.</p>
+
+    <h3>Ví dụ 2.1: Tạo một counter bằng closure</h3>
+    <pre data-src="s2"></pre>
+    <div class="vd">
+        <button type="button" id="lesson-button-s2">Tạo counter và chạy 3 lần</button>
+        <button type="button" id="counter-increment" disabled>Increment</button>
+        <button type="button" id="counter-read" disabled>Get count</button>
+        <p id="lesson-output-s2" class="out" aria-live="polite">Nhấn nút tạo counter để bắt đầu.</p>
+    </div>
+    <script id="s2" type="text/plain">
+function createCounter() {
+    let count = 0;
+
+    function increment() {
+        count++;
+        writeOutput("Count increased to " + count);
+    }
+
+    function getCount() {
+        return count;
+    }
+
+    return { increment, getCount };
+}
+
+const counter = createCounter();
+
+counter.increment();
+counter.increment();
+counter.increment();
+
+writeOutput("Current count: " + counter.getCount());
+    </script>
+
+    <div class="kn">
+        <ol>
+            <li><code>createCounter()</code> tạo biến cục bộ <code>count</code> và khởi tạo nó bằng <code>0</code>.</li>
+            <li>Hai function <code>increment()</code> và <code>getCount()</code> được định nghĩa bên trong <code>createCounter()</code>, nên chúng có quyền truy cập <code>count</code>.</li>
+            <li><code>return { increment, getCount }</code> trả về một object chứa hai function này.</li>
+            <li>Sau khi <code>createCounter()</code> kết thúc, ta vẫn gọi được <code>counter.increment()</code> và <code>counter.getCount()</code>. Closure giữ lại khả năng truy cập biến <code>count</code>.</li>
+        </ol>
+    </div>
+
+    <p>Hãy thử nhấn <b>Increment</b> nhiều lần sau khi counter đã được tạo. Giá trị <code>count</code> không bị khởi tạo lại về <code>0</code> ở mỗi lần nhấn, bởi vì tất cả các lần gọi đều làm việc với cùng một biến thuộc closure đó.</p>
+
+    <h3>Vì sao đây là private variable?</h3>
+    <p>Biến <code>count</code> được khai báo bên trong <code>createCounter()</code>. Code bên ngoài không thể truy cập trực tiếp bằng cách viết <code>counter.count</code>. Thay vào đó, nó phải tương tác thông qua các function được trả về.</p>
+    <pre data-src="s3"></pre>
+    <div class="vd">
+        <button type="button" id="lesson-button-s3">Kiểm tra quyền truy cập</button>
+        <p id="lesson-output-s3" class="out" aria-live="polite">Nhấn nút để kiểm tra.</p>
+    </div>
+    <script id="s3" type="text/plain">
+const counter = createCounter();
+
+counter.increment();
+
+writeOutput(counter.getCount()); // 1
+writeOutput(counter.count);      // undefined
+    </script>
+
+    <p><b>Lưu ý:</b> Đây là cách đóng gói dữ liệu thông qua closure, không phải cơ chế bảo mật tuyệt đối. Code bên ngoài vẫn có thể gọi những function mà ta chủ động cung cấp.</p>
+
+    <hr>
+    <h2 id="sec3">3. Dùng closure để duy trì state</h2>
+    <p>Closure có thể giữ lại một trạng thái (state) và cho phép nhiều function cùng đọc hoặc cập nhật trạng thái đó. Trong video, Bro Code minh họa điều này bằng một trò chơi có điểm số.</p>
+
+    <h3>Ví dụ 3.1: Quản lý điểm số của game</h3>
+    <pre data-src="s4"></pre>
+    <div class="vd">
+        <button type="button" id="lesson-button-s4">Khởi tạo game</button>
+        <button type="button" id="game-increase-5" disabled>Increase +5</button>
+        <button type="button" id="game-increase-6" disabled>Increase +6</button>
+        <button type="button" id="game-decrease-3" disabled>Decrease -3</button>
+        <button type="button" id="game-get-score" disabled>Get score</button>
+        <p id="lesson-output-s4" class="out" aria-live="polite">Nhấn nút khởi tạo game để bắt đầu.</p>
+    </div>
+    <script id="s4" type="text/plain">
+function createGame() {
+    let score = 0;
+
+    function increaseScore(points) {
+        score += points;
+        writeOutput("+" + points + "pts");
+    }
+
+    function decreaseScore(points) {
+        score -= points;
+        writeOutput("-" + points + "pts");
+    }
+
+    function getScore() {
+        return score;
+    }
+
+    return { increaseScore, decreaseScore, getScore };
+}
+
+const game = createGame();
+
+game.increaseScore(5);
+game.increaseScore(6);
+game.decreaseScore(3);
+
+writeOutput("The final score is " + game.getScore() + "pts");
+    </script>
+
+    <div class="kn">
+        <ol>
+            <li><code>createGame()</code> khởi tạo biến <code>score = 0</code>.</li>
+            <li><code>increaseScore(points)</code> tăng điểm số.</li>
+            <li><code>decreaseScore(points)</code> giảm điểm số.</li>
+            <li><code>getScore()</code> trả về điểm số hiện tại.</li>
+            <li>Cả ba function đều truy cập và thao tác trên cùng biến <code>score</code> thuộc scope của <code>createGame()</code>.</li>
+        </ol>
+    </div>
+
+    <p>Thử thực hiện lần lượt <b>Increase +5</b>, <b>Increase +6</b> và <b>Decrease -3</b>. Điểm số cuối cùng là <b>8</b>. Biến <code>score</code> không cần được đưa ra global scope để các function này có thể cùng sử dụng.</p>
+
+    <hr>
+    <h2 id="sec4">4. Closure được sử dụng ở đâu?</h2>
+    <ul>
+        <li><b>Private variables:</b> giới hạn việc truy cập trực tiếp vào dữ liệu bên trong function.</li>
+        <li><b>State maintenance:</b> duy trì dữ liệu giữa nhiều lần gọi function, ví dụ counter hoặc game score.</li>
+        <li><b>JavaScript frameworks:</b> closure là một cơ chế thường gặp trong các thư viện và framework như React, Vue và Angular.</li>
+    </ul>
+
+    <hr>
+    <h2 id="sec5">5. Tổng kết</h2>
+    <table>
+        <thead>
+            <tr>
+                <th>Khái niệm</th>
+                <th>Ý nghĩa</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>Outer function</td>
+                <td>Function chứa các biến và inner function.</td>
+            </tr>
+            <tr>
+                <td>Inner function</td>
+                <td>Function được định nghĩa bên trong outer function và có thể truy cập scope bên ngoài.</td>
+            </tr>
+            <tr>
+                <td>Closure</td>
+                <td>Function cùng lexical environment mà nó ghi nhớ.</td>
+            </tr>
+            <tr>
+                <td>Private variable</td>
+                <td>Biến được giữ trong scope bên ngoài và chỉ được thao tác qua những function được cung cấp.</td>
+            </tr>
+            <tr>
+                <td>State maintenance</td>
+                <td>Duy trì trạng thái giữa nhiều lần gọi function.</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <div class="kn">
+        <b>Ghi nhớ:</b>
+        <ul>
+            <li>Inner function có thể truy cập biến thuộc outer function nhờ lexical scoping.</li>
+            <li>Closure cho phép function tiếp tục truy cập những biến đó sau khi outer function đã kết thúc.</li>
+            <li>Nhiều inner function có thể cùng truy cập và cập nhật một biến chung.</li>
+            <li>Closure là nền tảng hữu ích để tạo private variables và duy trì state.</li>
+        </ul>
+    </div>
+
+    <p><b>Video tham khảo:</b> <a href="https://www.youtube.com/watch?v=beZfCfiuIkA" target="_blank" rel="noopener noreferrer">Learn JavaScript CLOSURES in 10 minutes! - Bro Code</a></p>
+
+    <script>
+        document.querySelectorAll("pre[data-src]").forEach(function (pre) {
+            const source = document.getElementById(pre.dataset.src);
+            if (source) pre.textContent = source.textContent.trim();
+        });
+
+        function writeOutput(output, ...values) {
+            output.textContent += values.join(" ") + "\n";
+        }
+
+        document.getElementById("lesson-button-s1").addEventListener("click", function () {
+            const output = document.getElementById("lesson-output-s1");
+            output.textContent = "";
+
+            const message = "Goodbye";
+
+            function outer() {
+                const message = "Hello";
+
+                function inner() {
+                    return message;
+                }
+
+                return inner();
+            }
+
+            writeOutput(output, outer());
+        });
+
+        let counter = null;
+        const counterOutput = document.getElementById("lesson-output-s2");
+        const incrementButton = document.getElementById("counter-increment");
+        const readButton = document.getElementById("counter-read");
+
+        function createCounter() {
+            let count = 0;
+
+            function increment() {
+                count++;
+                writeOutput(counterOutput, "Count increased to " + count);
+            }
+
+            function getCount() {
+                return count;
+            }
+
+            return { increment, getCount };
+        }
+
+        document.getElementById("lesson-button-s2").addEventListener("click", function () {
+            counterOutput.textContent = "";
+            counter = createCounter();
+            incrementButton.disabled = false;
+            readButton.disabled = false;
+
+            counter.increment();
+            counter.increment();
+            counter.increment();
+            writeOutput(counterOutput, "Current count: " + counter.getCount());
+        });
+
+        incrementButton.addEventListener("click", function () {
+            if (counter) counter.increment();
+        });
+
+        readButton.addEventListener("click", function () {
+            if (counter) writeOutput(counterOutput, "Current count: " + counter.getCount());
+        });
+
+        document.getElementById("lesson-button-s3").addEventListener("click", function () {
+            const output = document.getElementById("lesson-output-s3");
+            output.textContent = "";
+
+            const privateCounter = createCounter();
+            privateCounter.increment();
+
+            writeOutput(output, "getCount(): " + privateCounter.getCount());
+            writeOutput(output, "counter.count: " + privateCounter.count);
+            writeOutput(output, "count chỉ có thể được truy cập thông qua function được trả về.");
+        });
+
+        let game = null;
+        const gameOutput = document.getElementById("lesson-output-s4");
+        const gameButtons = [
+            "game-increase-5",
+            "game-increase-6",
+            "game-decrease-3",
+            "game-get-score"
+        ];
+
+        function createGame() {
+            let score = 0;
+
+            function increaseScore(points) {
+                score += points;
+                writeOutput(gameOutput, "+" + points + "pts");
+            }
+
+            function decreaseScore(points) {
+                score -= points;
+                writeOutput(gameOutput, "-" + points + "pts");
+            }
+
+            function getScore() {
+                return score;
+            }
+
+            return { increaseScore, decreaseScore, getScore };
+        }
+
+        document.getElementById("lesson-button-s4").addEventListener("click", function () {
+            gameOutput.textContent = "";
+            game = createGame();
+            gameButtons.forEach(function (id) {
+                document.getElementById(id).disabled = false;
+            });
+            writeOutput(gameOutput, "Game initialized. Score: " + game.getScore() + "pts");
+        });
+
+        document.getElementById("game-increase-5").addEventListener("click", function () {
+            if (game) game.increaseScore(5);
+        });
+
+        document.getElementById("game-increase-6").addEventListener("click", function () {
+            if (game) game.increaseScore(6);
+        });
+
+        document.getElementById("game-decrease-3").addEventListener("click", function () {
+            if (game) game.decreaseScore(3);
+        });
+
+        document.getElementById("game-get-score").addEventListener("click", function () {
+            if (game) writeOutput(gameOutput, "Current score: " + game.getScore() + "pts");
+        });
+    </script>
+
+</body>
+</html>
