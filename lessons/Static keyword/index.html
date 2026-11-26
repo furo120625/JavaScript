@@ -62,8 +62,27 @@ const byId = id => document.getElementById(id);
 
     <h3>Ví dụ ngắn: Property thường và static property</h3>
     <pre data-src="s1"></pre>
+<div class="vd">
+    <button type="button" id="lesson-button-s1">Chạy Ví dụ ngắn: Property thường và static property</button>
+    <p id="lesson-output-s1" class="out" aria-live="polite">Nhấn nút để chạy ví dụ.</p>
+</div>
 
-    <script id="s1" type="text/plain">
+    <script id="s1">(function () {
+ const output = document.getElementById("lesson-output-s1");
+ const formatOutput = value => {
+ if (typeof value === "string") return value;
+ if (typeof value === "undefined") return "undefined";
+ if (typeof value === "bigint") return value + "n";
+ if (typeof value === "symbol") return value.toString();
+ if (value === null) return "null";
+ if (value instanceof Date) return value.toString();
+ if (typeof value === "object") { try { return JSON.stringify(value, (_, item) => typeof item === "bigint" ? item + "n" : item, 2); } catch { return String(value); } }
+ return String(value);
+};
+ const runExample = function () {
+  output.textContent = "";
+  const writeOutput = (...values) => { output.textContent += values.map(formatOutput).join(" ") + "\n"; };
+
 class Example {
     static className = "Example"; // thuộc về class
 
@@ -75,12 +94,16 @@ class Example {
 const first = new Example("Object thứ nhất");
 const second = new Example("Object thứ hai");
 
-console.log(Example.className); // "Example"
-console.log(first.name);        // "Object thứ nhất"
-console.log(second.name);       // "Object thứ hai"
+writeOutput(Example.className); // "Example"
+writeOutput(first.name);        // "Object thứ nhất"
+writeOutput(second.name);       // "Object thứ hai"
 
-console.log(first.className);   // undefined
-    </script>
+writeOutput(first.className);   // undefined
+    
+ };
+ 
+ document.getElementById("lesson-button-s1").addEventListener("click", runExample);
+})();</script>
 
     <hr>
 
@@ -93,6 +116,10 @@ console.log(first.className);   // undefined
     </p>
 
     <pre data-src="s2"></pre>
+<div class="vd">
+<button type="button" id="lesson-button-s2">Chạy Ví dụ ngắn: Property thường và static property</button>
+<p id="lesson-output-s2" class="out" aria-live="polite">Nhấn nút để chạy ví dụ.</p>
+</div>
 
     <div class="vd">
         <label for="radius">Bán kính (radius):</label>
@@ -101,7 +128,22 @@ console.log(first.className);   // undefined
         <p id="mathOutput" class="out">Nhập bán kính rồi nhấn "Tính toán".</p>
     </div>
 
-    <script id="s2" type="text/plain">
+    <script id="s2">(function () {
+ const output = document.getElementById("lesson-output-s2");
+ const formatOutput = value => {
+ if (typeof value === "string") return value;
+ if (typeof value === "undefined") return "undefined";
+ if (typeof value === "bigint") return value + "n";
+ if (typeof value === "symbol") return value.toString();
+ if (value === null) return "null";
+ if (value instanceof Date) return value.toString();
+ if (typeof value === "object") { try { return JSON.stringify(value, (_, item) => typeof item === "bigint" ? item + "n" : item, 2); } catch { return String(value); } }
+ return String(value);
+};
+ const runExample = function () {
+  output.textContent = "";
+  const writeOutput = (...values) => { output.textContent += values.map(formatOutput).join(" ") + "\n"; };
+
 class MathUtil {
     static PI = 3.14159;
 
@@ -118,11 +160,15 @@ class MathUtil {
     }
 }
 
-console.log(MathUtil.PI);
-console.log(MathUtil.getDiameter(10));
-console.log(MathUtil.getCircumference(10));
-console.log(MathUtil.getArea(10));
-    </script>
+writeOutput(MathUtil.PI);
+writeOutput(MathUtil.getDiameter(10));
+writeOutput(MathUtil.getCircumference(10));
+writeOutput(MathUtil.getArea(10));
+    
+ };
+ 
+ document.getElementById("lesson-button-s2").addEventListener("click", runExample);
+})();</script>
 
     <script>
         class MathUtilDemo {
@@ -184,6 +230,10 @@ console.log(MathUtil.getArea(10));
     </p>
 
     <pre data-src="s3"></pre>
+<div class="vd">
+<button type="button" id="lesson-button-s3">Chạy Ví dụ ngắn: Property thường và static property</button>
+<p id="lesson-output-s3" class="out" aria-live="polite">Nhấn nút để chạy ví dụ.</p>
+</div>
 
     <div class="vd">
         <label for="username">Username:</label>
@@ -193,7 +243,22 @@ console.log(MathUtil.getArea(10));
         <p id="userOutput" class="out">Chưa có user nào được tạo.</p>
     </div>
 
-    <script id="s3" type="text/plain">
+    <script id="s3">(function () {
+ const output = document.getElementById("lesson-output-s3");
+ const formatOutput = value => {
+ if (typeof value === "string") return value;
+ if (typeof value === "undefined") return "undefined";
+ if (typeof value === "bigint") return value + "n";
+ if (typeof value === "symbol") return value.toString();
+ if (value === null) return "null";
+ if (value instanceof Date) return value.toString();
+ if (typeof value === "object") { try { return JSON.stringify(value, (_, item) => typeof item === "bigint" ? item + "n" : item, 2); } catch { return String(value); } }
+ return String(value);
+};
+ const runExample = function () {
+  output.textContent = "";
+  const writeOutput = (...values) => { output.textContent += values.map(formatOutput).join(" ") + "\n"; };
+
 class User {
     static userCount = 0;
 
@@ -203,11 +268,11 @@ class User {
     }
 
     static getUserCount() {
-        console.log(`There are ${User.userCount} users online`);
+        writeOutput(`There are ${User.userCount} users online`);
     }
 
     sayHello() {
-        console.log(`Hello, my username is ${this.username}`);
+        writeOutput(`Hello, my username is ${this.username}`);
     }
 }
 
@@ -220,7 +285,11 @@ user2.sayHello();
 user3.sayHello();
 
 User.getUserCount();
-    </script>
+    
+ };
+ 
+ document.getElementById("lesson-button-s3").addEventListener("click", runExample);
+})();</script>
 
     <script>
         class UserDemo {
@@ -373,5 +442,8 @@ User.getUserCount();
             pre.textContent = source.textContent.trim();
         });
     </script>
+
+
+
 </body>
 </html>

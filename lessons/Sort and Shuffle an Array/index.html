@@ -48,7 +48,7 @@
         <button id="b1">Sort and Print</button>
         <p id="o1" class="out"></p>
     </div>
-    <script id="s1">
+    <script id="s1" type="text/plain">
 const fruits = ["Banana", "Orange", "Apple", "Mango"];
 fruits.sort();
 document.getElementById("b1").onclick = function () {
@@ -87,11 +87,38 @@ document.getElementById("o1").innerHTML = fruits.join(", ");
     </p>
 
     <pre data-src="s2"></pre>
-    <script  id="s2">
+<div class="vd">
+    <button type="button" id="lesson-button-s2">Chạy 1.2. Sorting Numbers</button>
+    <p id="lesson-output-s2" class="out" aria-live="polite">Nhấn nút để chạy ví dụ.</p>
+</div>
+    <script  id="s2">(function () {
+ const output = document.getElementById("lesson-output-s2");
+ const formatOutput = value => {
+ if (typeof value === "string") return value;
+ if (typeof value === "undefined") return "undefined";
+ if (typeof value === "bigint") return value + "n";
+ if (typeof value === "symbol") return value.toString();
+ if (value === null) return "null";
+ if (value instanceof Date) return value.toString();
+ if (typeof value === "object") { try { return JSON.stringify(value, (_, item) => typeof item === "bigint" ? item + "n" : item, 2); } catch { return String(value); } }
+ return String(value);
+};
+ const runExample = function () {
+  output.textContent = "";
+  const writeOutput = (...values) => { output.textContent += values.map(formatOutput).join(" ") + "\n"; };
+
+const array = [40, 10, 100, 5, 25];
+
 array.sort(function(a, b) {
     return a - b;
 });
-    </script>
+
+writeOutput(array);
+    
+ };
+ 
+ document.getElementById("lesson-button-s2").addEventListener("click", runExample);
+})();</script>
 
     <p>
         Hàm so sánh nhận hai phần tử <code>a</code> và <code>b</code>,
@@ -133,7 +160,7 @@ array.sort(function(a, b) {
         <button id="b3">Sort and Print</button>
         <p id="o3" class="out"></p>
     </div>
-    <script  id="s3">
+    <script  id="s3" type="text/plain">
 const numbers3 = [40, 10, 100, 5, 25];
 document.getElementById("b3").onclick = function () {
     numbers3.sort(function(a, b) {
@@ -155,7 +182,7 @@ document.getElementById("b3").onclick = function () {
         <button id="b5">Sort and Print</button>
         <p id="o5" class="out"></p>
     </div>
-    <script  id="s5">
+    <script  id="s5" type="text/plain">
     const numbers5 = [40, 10, 100, 5, 25];
     document.getElementById("b5").onclick = function () {
     numbers5.sort(function(a, b) {
@@ -185,7 +212,7 @@ document.getElementById("b3").onclick = function () {
         <button id="b6">Sort and Print</button>
         <p id="o6" class="out"></p>
     </div>
-    <script  id="s6">
+    <script  id="s6" type="text/plain">
 const names6 = ["Phong", "An", "Minh", "Bao"];
 document.getElementById("b6").onclick = function () {
     names6.sort();
@@ -205,7 +232,7 @@ document.getElementById("b6").onclick = function () {
         <button id="b7">Sort and Print</button>
         <p id="o7" class="out"></p>
     </div>
-    <script  id="s7">
+    <script  id="s7" type="text/plain">
 const names7 = ["Phong", "an", "Minh", "bao"];
 document.getElementById("b7").onclick = function(){
     names7.sort((a, b) => a.localeCompare(b));
@@ -219,11 +246,30 @@ document.getElementById("o7").innerHTML = names7.join(", ");
     </p>
 
     <pre data-src="s8"></pre>
+<div class="vd">
+<button type="button" id="lesson-button-s8">Chạy 1.5. Sorting Strings</button>
+<p id="lesson-output-s8" class="out" aria-live="polite">Nhấn nút để chạy ví dụ.</p>
+</div>
     <div class="vd">
         <button id="b8">Sort and Print</button>
         <p id="o8" class="out"></p>
     </div>
-    <script  id="s8">
+    <script  id="s8">(function () {
+ const output = document.getElementById("lesson-output-s8");
+ const formatOutput = value => {
+ if (typeof value === "string") return value;
+ if (typeof value === "undefined") return "undefined";
+ if (typeof value === "bigint") return value + "n";
+ if (typeof value === "symbol") return value.toString();
+ if (value === null) return "null";
+ if (value instanceof Date) return value.toString();
+ if (typeof value === "object") { try { return JSON.stringify(value, (_, item) => typeof item === "bigint" ? item + "n" : item, 2); } catch { return String(value); } }
+ return String(value);
+};
+ const runExample = function () {
+  output.textContent = "";
+  const writeOutput = (...values) => { output.textContent += values.map(formatOutput).join(" ") + "\n"; };
+
 const names8 = ["Phong", "an", "Minh", "bao"];
 document.getElementById("b8").onclick = function() {
 names8.sort((a, b) =>
@@ -234,8 +280,12 @@ names8.sort((a, b) =>
 document.getElementById("o8").innerHTML = names8.join(", ");
 }
 
-console.log(names);
-    </script>
+writeOutput(names8);
+    
+ };
+ runExample();
+ document.getElementById("lesson-button-s8").addEventListener("click", runExample);
+})();</script>
 
     <h3>1.6. Sorting Objects</h3>
 
@@ -245,7 +295,26 @@ console.log(names);
     </p>
 
     <pre data-src="s9"></pre>
-    <script  id="s9">
+<div class="vd">
+    <button type="button" id="lesson-button-s9">Chạy 1.6. Sorting Objects</button>
+    <p id="lesson-output-s9" class="out" aria-live="polite">Nhấn nút để chạy ví dụ.</p>
+</div>
+    <script  id="s9">(function () {
+ const output = document.getElementById("lesson-output-s9");
+ const formatOutput = value => {
+ if (typeof value === "string") return value;
+ if (typeof value === "undefined") return "undefined";
+ if (typeof value === "bigint") return value + "n";
+ if (typeof value === "symbol") return value.toString();
+ if (value === null) return "null";
+ if (value instanceof Date) return value.toString();
+ if (typeof value === "object") { try { return JSON.stringify(value, (_, item) => typeof item === "bigint" ? item + "n" : item, 2); } catch { return String(value); } }
+ return String(value);
+};
+ const runExample = function () {
+  output.textContent = "";
+  const writeOutput = (...values) => { output.textContent += values.map(formatOutput).join(" ") + "\n"; };
+
 const students = [
     { name: "Phong", age: 19 },
     { name: "Minh", age: 21 },
@@ -256,8 +325,12 @@ const students = [
 // Sort by age: ascending
 students.sort((a, b) => a.age - b.age);
 
-console.log(students);
-    </script>
+writeOutput(students);
+    
+ };
+ 
+ document.getElementById("lesson-button-s9").addEventListener("click", runExample);
+})();</script>
 
     <p>
         Nếu muốn sắp xếp theo tên, sử dụng
@@ -265,7 +338,26 @@ console.log(students);
     </p>
 
     <pre data-src="s10"></pre>
-    <script  id="s10">
+<div class="vd">
+    <button type="button" id="lesson-button-s10">Chạy 1.6. Sorting Objects</button>
+    <p id="lesson-output-s10" class="out" aria-live="polite">Nhấn nút để chạy ví dụ.</p>
+</div>
+    <script  id="s10">(function () {
+ const output = document.getElementById("lesson-output-s10");
+ const formatOutput = value => {
+ if (typeof value === "string") return value;
+ if (typeof value === "undefined") return "undefined";
+ if (typeof value === "bigint") return value + "n";
+ if (typeof value === "symbol") return value.toString();
+ if (value === null) return "null";
+ if (value instanceof Date) return value.toString();
+ if (typeof value === "object") { try { return JSON.stringify(value, (_, item) => typeof item === "bigint" ? item + "n" : item, 2); } catch { return String(value); } }
+ return String(value);
+};
+ const runExample = function () {
+  output.textContent = "";
+  const writeOutput = (...values) => { output.textContent += values.map(formatOutput).join(" ") + "\n"; };
+
 const students = [
     { name: "Phong", age: 19 },
     { name: "Minh", age: 21 },
@@ -277,8 +369,12 @@ students.sort((a, b) =>
     a.name.localeCompare(b.name)
 );
 
-console.log(students);
-    </script>
+writeOutput(students);
+    
+ };
+ 
+ document.getElementById("lesson-button-s10").addEventListener("click", runExample);
+})();</script>
 
     <h3>1.7. toSorted()</h3>
 
@@ -289,17 +385,40 @@ console.log(students);
     </p>
 
     <pre data-src="s11"></pre>
-    <script  id="s11">
+<div class="vd">
+    <button type="button" id="lesson-button-s11">Chạy 1.7. toSorted()</button>
+    <p id="lesson-output-s11" class="out" aria-live="polite">Nhấn nút để chạy ví dụ.</p>
+</div>
+    <script  id="s11">(function () {
+ const output = document.getElementById("lesson-output-s11");
+ const formatOutput = value => {
+ if (typeof value === "string") return value;
+ if (typeof value === "undefined") return "undefined";
+ if (typeof value === "bigint") return value + "n";
+ if (typeof value === "symbol") return value.toString();
+ if (value === null) return "null";
+ if (value instanceof Date) return value.toString();
+ if (typeof value === "object") { try { return JSON.stringify(value, (_, item) => typeof item === "bigint" ? item + "n" : item, 2); } catch { return String(value); } }
+ return String(value);
+};
+ const runExample = function () {
+  output.textContent = "";
+  const writeOutput = (...values) => { output.textContent += values.map(formatOutput).join(" ") + "\n"; };
+
 const numbers = [40, 10, 100, 5, 25];
 
 const sortedNumbers = numbers.toSorted((a, b) => a - b);
 
-console.log(sortedNumbers);
+writeOutput(sortedNumbers);
 // [5, 10, 25, 40, 100]
 
-console.log(numbers);
+writeOutput(numbers);
 // [40, 10, 100, 5, 25]
-    </script>
+    
+ };
+ 
+ document.getElementById("lesson-button-s11").addEventListener("click", runExample);
+})();</script>
 
     <div class="kn">
         <b>So sánh sort() và toSorted():</b>
@@ -365,7 +484,8 @@ console.log(numbers);
     </p>
 
     <pre data-src="s12"></pre>
-    <script  id="s12">
+
+    <script  id="s12" type="text/plain">
 const numbers = [1, 2, 3, 4, 5];
     </script>
 
@@ -374,7 +494,8 @@ const numbers = [1, 2, 3, 4, 5];
     </p>
 
     <pre data-src="s13"></pre>
-    <script  id="s13">
+
+    <script  id="s13" type="text/plain">
 [3, 1, 5, 2, 4]
     </script>
 
@@ -390,14 +511,37 @@ const numbers = [1, 2, 3, 4, 5];
     </p>
 
     <pre data-src="s14"></pre>
-    <script  id="s14">
-console.log(Math.random());
+<div class="vd">
+    <button type="button" id="lesson-button-s14">Chạy 2.1. Math.random()</button>
+    <p id="lesson-output-s14" class="out" aria-live="polite">Nhấn nút để chạy ví dụ.</p>
+</div>
+    <script  id="s14">(function () {
+ const output = document.getElementById("lesson-output-s14");
+ const formatOutput = value => {
+ if (typeof value === "string") return value;
+ if (typeof value === "undefined") return "undefined";
+ if (typeof value === "bigint") return value + "n";
+ if (typeof value === "symbol") return value.toString();
+ if (value === null) return "null";
+ if (value instanceof Date) return value.toString();
+ if (typeof value === "object") { try { return JSON.stringify(value, (_, item) => typeof item === "bigint" ? item + "n" : item, 2); } catch { return String(value); } }
+ return String(value);
+};
+ const runExample = function () {
+  output.textContent = "";
+  const writeOutput = (...values) => { output.textContent += values.map(formatOutput).join(" ") + "\n"; };
+
+writeOutput(Math.random());
 
 // Ví dụ kết quả:
 // 0.123456...
 // 0.789012...
 // 0.456789...
-    </script>
+    
+ };
+ 
+ document.getElementById("lesson-button-s14").addEventListener("click", runExample);
+})();</script>
 
     <p>
         Có thể kết hợp <code>Math.random()</code> với
@@ -405,12 +549,35 @@ console.log(Math.random());
     </p>
 
     <pre data-src="s15"></pre>
-    <script  id="s15">
+<div class="vd">
+    <button type="button" id="lesson-button-s15">Chạy 2.1. Math.random()</button>
+    <p id="lesson-output-s15" class="out" aria-live="polite">Nhấn nút để chạy ví dụ.</p>
+</div>
+    <script  id="s15">(function () {
+ const output = document.getElementById("lesson-output-s15");
+ const formatOutput = value => {
+ if (typeof value === "string") return value;
+ if (typeof value === "undefined") return "undefined";
+ if (typeof value === "bigint") return value + "n";
+ if (typeof value === "symbol") return value.toString();
+ if (value === null) return "null";
+ if (value instanceof Date) return value.toString();
+ if (typeof value === "object") { try { return JSON.stringify(value, (_, item) => typeof item === "bigint" ? item + "n" : item, 2); } catch { return String(value); } }
+ return String(value);
+};
+ const runExample = function () {
+  output.textContent = "";
+  const writeOutput = (...values) => { output.textContent += values.map(formatOutput).join(" ") + "\n"; };
+
 // Random integer from 0 to 9
 const randomNumber = Math.floor(Math.random() * 10);
 
-console.log(randomNumber);
-    </script>
+writeOutput(randomNumber);
+    
+ };
+ 
+ document.getElementById("lesson-button-s15").addEventListener("click", runExample);
+})();</script>
 
     <h3>2.2. Fisher-Yates Shuffle Algorithm</h3>
 
@@ -445,7 +612,26 @@ console.log(randomNumber);
     <h3>2.3. Implement Fisher-Yates</h3>
 
     <pre data-src="s16"></pre>
-    <script  id="s16">
+<div class="vd">
+    <button type="button" id="lesson-button-s16">Chạy 2.3. Implement Fisher-Yates</button>
+    <p id="lesson-output-s16" class="out" aria-live="polite">Nhấn nút để chạy ví dụ.</p>
+</div>
+    <script  id="s16">(function () {
+ const output = document.getElementById("lesson-output-s16");
+ const formatOutput = value => {
+ if (typeof value === "string") return value;
+ if (typeof value === "undefined") return "undefined";
+ if (typeof value === "bigint") return value + "n";
+ if (typeof value === "symbol") return value.toString();
+ if (value === null) return "null";
+ if (value instanceof Date) return value.toString();
+ if (typeof value === "object") { try { return JSON.stringify(value, (_, item) => typeof item === "bigint" ? item + "n" : item, 2); } catch { return String(value); } }
+ return String(value);
+};
+ const runExample = function () {
+  output.textContent = "";
+  const writeOutput = (...values) => { output.textContent += values.map(formatOutput).join(" ") + "\n"; };
+
 const numbers = [1, 2, 3, 4, 5];
 
 for (let i = numbers.length - 1; i > 0; i--) {
@@ -456,8 +642,12 @@ for (let i = numbers.length - 1; i > 0; i--) {
         [numbers[randomIndex], numbers[i]];
 }
 
-console.log(numbers);
-    </script>
+writeOutput(numbers);
+    
+ };
+ 
+ document.getElementById("lesson-button-s16").addEventListener("click", runExample);
+})();</script>
 
     <div class="kn">
         <b>Phân tích thuật toán:</b>
@@ -491,7 +681,26 @@ console.log(numbers);
     </p>
 
     <pre data-src="s17"></pre>
-    <script  id="s17">
+<div class="vd">
+    <button type="button" id="lesson-button-s17">Chạy 2.4. Shuffle an Array using a Function</button>
+    <p id="lesson-output-s17" class="out" aria-live="polite">Nhấn nút để chạy ví dụ.</p>
+</div>
+    <script  id="s17">(function () {
+ const output = document.getElementById("lesson-output-s17");
+ const formatOutput = value => {
+ if (typeof value === "string") return value;
+ if (typeof value === "undefined") return "undefined";
+ if (typeof value === "bigint") return value + "n";
+ if (typeof value === "symbol") return value.toString();
+ if (value === null) return "null";
+ if (value instanceof Date) return value.toString();
+ if (typeof value === "object") { try { return JSON.stringify(value, (_, item) => typeof item === "bigint" ? item + "n" : item, 2); } catch { return String(value); } }
+ return String(value);
+};
+ const runExample = function () {
+  output.textContent = "";
+  const writeOutput = (...values) => { output.textContent += values.map(formatOutput).join(" ") + "\n"; };
+
 function shuffleArray(array) {
     const shuffled = [...array];
 
@@ -509,9 +718,13 @@ const numbers = [1, 2, 3, 4, 5];
 
 const result = shuffleArray(numbers);
 
-console.log("Original:", numbers);
-console.log("Shuffled:", result);
-    </script>
+writeOutput("Original:", numbers);
+writeOutput("Shuffled:", result);
+    
+ };
+ 
+ document.getElementById("lesson-button-s17").addEventListener("click", runExample);
+})();</script>
 
     <div class="kn">
         <b>Tại sao sử dụng <code>[...array]</code>?</b>
@@ -535,13 +748,36 @@ console.log("Shuffled:", result);
     </p>
 
     <pre data-src="s18"></pre>
-    <script  id="s18">
+<div class="vd">
+    <button type="button" id="lesson-button-s18">Chạy 2.5. A Common but Incorrect Shuffle</button>
+    <p id="lesson-output-s18" class="out" aria-live="polite">Nhấn nút để chạy ví dụ.</p>
+</div>
+    <script  id="s18">(function () {
+ const output = document.getElementById("lesson-output-s18");
+ const formatOutput = value => {
+ if (typeof value === "string") return value;
+ if (typeof value === "undefined") return "undefined";
+ if (typeof value === "bigint") return value + "n";
+ if (typeof value === "symbol") return value.toString();
+ if (value === null) return "null";
+ if (value instanceof Date) return value.toString();
+ if (typeof value === "object") { try { return JSON.stringify(value, (_, item) => typeof item === "bigint" ? item + "n" : item, 2); } catch { return String(value); } }
+ return String(value);
+};
+ const runExample = function () {
+  output.textContent = "";
+  const writeOutput = (...values) => { output.textContent += values.map(formatOutput).join(" ") + "\n"; };
+
 const numbers = [1, 2, 3, 4, 5];
 
 numbers.sort(() => Math.random() - 0.5);
 
-console.log(numbers);
-    </script>
+writeOutput(numbers);
+    
+ };
+ 
+ document.getElementById("lesson-button-s18").addEventListener("click", runExample);
+})();</script>
 
     <div class="kn">
         <b>Vì sao không nên sử dụng cách này?</b>
@@ -770,6 +1006,9 @@ console.log(numbers);
                 "\nShuffled: [" + shuffled.join(", ") + "]";
         });
     </script>
+
+
+
 
 </body>
 </html>
